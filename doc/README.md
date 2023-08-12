@@ -3,11 +3,25 @@
 2. Administrator dodaje członków Jury do edycji konkursu.
 3. Administrator aktywuje edycję konkursu.
 4. Administrator dodaje aplikanta z organizacji (tworzy konto), który chce wziąć udział w konkursie.
-    * Jeżeli organizacji nie ma w systemie zostaje utworzona.
-    * Jeżeli organizacja była w systemie zostaje wybrana a dane uzupełnione.
+    * Jeżeli organizacji nie ma w systemie, zostaje ona utworzona.
+    * Jeżeli organizacja była w systemie, zostaje wybrana a dane uzupełnione.
     * Max 1 osoba z organizacji.
     * Aplikant odbiera maila / aktywuje konto
 5. Aplikant rejstruje projekt.
+6. Aplikant dokonuje zmian w projekcie, do momentu upłynięcia terminu - planowanej daty dostarczenia raportu aplikacyjnego.
+7. Biuro nagrody przypisuje wysyła propozycje zostania asesorami do ekspertów PEM, dla każdego zgłoszenia projektu.
+   * Jeżeli dany ekspert PEM był już asesorem w poprzednich edycjach, jego istniejąceg konto zostaje przypisane do zgłoszeń projektu w nowej edycji.
+   * Jeżeli dany ekspert PEM nie był nigdy asesorem, zostaje utworzone dla niego nowe konto z rolą asesora.
+8. Eksperci PEM podejmują decyzję, co do zostania asesorami zgłoszenia projektu.
+9. Biuro nagrody zapewnia co najmniej jednego asesora wiodącego dla każdego zgłoszenia projektu.
+10. Asesorzy opracowują oceny indywidualne dla danego zgłoszenia projektu.
+11. Asesor wiodący, w porozumieniu z zespołem asesorów opracowuje ocenę wstępną dla danego zgłoszenia projektu.
+12. Jury podejmuje decyzję, czy projekt powinien zostać skierowany do wizyty studyjnej.
+    * Jeżeli decyzja jest pozytywna, Jury dodaje pytania do zgłoszenia projektu
+    * Jeżeli decyzja jest negatywna, proces przetwarzania danego zgłoszenia projektu zostaje zakończony
+13. Zespół asesorów odpowiada na pytania zadane przez Jury.
+14. Po dodaniu odpowiedzi na wszystkie pytania, asesor wiodący dla danego zgłoszenia zatwierdza raport z wizyty studyjnej.
+15. Asesor wiodący opracowuje ocenę końcową dla danego zgłoszenia.
 
 ## Użytkownicy
 ### Tworzenie konta
@@ -91,10 +105,22 @@ czącego).
 
 ### Opracowanie oceny wstępnej dla danego zgłoszenia projektu
 1. Asesor wiodący wprowadza ocenę wstpęną dla danego zgłoszenia projektu we wszystkich miarach PEM.
-    * Ocena w wersji roboaczej może zostać zatwierdzona przez asesora wiodącego.
+    * Ocena w wersji roboczej może zostać zatwierdzona przez asesora wiodącego.
     * Przy przejściu do nastepnego etapu konkursu (po upływie czasu na opracowanie oceny wstępnej) system automatycznie zatwierdza ocenę w wersji roboczej.
+2. Kiedy ocena wstępna dla danego zgłoszenia projektu zostanie zatwierdzona, Jury otrzymuje informację o ocenie wstępnej dla danego zgłoszenia projektu. Jury może [zakwalifikować projekt do wizyty studyjnej](#kwalifikacja-do-wizyt-studyjnych-i-wizyty-studyjne). 
 
+### Kwalifikacja do wizyt studyjnych i wizyty studyjne
+1. Po otrzymaniu oceny wstępnej dla projektu, system umożliwia przewodniczącemu Jury podjęcie decyzji o odrzuceniu zgłoszenia projektu lub skierowaniu go do wizyty studyjnej.
+2. System wysyła aplikantowi informację o podjętej decyzji poprzez wiadomość email.
+3. W przypadku podjęcia decyzji o skierowaniu zgłoszenia projektu do wizyty studyjnej, system umożliwia przewodniczącemu Jury dodanie pytań do wizyty studyjnej. W przeciwnym przypadku, proces przetwarzania danego zgłoszenia projektu zostaje zakończony.
+4. Po dodaniu pytań przez przewodniczącego Jury, system umożliwia zespołowi asesorów dodanie odpowiedzi na zadane pytania.
+5. Kiedy odpowiedzi na wszystkie pytania zostaną dodane, asesor wiodący ma możliwość zatwierdzenia raportu z wizyty studyjnej.
+6. Po zatwierdzeniu przez asesora wiodącego raportu z wizyty studyjnej, rozpoczyna się [opracowanie oceny końcowej dla danego zgłoszenia projektu](#opracowanie-oceny-końcowej-dla-danego-zgłoszenia-projektu)
 
+### Opracowanie oceny końcowej dla danego zgłoszenia projektu
+1. Asesor wiodący wprowadza ocenę wstpęną dla danego zgłoszenia projektu we wszystkich miarach PEM.
+    * Ocena w wersji roboczej może zostać zatwierdzona przez asesora wiodącego.
+2. Po zatwierdzeniu oceny, system przesyła ocenę do aplikanta poprzez wiadomość email.
 
 
 ## Definicje
