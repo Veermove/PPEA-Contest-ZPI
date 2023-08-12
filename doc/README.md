@@ -66,8 +66,6 @@ czącego).
     * System kontroluje ograniczenie, zgodnie z którym aktualna może być maksymalnie jedna edycja konkursu – uniemożliwia aktywację drugiej edycji
     * System aktywuje konta członków Jury edycji konkursu.
 6. System umożliwia administratorowi zakończenie aktualnej edycji konkursu.
-    * System oznacza wszystkie dane ekspertów IPMA jako dane ‘do weryfikacji’.
-    * System oznacza wszystkie dane organizacji jako dane ‘do weryfikacji’.
     * System dezaktywuje konta członków Jury oraz przedstawicieli Biura Nagrody edycji.
 7. System umożliwia przedstawicielowi Biura Nagrody wprowadzenie i modyfikację danych aktualnej edycji konkursu:
     * daty zgłaszania aplikacji;
