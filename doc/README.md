@@ -9,7 +9,7 @@
     * Aplikant odbiera maila / aktywuje konto
 5. Aplikant rejstruje projekt.
 6. Aplikant dokonuje zmian w projekcie, do momentu upłynięcia terminu - planowanej daty dostarczenia raportu aplikacyjnego.
-7. Biuro nagrody przypisuje wysyła propozycje zostania asesorami do ekspertów PEM, dla każdego zgłoszenia projektu.
+7. Biuro nagrody wysyła propozycje zostania asesorami do ekspertów PEM, dla każdego zgłoszenia projektu.
    * Jeżeli dany ekspert PEM był już asesorem w poprzednich edycjach, jego istniejąceg konto zostaje przypisane do zgłoszeń projektu w nowej edycji.
    * Jeżeli dany ekspert PEM nie był nigdy asesorem, zostaje utworzone dla niego nowe konto z rolą asesora.
 8. Eksperci PEM podejmują decyzję, co do zostania asesorami zgłoszenia projektu.
