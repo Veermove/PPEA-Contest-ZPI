@@ -10,7 +10,7 @@
 5. Aplikant rejstruje projekt.
 6. Aplikant dokonuje zmian w projekcie, do momentu upłynięcia terminu - planowanej daty dostarczenia raportu aplikacyjnego.
 7. Biuro nagrody wysyła propozycje zostania asesorami do ekspertów PEM, dla każdego zgłoszenia projektu.
-   * Jeżeli dany ekspert PEM był już asesorem w poprzednich edycjach, jego istniejąceg konto zostaje przypisane do zgłoszeń projektu w nowej edycji.
+   * Jeżeli dany ekspert PEM był już asesorem w poprzednich edycjach, jego istniejące konto zostaje przypisane do zgłoszeń projektu w nowej edycji.
    * Jeżeli dany ekspert PEM nie był nigdy asesorem, zostaje utworzone dla niego nowe konto z rolą asesora.
 8. Eksperci PEM podejmują decyzję, co do zostania asesorami zgłoszenia projektu.
 9. Biuro nagrody zapewnia co najmniej jednego asesora wiodącego dla każdego zgłoszenia projektu.
@@ -96,15 +96,19 @@ czącego).
     * **Każde zgłoszenie musi mieć jednego asesora wiodącego**.
 
 ### Opracowanie ocen indywidualnych asesorów dla danego zgłoszenia projektu
-1. Asesor przygotowuję ocenę indywidualną dla danego zgłoszenia projektu we wszystkich miarach PEM, która zostaje wyświetlana jako wersja robocza.
+1. Asesor przygotowuję ocenę indywidualną dla danego zgłoszenia projektu we wszystkich kryteriach PEM, która zostaje wyświetlana jako wersja robocza.
     * Ocena w wersji roboaczej może zostać zatwierdzona przez asesora.
     * Przy przejściu do nastepnego etapu konkursu (po upływie czasu na opracowanie ocen indywidualnych) system automatycznie zatwierdza ocenę w wersji roboczej.
+    * Nie można przejść do kolejnego etapu, jeżeli wszyscy asesorzy nie wprowadzili jeszcze ocen indywidualnych (w wersji zatwierdzonej lub roboczej)
+    * Jeżeli co najmniej jeden Asesor nie wprowadził ocen indywidualnych, w momencie przejścia do następnego etapu konkursu wysyłana jest wiadomość e-mail do Asesora/Asesorów, którzy nie dodali ocen indywidualnych. Kolejna próba przejścia do kolejnego etapu zostaje podjęta po [INTERWAŁ_SPRAWDZANIA_OCEN](#zmienne)
 2. Kiedy wszsystkie oceny indywidualne dla danego zgłoszenia projektu zostaną zatwierdzone, rozpoczyna się [opracowanie oceny wstępnej dla danego zgłoszenia projektu](#opracowanie-oceny-wstępnej-dla-danego-zgłoszenia-projektu).
 
 ### Opracowanie oceny wstępnej dla danego zgłoszenia projektu
-1. Asesor wiodący wprowadza ocenę wstpęną dla danego zgłoszenia projektu we wszystkich miarach PEM.
+1. Asesor wiodący wprowadza ocenę wstępną dla danego zgłoszenia projektu we wszystkich kryteriach PEM.
     * Ocena w wersji roboczej może zostać zatwierdzona przez asesora wiodącego.
     * Przy przejściu do nastepnego etapu konkursu (po upływie czasu na opracowanie oceny wstępnej) system automatycznie zatwierdza ocenę w wersji roboczej.
+    * Nie można przejść do kolejnego etapu, jeżeli wszyscy asesorzy wiodący nie wprowadzili jeszcze ocen wstępnych (w wersji zatwierdzonej lub roboczej)
+    * Jeżeli co najmniej jeden Asesor wiodący nie wprowadził ocen, w momencie przejścia do następnego etapu konkursu wysyłana jest wiadomość e-mail do Asesora/Asesorów, którzy nie dodali ocen wstępnych. Kolejna próba przejścia do kolejnego etapu zostaje podjęta po [INTERWAŁ_SPRAWDZANIA_OCEN](#zmienne)
 2. Kiedy ocena wstępna dla danego zgłoszenia projektu zostanie zatwierdzona, Jury otrzymuje informację o ocenie wstępnej dla danego zgłoszenia projektu. Jury może [zakwalifikować projekt do wizyty studyjnej](#kwalifikacja-do-wizyt-studyjnych-i-wizyty-studyjne). 
 
 ### Kwalifikacja do wizyt studyjnych i wizyty studyjne
@@ -116,7 +120,7 @@ czącego).
 6. Po zatwierdzeniu przez asesora wiodącego raportu z wizyty studyjnej, rozpoczyna się [opracowanie oceny końcowej dla danego zgłoszenia projektu](#opracowanie-oceny-końcowej-dla-danego-zgłoszenia-projektu)
 
 ### Opracowanie oceny końcowej dla danego zgłoszenia projektu
-1. Asesor wiodący wprowadza ocenę wstpęną dla danego zgłoszenia projektu we wszystkich miarach PEM.
+1. Asesor wiodący wprowadza ocenę końcową dla danego zgłoszenia projektu we wszystkich kryteriach PEM.
     * Ocena w wersji roboczej może zostać zatwierdzona przez asesora wiodącego.
 2. Po zatwierdzeniu oceny, system przesyła ocenę do aplikanta poprzez wiadomość email.
 
@@ -127,3 +131,4 @@ PEM - Project Excellence Model
 
 ## ZMIENNE
 CZAS_WYGAŚNIĘCIA_PROPOZYCJI - czas po którym propozycja eksperta jest odrzucana = 14 dni
+INTERWAŁ_SPRAWDZANIA_OCEN - czas po którym zostanie podjęta kolejna próba przejścia do kolejnego etapu po wykryciu brakujących ocen = 1 godzina
