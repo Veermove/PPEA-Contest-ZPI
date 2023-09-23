@@ -14,10 +14,6 @@ function AppNavbar() {
     return router.push("/signin")
   }
 
-  React.useEffect(() => {
-    if (user == null) router.push("/signin")
-  }, [user])
-
   return (
     <Navbar bg="light" expand="lg" className="px-4 py-3">
       <Navbar.Brand href="/home" className="d-flex align-items-center">
@@ -35,7 +31,7 @@ function AppNavbar() {
             user && (
               <><Nav.Link href="#home" className="text-dark">
                 {user?.providerData[0].email}
-              </Nav.Link><Nav.Link className="text-dark" onClick={logout}>
+              </Nav.Link><Nav.Link className="text-dark" onClick={handleLogout}>
                   Wyloguj
                 </Nav.Link></>
             )

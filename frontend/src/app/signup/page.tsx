@@ -2,11 +2,18 @@
 import React from "react";
 import { useRouter } from 'next/navigation'
 import signUp from "../../firebase/auth/signup";
+import { AuthContext, useAuthContext } from "@/context/authContext";
 
 function Page() {
+    const router = useRouter()
+    const { user } = useAuthContext();
+
+    if (!!user) {
+        router.push("/home")
+    }
+
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
-    const router = useRouter()
 
     const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -17,7 +24,6 @@ function Page() {
             return console.log(error)
         }
 
-        // else successful
         console.log(result)
         return router.push("/home")
     }
