@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option go_package = "github.com/Veermove/zpi/store";
+
+package store;
+
+
+service DataStore {
+    rpc HelloWorld(Req) returns (Res);
+}
+
+message Req {
+    string name = 1;
+}
+
+message Res {
+    string message = 1;
+}
+
+
