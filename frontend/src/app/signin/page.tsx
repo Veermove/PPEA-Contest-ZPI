@@ -5,45 +5,73 @@ import { useRouter } from 'next/navigation'
 import { useAuthContext } from "@/context/authContext";
 
 function Page() {
-    const router = useRouter()
-    const { user } = useAuthContext();
+  const router = useRouter()
+  const { user } = useAuthContext();
 
-    if (!!user) {
-        router.push("/home")
+  if (!!user) {
+    router.push("/home")
+  }
+
+  const [email, setEmail] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const [error, setError] = React.useState('')
+
+  const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (!email.match(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/)) {
+      setError('Niepoprawny email')
+      return
     }
 
-    const [email, setEmail] = React.useState('')
-    const [password, setPassword] = React.useState('')
+    const { result, error } = await signIn(email, password);
 
-    const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-
-        const { result, error } = await signIn(email, password);
-
-        if (error) {
-            return console.log(error)
-        }
-
-        console.log(result)
-        return router.push("/home")
+    if (error) {
+      const err = error as Error
+      setError(err.message)
+      return console.log(err)
     }
-    return (<div className="wrapper">
-        <div className="form-wrapper">
-            <h1 className="mt-60 mb-30">Sign in</h1>
-            <form onSubmit={handleForm} className="form">
-                <label htmlFor="email">
-                    <p>Email</p>
-                    <input onChange={(e) => setEmail(e.target.value)} required type="email" name="email" id="email" placeholder="example@mail.com" />
-                </label>
-                <label htmlFor="password">
-                    <p>Password</p>
-                    <input onChange={(e) => setPassword(e.target.value)} required type="password" name="password" id="password" placeholder="password" />
-                </label>
-                <button type="submit">Sign in</button>
-            </form>
-        </div>
 
-    </div>);
+    console.log(result)
+    return router.push("/home")
+  }
+  return (
+    <div className="d-flex justify-content-center align-items-center h-100 mt-5">
+      <div className="form-wrapper p-5">
+        <h1 className="text-center mb-4">Zaloguj</h1>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <form onSubmit={handleForm} className="form">
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              type="email"
+              name="email"
+              id="email"
+              className="form-control"
+              placeholder="test@mail.com"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Hasło</label>
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              type="password"
+              name="password"
+              id="password"
+              className="form-control"
+              placeholder="hasło"
+            />
+          </div>
+          <button type="submit" className="btn btn-primary w-100 mt-3">
+            Zaloguj
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 export default Page;
