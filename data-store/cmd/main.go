@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	dbclient "zpi/data-store/db-client"
 	store "zpi/data-store/pb"
 
 	"go.uber.org/zap"
@@ -21,15 +22,24 @@ func main() {
 	flag.Parse()
 
 	var (
-		l          = GetLogger(debug)
-		_, cancel  = context.WithCancel(context.Background())
-		exitStatus int
-		server     = grpc.NewServer()
-		c          = make(chan os.Signal, 1)
+		l           = GetLogger(debug)
+		ctx, cancel = context.WithCancel(context.Background())
+		exitStatus  int
+		server      = grpc.NewServer()
 	)
 
-	l.Debug("Debug mode enabled")
+	sdb, err := dbclient.Open(ctx)
+	if err != nil {
+		l.Fatal("opening db", zap.Error(err))
+	}
 
+	err = sdb.Pool.Ping(ctx)
+	if err != nil {
+		l.Fatal("pinging db", zap.Error(err))
+	}
+
+	l.Debug("Debug mode enabled")
+	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGTERM)
 	signal.Notify(c, syscall.SIGINT)
 
