@@ -2,7 +2,11 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+### Environmental variables
+This project utilizes Firebase as the Identity Provider. In order to set up the application properly, you need to add Firebase config to the environmental variables.
+Copy the `env.template` file and rename to `.env`. Then, you can put the values of the secrets there. The `.env` file is gitignored. 
+
+Then, you can run the development server:
 
 ```bash
 npm run dev
@@ -13,8 +17,6 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
