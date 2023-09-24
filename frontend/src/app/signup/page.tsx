@@ -9,7 +9,7 @@ function Page() {
     const { user } = useAuthContext();
 
     if (!!user) {
-        router.push("/home")
+        router.push("/")
     }
 
     const [email, setEmail] = React.useState('')
@@ -39,7 +39,7 @@ function Page() {
         }
 
         console.log(result)
-        return router.push("/home")
+        return router.push("/")
     }
 
     return (
