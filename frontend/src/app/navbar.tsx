@@ -16,7 +16,7 @@ function AppNavbar() {
 
   return (
     <Navbar bg="light" expand="lg" className="px-4 py-3">
-      <Navbar.Brand href="/home" className="d-flex align-items-center">
+      <Navbar.Brand href="/" className="d-flex align-items-center">
         <h4><span className="font-bold">PPEA</span><span className="d-none d-lg-inline"> - Polish Project Excellence Award</span></h4>
       </Navbar.Brand>
       <Navbar.Text>
@@ -29,7 +29,7 @@ function AppNavbar() {
         <Nav className="d-flex align-items-center">
           {
             user && (
-              <><Nav.Link href="#home" className="text-dark">
+              <><Nav.Link href="/" className="text-dark">
                 {user?.providerData[0].email}
               </Nav.Link><Nav.Link className="text-dark" onClick={handleLogout}>
                   Wyloguj
