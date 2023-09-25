@@ -64,3 +64,7 @@ yarn-debug.log*
 yarn-error.log*
 
 **/*.bak_**
+
+# Next.JS files
+.next/
+next-env.d.ts
