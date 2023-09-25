@@ -24,16 +24,15 @@ function Page() {
       return
     }
 
-    const { result, error } = await signIn(email, password);
-
-    if (error) {
+    try {
+      await signIn(email, password);
+      return router.push("/")
+    } catch (error) {
       const err = error as Error
       setError(err.message)
-      return console.log(err)
+      return console.log(error)
     }
 
-    console.log(result)
-    return router.push("/")
   }
   return (
     <div className="d-flex justify-content-center align-items-center h-100 mt-5">
