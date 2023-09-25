@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/authContext";
 import { Navbar, Nav } from "react-bootstrap";
-import { logout } from "@/firebase/auth/logout";
+import { logout } from "@/services/firebase/auth/logout";
 
 function AppNavbar() {
   const { user } = useAuthContext()

@@ -2,7 +2,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/authContext";
-import AppNavbar from "./navbar";
+import AppNavbar from "../components/navbar";
 
 function Page() {
   const { user } = useAuthContext()
