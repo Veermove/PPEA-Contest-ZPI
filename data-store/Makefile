@@ -27,7 +27,7 @@ clean:
 	@echo "Cleaning up..."
 	$(GOCLEAN)
 	rm -f $(BINARY_NAME)
-	rm -f ./cmd/cmd
+	rm -f $(DEBUG_EXEC)
 
 run:
 	@echo "Building and running $(DEBUG_EXEC)"

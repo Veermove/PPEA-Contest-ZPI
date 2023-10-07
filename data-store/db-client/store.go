@@ -8,6 +8,7 @@ import (
 	envvar "zpi/data-store/cmd/env"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	"go.uber.org/zap"
 )
 
 const (
@@ -19,7 +20,21 @@ type Store struct {
 	Pool *pgxpool.Pool
 }
 
-func Open(ctx context.Context) (*Store, error) {
+func GetConnectionString() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		envvar.GetOrPanic("PG_STORE_USER"),
+		envvar.GetOrPanic("PG_STORE_PASSWORD"),
+		envvar.GetOrPanic("PG_STORE_HOST"),
+		envvar.GetOrPanic("PG_STORE_PORT"),
+		envvar.GetOrPanic("PG_STORE_DATABASE"),
+	)
+}
+
+func Open(ctx context.Context, log *zap.Logger) (*Store, error) {
+	if migErr := RunMigrations(log); migErr != nil {
+		return nil, fmt.Errorf("running migrations: %w", migErr)
+	}
+
 	var (
 		confs = strings.Join([]string{
 			fmt.Sprintf("%s=%s", "dbname", envvar.GetOrPanic("PG_STORE_DATABASE")),

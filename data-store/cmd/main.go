@@ -31,7 +31,9 @@ func main() {
 		exitStatus  int
 	)
 
-	sdb, err := dbclient.Open(ctx)
+	l.Debug("Debug mode enabled")
+
+	sdb, err := dbclient.Open(ctx, l)
 	if err != nil {
 		l.Fatal("opening db", zap.Error(err))
 	}
@@ -41,7 +43,6 @@ func main() {
 		l.Fatal("pinging db", zap.Error(err))
 	}
 
-	l.Debug("Debug mode enabled")
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGTERM)
 	signal.Notify(c, syscall.SIGINT)
