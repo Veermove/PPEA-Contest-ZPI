@@ -67,3 +67,10 @@ yarn-error.log*
 
 **/cmd
 **/data_store
+
+**/cmd
+**/data_store
+
+# Next.JS files
+.next/
+next-env.d.ts
