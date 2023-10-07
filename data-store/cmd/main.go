@@ -8,7 +8,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	_ "zpi/data-store/cmd/env"
+
 	dbclient "zpi/data-store/db-client"
+
 	store "zpi/data-store/pb"
 
 	"go.uber.org/zap"
@@ -24,8 +27,8 @@ func main() {
 	var (
 		l           = GetLogger(debug)
 		ctx, cancel = context.WithCancel(context.Background())
-		exitStatus  int
 		server      = grpc.NewServer()
+		exitStatus  int
 	)
 
 	sdb, err := dbclient.Open(ctx)

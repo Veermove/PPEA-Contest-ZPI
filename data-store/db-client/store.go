@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	envvar "zpi/data-store/cmd/env"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -21,11 +22,11 @@ type Store struct {
 func Open(ctx context.Context) (*Store, error) {
 	var (
 		confs = strings.Join([]string{
-			fmt.Sprintf("%s=%s", "dbname", "store"),   //os.Getenv("ZPI_DATASTORE_NAME")),
-			fmt.Sprintf("%s=%s", "user", "keeper"),    //os.Getenv("ZPI_DATASTORE_USER")),
-			fmt.Sprintf("%s=%s", "password", "admin"), //os.Getenv("ZPI_DATASTORE_PASSWORD")),
-			fmt.Sprintf("%s=%s", "host", "localhost"), //os.Getenv("ZPI_DATASTORE_HOST")),
-			fmt.Sprintf("%s=%d", "port", 5431),        //os.Getenv("ZPI_DATASTORE_PORT")),
+			fmt.Sprintf("%s=%s", "dbname", envvar.GetOrPanic("PG_STORE_DATABASE")),
+			fmt.Sprintf("%s=%s", "user", envvar.GetOrPanic("PG_STORE_USER")),
+			fmt.Sprintf("%s=%s", "password", envvar.GetOrPanic("PG_STORE_PASSWORD")),
+			fmt.Sprintf("%s=%s", "host", envvar.GetOrPanic("PG_STORE_HOST")),
+			fmt.Sprintf("%s=%s", "port", envvar.GetOrPanic("PG_STORE_PORT")),
 		}, " ")
 		config, err = pgxpool.ParseConfig(confs)
 	)

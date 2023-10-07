@@ -65,10 +65,6 @@ yarn-error.log*
 
 **/*.bak_**
 
-**/cmd
-**/data_store
-
-**/cmd
 **/data_store
 
 # Next.JS files

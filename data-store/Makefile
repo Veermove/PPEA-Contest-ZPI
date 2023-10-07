@@ -4,7 +4,7 @@ BINARY_NAME := data_store
 # Go parameters
 GOCMD := go
 LOCATED := ./cmd/
-DEBUG_EXEC := $(LOCATED)cmd
+DEBUG_EXEC := $(LOCATED)$(BINARY_NAME)
 GOBUILD := $(GOCMD) build
 GOCLEAN := $(GOCMD) clean
 GOGET := $(GOCMD) get
@@ -30,7 +30,7 @@ clean:
 	rm -f ./cmd/cmd
 
 run:
-	@echo "Building and running ./cmd/cmd"
+	@echo "Building and running $(DEBUG_EXEC)"
 	$(GOBUILD) -o $(DEBUG_EXEC) -ldflags "-X main.BuildDate=`date +%Y%m%d-%H%M%S`" $(LOCATED)
 	$(DEBUG_EXEC) -debug
 
