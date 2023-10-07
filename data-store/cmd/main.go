@@ -31,7 +31,7 @@ func main() {
 		exitStatus  int
 	)
 
-	l.Debug("Debug mode enabled")
+	l.Debug("debug mode enabled")
 
 	sdb, err := dbclient.Open(ctx, l)
 	if err != nil {
@@ -43,10 +43,6 @@ func main() {
 		l.Fatal("pinging db", zap.Error(err))
 	}
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGTERM)
-	signal.Notify(c, syscall.SIGINT)
-
 	store.RegisterDataStoreServer(server, &DataStore{})
 
 	lis, err := net.Listen("tcp4", ":8080")
@@ -57,6 +53,10 @@ func main() {
 
 	l.Info("serving", zap.String("addr", lis.Addr().String()))
 
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGTERM)
+	signal.Notify(c, syscall.SIGINT)
+
 	go func() {
 		<-c
 		l.Info("got signal SIGTERM")
@@ -64,6 +64,7 @@ func main() {
 		cancel()
 
 		server.GracefulStop()
+		sdb.Close()
 		l.Info("graceful shutdown complete. Bye")
 	}()
 

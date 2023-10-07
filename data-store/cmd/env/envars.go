@@ -23,7 +23,7 @@ func init() {
 
 // GetOrPanic returns the value of the environment variable
 // or panics if the variable is not set.
-// This should only during initialization, not during runtime.
+// This should only be used during initialization, not during runtime.
 func GetOrPanic(key string) string {
 	val, ok := EnvVar[key]
 	if !ok {
