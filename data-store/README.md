@@ -6,8 +6,6 @@ $ go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@l
 ```
 
 Display version of last applied migration to databse:
-
-
 ```bash
 $ migrate \
     -path ./db-client/migrations/ \

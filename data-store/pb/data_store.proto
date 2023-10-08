@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-option go_package = "github.com/Veermove/zpi/store";
+option go_package = "github.com/Veermove/zpi/data-store";
 
-package store;
+package data_store;
 
 
 service DataStore {

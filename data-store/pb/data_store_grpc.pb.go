@@ -4,7 +4,7 @@
 // - protoc             v3.14.0
 // source: pb/data_store.proto
 
-package store
+package data_store
 
 import (
 	context "context"
@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	DataStore_HelloWorld_FullMethodName = "/store.DataStore/HelloWorld"
+	DataStore_HelloWorld_FullMethodName = "/data_store.DataStore/HelloWorld"
 )
 
 // DataStoreClient is the client API for DataStore service.
@@ -96,7 +96,7 @@ func _DataStore_HelloWorld_Handler(srv interface{}, ctx context.Context, dec fun
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var DataStore_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "store.DataStore",
+	ServiceName: "data_store.DataStore",
 	HandlerType: (*DataStoreServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -13,7 +13,7 @@ var EnvVar map[string]string
 func init() {
 	EnvVar = make(map[string]string)
 	for _, line := range strings.Split(vars, "\n") {
-		if len(line) == 0 {
+		if len(line) != 2 {
 			continue
 		}
 		kv := strings.Split(line, "=")
