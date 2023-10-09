@@ -1,5 +1,7 @@
 version: '3.8'
+
 services:
+
   db:
     image: postgres:13-alpine
     container_name: pgstore
@@ -10,9 +12,22 @@ services:
       - POSTGRES_PASSWORD=${PG_STORE_PASSWORD}
       - POSTGRES_DB=${PG_STORE_DATABASE}
     ports:
-      - '5431:5432'
+      - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
+  
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    restart: on-failure
+    ports:
+      - 3000:80
+    networks:
+        - full-stack-app
+
 volumes:
   db:
     driver: local
+
+networks:
+  full-stack-app:
