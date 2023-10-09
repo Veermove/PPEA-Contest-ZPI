@@ -65,6 +65,8 @@ yarn-error.log*
 
 **/*.bak_**
 
+**/data_store
+
 # Next.JS files
 .next/
 next-env.d.ts
