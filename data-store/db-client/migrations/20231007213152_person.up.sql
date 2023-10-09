@@ -19,7 +19,6 @@ create table person.awards_representative (
 create table person.jury_member (
     jury_member_id int generated always as identity primary key,
     person_id      int not null,
-    submission_id  int not null,
 
     constraint jury_member_person_fk
         foreign key (person_id) references person.base(person_id)
