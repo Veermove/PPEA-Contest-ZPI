@@ -36,9 +36,10 @@
     * osoba z uprawnieniami do oceny prac konkursowych;
     * rozróżniamy:
         * przewodniczącego Jury;
-        * rozróżniamy zwykłych członków Jury;
+        * zwykłych członków Jury;
 3. Asesor:
-    * może być asesorem **wiodącym** dla danego zgłoszenia projektu (0, 1 lub więcej zgłoszeń projektów).
+    * może być przypisany do oceny co najwyżej jednego zgłoszenia projektu w danej edycji
+    * może pełnić funkcję asesora wiodącego
 
 4. Uczestnik/Aplikant:
     * osoba zarządzająca całym zgłoszeniem projektu;
