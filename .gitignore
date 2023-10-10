@@ -20,7 +20,8 @@ public/css/main.css
 coverage
 
 # API keys and secrets
-.env
+# I know, but now we are collecting important parameters, so env stays in repo
+# .env
 
 # Dependency directory
 node_modules
