@@ -9,6 +9,7 @@ create type project.state as enum (
 );
 
 create type project.rating_type as enum (
+    'individual'
     'initial',
     'final'
 );
