@@ -65,8 +65,9 @@ create table edition.pem_criterion (
     "contest_id"       int  not null,
     "name"             text not null,
     "description"      text not null,
+    "area"             text not null,
     "criteria"         text not null,
-    "subcriteria"      text not null,
+    "subcriteria"      text,
 
     constraint pem_criterion_contest_fk
         foreign key (contest_id) references edition.contest(contest_id)

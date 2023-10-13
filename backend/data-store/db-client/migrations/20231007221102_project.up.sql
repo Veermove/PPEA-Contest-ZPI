@@ -105,24 +105,38 @@ create table project.rating (
     "rating_id"     int                 generated always as identity primary key,
     "submission_id" int                 not null,
     "assessor_id"   int                 not null,
-    "criterion_id"  int                 not null,
-    "points"        int                 not null,
     "is_draft"      boolean             not null,
     "type"          project.rating_type not null,
-    "justification" text,
 
     constraint rating_submission_fk
         foreign key (submission_id) references project.submission(submission_id),
 
     constraint rating_assessor_fk
         foreign key (assessor_id) references person.assessor(assessor_id),
-
-    constraint rating_criterion_fk
-        foreign key (criterion_id) references edition.pem_criterion(pem_criterion_id)
 );
 
 create index rating_submission_id_idx
     on project.rating(submission_id);
+
+-- ocena_czastkowa_PEM
+create table project.partial_rating (
+    "partial_rating_id"     int generated always as identity primary key,
+    "rating_id"             int not null,
+    "last_modified_by_id"   int not null,
+    "criterion_id"          int not null,
+    "points"                int not null,
+    "justification"         text not null,
+    "last_modified"         date,
+
+    constraint rating_partial_rating_fk
+        foreign key (rating_id) references project.rating(rating_id),
+
+    constraint assessor_partial_rating_fk
+        foreign key (last_modified_by_id) references person.assessor(assessor_id),
+
+    constraint pem_cirterion_partial_rating_fk
+        foreign key (criterion_id) references edition.pem_criterion(pem_criterion_id)
+);
 
 --pytanie_jury
 create table project.jury_question (
