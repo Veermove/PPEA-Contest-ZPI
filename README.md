@@ -1,3 +1,9 @@
+# ZPI Project
+## Polish Project Excellence Award
+Implementation of basic functions.
+
+## Instruction for database
+
 ### Prerequisites
 - docker
 - docker-compose
