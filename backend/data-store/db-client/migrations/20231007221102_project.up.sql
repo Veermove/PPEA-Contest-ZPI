@@ -112,7 +112,7 @@ create table project.rating (
         foreign key (submission_id) references project.submission(submission_id),
 
     constraint rating_assessor_fk
-        foreign key (assessor_id) references person.assessor(assessor_id),
+        foreign key (assessor_id) references person.assessor(assessor_id)
 );
 
 create index rating_submission_id_idx
