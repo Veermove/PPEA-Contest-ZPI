@@ -1,6 +1,6 @@
-create schema utils
+create schema core
 
-create table editable(
+create table core.editable(
     "modified"          timestamp not null,
     "modified_by_id"    int not null,
 
