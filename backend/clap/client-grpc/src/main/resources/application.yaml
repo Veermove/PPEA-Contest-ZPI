@@ -1,0 +1,7 @@
+grpc:
+  client:
+    myService:
+      address: static://localhost:9000
+      negotiationType: plaintext
+server:
+  port: 9001
