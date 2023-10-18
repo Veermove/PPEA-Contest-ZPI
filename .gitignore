@@ -27,7 +27,7 @@ node_modules
 bower_components
 
 # Editors
-.idea
+**/.idea
 .code
 *.iml
 
@@ -70,3 +70,9 @@ yarn-error.log*
 # Next.JS files
 .next/
 next-env.d.ts
+
+# Gradle files
+**/.gradle
+**/build
+**/gradle
+**/.iml
