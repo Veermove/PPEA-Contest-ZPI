@@ -2,7 +2,6 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/authContext";
-import AppNavbar from "../components/navbar";
 
 function Page() {
   const { user } = useAuthContext()
@@ -16,7 +15,7 @@ function Page() {
 
   return (
     <>
-      <h1>Only logged in users can view this page</h1>
+      <h1>xyz</h1>
     </>
   );
 }

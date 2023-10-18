@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import { useRouter } from 'next/navigation'
-import signUp from "../../services/firebase/auth/signup";
+import signUp from "../../../services/firebase/auth/signup";
 import { useAuthContext } from "@/context/authContext";
 
 function Page() {

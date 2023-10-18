@@ -1,10 +1,15 @@
+'use client'
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/authContext";
 import { Navbar, Nav } from "react-bootstrap";
 import { logout } from "@/services/firebase/auth/logout";
+import { Trans } from "react-i18next";
+import { locales } from "@/app/i18n/settings";
+import Link from "next/link";
+import { useTranslation } from "@/app/i18n/client";
 
-function AppNavbar() {
+function AppNavbar({lng}: {lng: string})  {
   const { user } = useAuthContext()
   const router = useRouter()
 
@@ -19,6 +24,8 @@ function AppNavbar() {
     return router.push("/signin")
   }
 
+  const { t } = useTranslation(lng, 'navbar')
+
   return (
     <Navbar bg="light" expand="lg" className="px-4 py-3">
       <Navbar.Brand href="/" className="d-flex align-items-center">
@@ -31,6 +38,19 @@ function AppNavbar() {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto d-flex align-items-center">
         </Nav>
+        <Trans i18nKey="languageSwitcher" t={t}>
+        S witch from <strong>{{lng}}</strong> to:{' '}
+      </Trans>
+      {locales.filter((l) => lng !== l).map((l, index) => {
+        return (
+          <span key={l}>
+            {index > 0 && (' or ')}
+            <Link href={`/${l}`}>
+              {l}
+            </Link>
+          </span>
+        )
+      })}
         <Nav className="d-flex align-items-center">
           {
             user ? (
