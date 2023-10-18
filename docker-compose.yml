@@ -24,6 +24,15 @@ services:
       - 3000:3000
     networks:
         - full-stack-app
+  
+  clap:
+    container_name: clap
+    build: ./backend/clap/clap
+    restart: on-failure
+    ports:
+      - 8000:8000
+    networks:
+      - full-stack-app
 
 volumes:
   db:
