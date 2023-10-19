@@ -5,7 +5,7 @@ import React from 'react'
 import AppNavbar from '../../components/navbar';
 import { AuthContextProvider } from '@/context/authContext';
 
-export default function RootLayout({ children }: { children: React.ReactNode}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html>
       <head />

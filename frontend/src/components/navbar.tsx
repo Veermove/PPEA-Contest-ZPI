@@ -1,17 +1,25 @@
 'use client'
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useParams } from "next/navigation";
 import { useAuthContext } from "@/context/authContext";
-import { Navbar, Nav } from "react-bootstrap";
+import { Navbar, Nav, Dropdown } from "react-bootstrap";
 import { logout } from "@/services/firebase/auth/logout";
-import { Trans } from "react-i18next";
 import { fallbackLocale, locales } from "@/app/i18n/settings";
-import Link from "next/link";
 import { useTranslation } from "@/app/i18n/client";
 
-function AppNavbar({lng}: {lng: string})  {
+function AppNavbar()  {
   const { user } = useAuthContext()
   const router = useRouter()
+  const params = useParams()
+  const locale = (typeof params.locale === 'object' ? params.locale[0] : params.locale) 
+    || fallbackLocale
+  const pathname = usePathname()
+
+  const handleLocaleSwitch = (newLocale: string): void => {
+    const newPathname = pathname.replace(/^\/[^\/]+/, `/${newLocale}`);
+    console.log('newPathname', newPathname)
+    return router.push(newPathname);
+  }
 
   const handleLogout = async () => {
     try {
@@ -21,10 +29,10 @@ function AppNavbar({lng}: {lng: string})  {
       console.error('Unable to logout:' + err.message)
     }
 
-    return router.push("/signin")
+    return router.push("/")
   }
 
-  const { t } = useTranslation(lng, 'navbar')
+  const { t } = useTranslation(locale, 'navbar')
 
   return (
     <Navbar bg="light" expand="lg" className="px-4 py-3">
@@ -38,19 +46,16 @@ function AppNavbar({lng}: {lng: string})  {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto d-flex align-items-center">
         </Nav>
-        <Trans i18nKey="languageSwitcher" t={t}>
-        Switch from <strong>{{lng}}</strong> to:{' '}
-      </Trans>
-      {locales.filter((l) => lng !== l).map((l, index) => {
-        return (
-          <span key={l}>
-            {index > 0 && (' or ')}
-            <Link href={`/${l}`}>
-              {l}
-            </Link>
-          </span>
-        )
-      })}
+        <Dropdown>
+        <Dropdown.Toggle variant="success" id="dropdown-secondary">
+          {t('selectLanguage')}
+        </Dropdown.Toggle>
+      <Dropdown.Menu>
+        {locales.map(locale => (
+          <Dropdown.Item key={locale} onClick={() => handleLocaleSwitch(locale)}>{t(locale)}</Dropdown.Item>
+        ))}
+      </Dropdown.Menu>
+    </Dropdown>
         <Nav className="d-flex align-items-center">
           {
             user ? (
@@ -63,8 +68,8 @@ function AppNavbar({lng}: {lng: string})  {
               </>
             ) : (
               <>
-                <Nav.Link href={`/${lng || fallbackLocale}/signin`} className="text-dark">
-                  Sign in
+                <Nav.Link href={`/${locale || fallbackLocale}/signin`} className="text-dark">
+                  {t('signIn')}
                 </Nav.Link>
               </>
             )

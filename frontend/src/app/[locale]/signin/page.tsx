@@ -1,17 +1,20 @@
 'use client'
 import React from "react";
 import signIn from "@/services/firebase/auth/signin";
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useAuthContext } from "@/context/authContext";
 import { useTranslation } from "@/app/i18n/client";
 
 const EMAIL_REGEX = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
 
-function Page({lng}: {lng: string}) {
+function Page() {
   const router = useRouter()
   const { user } = useAuthContext();
+  const {locale} = useParams();
+  const lang = typeof locale === 'object' ? locale[0] : locale
 
   if (!!user) {
+    console.log('user logged in')
     router.push("/")
   }
 
@@ -19,7 +22,7 @@ function Page({lng}: {lng: string}) {
   const [password, setPassword] = React.useState('')
   const [error, setError] = React.useState('')
 
-  const { t } = useTranslation(lng, 'signin')
+  const { t } = useTranslation(lang, 'signin')
 
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()

@@ -1,3 +1,6 @@
 {
-    "languageSwitcher": "Switch from <1>{{lng}}</1> to: "
+    "selectLanguage": "Select Language",
+    "pl": "Polish",
+    "en": "English",
+    "signIn": "Sign In"
 }

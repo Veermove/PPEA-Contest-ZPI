@@ -1,23 +1,17 @@
 'use client'
-import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useAuthContext } from "@/context/authContext";
 
 function Page() {
   const { user } = useAuthContext()
   const router = useRouter()
-
-  console.log(user);
-
-  React.useEffect(() => {
-    if (user == null) router.push("/signin")
-  }, [user])
-
-  return (
-    <>
-      <h1>xyz</h1>
-    </>
-  );
+  const params = useParams()
+  const locale = params.locale
+  if (user) {
+    router.push(`${locale}/dashboard`)
+  } else {
+    router.push(`${locale}/signin`)
+  }
 }
 
 export default Page;
