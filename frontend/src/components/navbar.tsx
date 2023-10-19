@@ -5,7 +5,7 @@ import { useAuthContext } from "@/context/authContext";
 import { Navbar, Nav } from "react-bootstrap";
 import { logout } from "@/services/firebase/auth/logout";
 import { Trans } from "react-i18next";
-import { locales } from "@/app/i18n/settings";
+import { fallbackLocale, locales } from "@/app/i18n/settings";
 import Link from "next/link";
 import { useTranslation } from "@/app/i18n/client";
 
@@ -39,7 +39,7 @@ function AppNavbar({lng}: {lng: string})  {
         <Nav className="mr-auto d-flex align-items-center">
         </Nav>
         <Trans i18nKey="languageSwitcher" t={t}>
-        S witch from <strong>{{lng}}</strong> to:{' '}
+        Switch from <strong>{{lng}}</strong> to:{' '}
       </Trans>
       {locales.filter((l) => lng !== l).map((l, index) => {
         return (
@@ -63,9 +63,7 @@ function AppNavbar({lng}: {lng: string})  {
               </>
             ) : (
               <>
-                <Nav.Link href="/signup" className="text-dark">
-                  Sign up
-                </Nav.Link><Nav.Link href="/signin" className="text-dark">
+                <Nav.Link href={`/${lng || fallbackLocale}/signin`} className="text-dark">
                   Sign in
                 </Nav.Link>
               </>
