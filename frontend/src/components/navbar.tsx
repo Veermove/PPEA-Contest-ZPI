@@ -38,9 +38,15 @@ function AppNavbar() {
   return (
     <Navbar bg="light" expand="lg" className="px-4 py-3">
       <Navbar.Brand href="/" className="d-flex align-items-center">
-        <h4><span className="font-bold">PPEA</span><span className="d-none d-lg-inline"> - Polish Project Excellence Award</span></h4>
+        <img
+          src="/img/ppea-logo.png"
+          height="60"
+          width="120"
+          className="d-inline-block align-top"
+          alt="PPEA logo"
+        />
       </Navbar.Brand>
-      <Navbar.Text>
+      <Navbar.Text className="mx-3">
         <h5>Edition XXX</h5>
       </Navbar.Text>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
