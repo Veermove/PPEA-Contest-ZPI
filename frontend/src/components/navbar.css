@@ -1,0 +1,10 @@
+.btn-language {
+    color: gray;
+    background-color: #fff;
+    border-color: gray; /*set the color you want here*/
+}
+.btn-language:hover, .btn-language:focus, .btn-language:active, .btn-language.active, .open>.dropdown-toggle.btn-language {
+    color: gray;
+    background-color: #fff;
+    border-color: gray; /*set the color you want here*/
+}

@@ -6,12 +6,13 @@ import { Navbar, Nav, Dropdown } from "react-bootstrap";
 import { logout } from "@/services/firebase/auth/logout";
 import { fallbackLocale, locales } from "@/app/i18n/settings";
 import { useTranslation } from "@/app/i18n/client";
+import './navbar.css'
 
-function AppNavbar()  {
+function AppNavbar() {
   const { user } = useAuthContext()
   const router = useRouter()
   const params = useParams()
-  const locale = (typeof params.locale === 'object' ? params.locale[0] : params.locale) 
+  const locale = (typeof params.locale === 'object' ? params.locale[0] : params.locale)
     || fallbackLocale
   const pathname = usePathname()
 
@@ -44,18 +45,18 @@ function AppNavbar()  {
       </Navbar.Text>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="mr-auto d-flex align-items-center">
+        <Nav className="d-flex align-items-center ml-auto">
+          <Dropdown className="mx-sm-auto">
+            <Dropdown.Toggle id="dropdown" className="btn-language">
+              {t('selectLanguage')}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {locales.map(locale => (
+                <Dropdown.Item key={locale} onClick={() => handleLocaleSwitch(locale)}>{t(locale)}</Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
         </Nav>
-        <Dropdown>
-        <Dropdown.Toggle variant="success" id="dropdown-secondary">
-          {t('selectLanguage')}
-        </Dropdown.Toggle>
-      <Dropdown.Menu>
-        {locales.map(locale => (
-          <Dropdown.Item key={locale} onClick={() => handleLocaleSwitch(locale)}>{t(locale)}</Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
-    </Dropdown>
         <Nav className="d-flex align-items-center">
           {
             user ? (

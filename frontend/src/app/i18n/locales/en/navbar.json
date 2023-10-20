@@ -2,5 +2,6 @@
     "selectLanguage": "Select Language",
     "pl": "Polish",
     "en": "English",
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "logout": "Logout"
 }
