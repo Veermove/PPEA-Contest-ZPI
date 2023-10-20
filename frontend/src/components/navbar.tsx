@@ -70,7 +70,7 @@ function AppNavbar() {
                 <Nav.Link href="/" className="text-dark">
                   {user?.providerData[0].email}
                 </Nav.Link><Nav.Link className="text-dark" onClick={handleLogout}>
-                  Logout
+                  {t('logout')}
                 </Nav.Link>
               </>
             ) : (
