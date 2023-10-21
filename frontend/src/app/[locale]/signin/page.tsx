@@ -14,7 +14,6 @@ function Page() {
   const lang = typeof locale === 'object' ? locale[0] : locale
 
   if (!!user) {
-    console.log('user logged in')
     router.push("/")
   }
 
@@ -34,7 +33,7 @@ function Page() {
 
     try {
       await signIn(email, password);
-      return router.push("/")
+      return router.push(`/${lang}/dashboard`)
     } catch (error) {
       const err = error as Error
       setError(err.message)
