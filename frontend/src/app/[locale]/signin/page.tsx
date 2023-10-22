@@ -10,7 +10,7 @@ const EMAIL_REGEX = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
 function Page() {
   const router = useRouter()
   const { user } = useAuthContext();
-  const {locale} = useParams();
+  const { locale } = useParams();
   const lang = typeof locale === 'object' ? locale[0] : locale
 
   if (!!user) {
@@ -20,6 +20,7 @@ function Page() {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [error, setError] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
 
   const { t } = useTranslation(lang, 'signin')
 
@@ -32,18 +33,32 @@ function Page() {
     }
 
     try {
+      setLoading(true)
+      setError('')
       await signIn(email, password);
       return router.push(`/${lang}/dashboard`)
     } catch (error) {
       const err = error as Error
       setError(err.message)
       return console.log(error)
+    } finally {
+      setLoading(false)
     }
 
   }
   return (
-    <div className="d-flex justify-content-center align-items-center h-100 mt-5">
+    <div className="d-flex justify-content-center align-items-center h-100 mt-3">
       <div className="form-wrapper p-5">
+        <div className="d-flex justify-content-center">
+        <img
+          src="/img/ppea-logo.png"
+          height="75"
+          width="150"
+          className="d-inline-block align-top mb-5"
+          alt="PPEA logo"
+        />
+        </div>
+
         <h1 className="text-center mb-4">{t('signIn')}</h1>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleForm} className="form">
@@ -62,7 +77,7 @@ function Page() {
           <div className="form-group">
             <label htmlFor="password">{t('password')}</label>
             <input
-              onChange={(e) => {setPassword(e.target.value)}}
+              onChange={(e) => { setPassword(e.target.value) }}
               required
               type="password"
               name="password"
@@ -71,9 +86,17 @@ function Page() {
               placeholder={t('password')}
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100 mt-3">
-            {t('signIn')}
-          </button>
+          {loading ? (
+            <div className="d-flex justify-content-center mt-3">
+              <div className="spinner-border text-primary" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <button type="submit" className="btn btn-primary w-100 mt-3">
+              {t('signIn')}
+            </button>
+          )}
         </form>
       </div>
     </div>
