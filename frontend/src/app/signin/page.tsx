@@ -1,9 +1,10 @@
 'use client'
-import React from "react";
-import signIn from "@/services/firebase/auth/signin";
-import { useRouter } from 'next/navigation'
-import { useAuthContext } from "@/context/authContext";
+
 import { useTranslation } from "@/app/i18n/client";
+import { useAuthContext } from "@/context/authContext";
+import signIn from "@/services/firebase/auth/signin";
+import { useRouter } from 'next/navigation';
+import React from "react";
 
 const EMAIL_REGEX = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
 

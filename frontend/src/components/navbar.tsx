@@ -1,12 +1,12 @@
 'use client'
-import React from "react";
-import { useRouter, usePathname, useParams } from "next/navigation";
-import { useAuthContext } from "@/context/authContext";
-import { Navbar, Nav, Dropdown } from "react-bootstrap";
-import { logout } from "@/services/firebase/auth/logout";
+
+import { changeLanguage, useTranslation } from "@/app/i18n/client";
 import { locales } from "@/app/i18n/settings";
-import { useTranslation, changeLanguage } from "@/app/i18n/client";
-import './navbar.css'
+import { useAuthContext } from "@/context/authContext";
+import { logout } from "@/services/firebase/auth/logout";
+import { useRouter } from "next/navigation";
+import { Dropdown, Nav, Navbar } from "react-bootstrap";
+import './navbar.css';
 
 function AppNavbar() {
   const { user } = useAuthContext()

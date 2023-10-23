@@ -1,10 +1,11 @@
 'use client'
-import { Col, Container, Row } from 'react-bootstrap';
-import { FaRegTimesCircle, FaRegListAlt, FaUserPlus, FaRegCheckCircle, FaCommentDots } from 'react-icons/fa';
-import { LuFolderEdit } from 'react-icons/lu';
+
 import { useTranslation } from '@/app/i18n/client';
-import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/context/authContext';
+import { useRouter } from 'next/navigation';
+import { Col, Container, Row } from 'react-bootstrap';
+import { FaCommentDots, FaRegCheckCircle, FaRegListAlt, FaRegTimesCircle, FaUserPlus } from 'react-icons/fa';
+import { LuFolderEdit } from 'react-icons/lu';
 
 function Dashboard() {
   const { t } = useTranslation('dashboard');

@@ -1,6 +1,7 @@
 'use client'
-import { redirect } from "next/navigation";
+
 import { useAuthContext } from "@/context/authContext";
+import { redirect } from "next/navigation";
 
 function Page() {
   const { user } = useAuthContext()
