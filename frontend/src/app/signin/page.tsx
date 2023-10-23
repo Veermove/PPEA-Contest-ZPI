@@ -23,6 +23,17 @@ function Page() {
 
   const { t } = useTranslation('signin')
 
+  const translateSigninError = (error: Error) => {
+    if (error.message.includes('invalid-login-credentials')) {
+      return t('invalidCredentialsError')
+    }
+    else if (error.message.includes('too-many-requests')) {
+      return t('tooManyRequestsError')
+    } else {
+      return t('defaultError')
+    }
+  }
+
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -35,10 +46,10 @@ function Page() {
       setLoading(true)
       setError('')
       await signIn(email, password);
-      return router.push(`/dashboard`)
+      return router.push('/dashboard')
     } catch (error) {
       const err = error as Error
-      setError(err.message)
+      setError(translateSigninError(err))
       return console.log(error)
     } finally {
       setLoading(false)
@@ -49,13 +60,13 @@ function Page() {
     <div className="d-flex justify-content-center align-items-center h-100 mt-3">
       <div className="form-wrapper p-5">
         <div className="d-flex justify-content-center">
-        <img
-          src="/img/ppea-logo.png"
-          height="75"
-          width="150"
-          className="d-inline-block align-top mb-5"
-          alt="PPEA logo"
-        />
+          <img
+            src="/img/ppea-logo.png"
+            height="75"
+            width="150"
+            className="d-inline-block align-top mb-5"
+            alt="PPEA logo"
+          />
         </div>
 
         <h1 className="text-center mb-4 text-purple">{t('signIn')}</h1>

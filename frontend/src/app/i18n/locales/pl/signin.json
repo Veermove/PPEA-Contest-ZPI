@@ -2,5 +2,8 @@
     "signIn": "Zaloguj się",
     "email": "Email",
     "password": "Hasło",
-    "incorrectEmail": "Niepoprawny format email"
+    "incorrectEmail": "Niepoprawny format email",
+    "invalidCredentialsError": "Niepoprawny email i/lub hasło.",
+    "tooManyRequestsError": "Zbyt dużo prób logowania. Spróbuj ponownie za kilka sekund.",
+    "defaultError": "Wystąpił błąd. Spróbuj ponownie."
 }
