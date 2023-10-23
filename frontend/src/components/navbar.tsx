@@ -47,7 +47,7 @@ function AppNavbar() {
         />
       </Navbar.Brand>
       <Navbar.Text className="mx-3">
-        <h5>Edition XXX</h5>
+        <h5 className="text-purple">Edition XXX</h5>
       </Navbar.Text>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
@@ -58,7 +58,7 @@ function AppNavbar() {
             </Dropdown.Toggle>
             <Dropdown.Menu>
               {locales.map(locale => (
-                <Dropdown.Item key={locale} onClick={() => handleLocaleSwitch(locale)}>{t(locale)}</Dropdown.Item>
+                <Dropdown.Item className="text-purple" key={locale} onClick={() => handleLocaleSwitch(locale)}>{t(locale)}</Dropdown.Item>
               ))}
             </Dropdown.Menu>
           </Dropdown>
@@ -67,15 +67,18 @@ function AppNavbar() {
           {
             user ? (
               <>
-                <Nav.Link href="/" className="text-dark">
-                  {user?.providerData[0].email}
-                </Nav.Link><Nav.Link className="text-dark" onClick={handleLogout}>
+                {user?.providerData[0].email ? (
+                  <Navbar.Text className="text-purple mx-3">
+                    {user?.providerData[0].email}
+                  </Navbar.Text>
+                ) : <></>}
+                <Nav.Link className="text-purple" onClick={handleLogout}>
                   {t('logout')}
                 </Nav.Link>
               </>
             ) : (
               <>
-                <Nav.Link href={`/${locale || fallbackLocale}/signin`} className="text-dark">
+                <Nav.Link href={`/${locale || fallbackLocale}/signin`} className="text-purple">
                   {t('signIn')}
                 </Nav.Link>
               </>

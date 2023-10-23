@@ -5,7 +5,6 @@ import { LuFolderEdit } from 'react-icons/lu';
 import { useTranslation } from '@/app/i18n/client';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuthContext } from '@/context/authContext';
-import "./page.css"
 
 function Dashboard() {
   const { locale } = useParams();
@@ -25,79 +24,79 @@ function Dashboard() {
   return (
     <Container className="py-3 mt-4">
       <Row className="my-2 p-3">
-        <Col xs={6} className="btn btn-light btn-transparent-background">
+        <Col xs={6} className="btn btn-light btn-gray">
           <Row className="justify-content-around">
             <Col xs={4}>
               <div className="d-flex align-items-center h-100">
-                <h3 align="center">{t('projectSubmissions')}</h3>
+                <h3 align="center" className="text-purple">{t('projectSubmissions')}</h3>
               </div>
             </Col>
             <Col xs={2}>
-              <LuFolderEdit size={72} />
+              <LuFolderEdit className="text-purple" size={72} />
             </Col>
           </Row>
         </Col>
-        <Col xs={6} className="btn btn-light btn-transparent-background">
+        <Col xs={6} className="btn btn-light btn-gray">
           <Row className="justify-content-around">
             <Col xs={4}>
               <div className="d-flex align-items-center h-100">
-                <h3 align="center">{t('initialRatings')}</h3>
+                <h3 align="center" className="text-purple">{t('initialRatings')}</h3>
               </div>
             </Col>
             <Col xs={2}>
-              <FaRegTimesCircle size={72} />
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-      <Row className="my-2 p-3">
-        <Col xs={6} className="btn btn-light btn-transparent-background">
-          <Row className="justify-content-around">
-            <Col xs={4}>
-              <div className="d-flex align-items-center h-100">
-                <h3 align="center">{t('PEMCriteria')}</h3>
-              </div>
-            </Col>
-            <Col xs={2}>
-              <FaRegListAlt size={72} />
-            </Col>
-          </Row>
-        </Col>
-        <Col xs={6} className="btn btn-light btn-transparent-background">
-          <Row className="justify-content-around">
-            <Col xs={4}>
-              <div className="d-flex align-items-center h-100">
-                <h3 align="center">{t('finalRatings')}</h3>
-              </div>
-            </Col>
-            <Col xs={2}>
-              <FaRegCheckCircle size={72} />
+              <FaRegTimesCircle className="text-purple" size={72} />
             </Col>
           </Row>
         </Col>
       </Row>
       <Row className="my-2 p-3">
-        <Col xs={6} className="btn btn-light btn-transparent-background">
+        <Col xs={6} className="btn btn-light btn-gray">
           <Row className="justify-content-around">
             <Col xs={4}>
               <div className="d-flex align-items-center h-100">
-                <h3 align="center">{t('individualRatings')}</h3>
+                <h3 align="center" className="text-purple">{t('PEMCriteria')}</h3>
               </div>
             </Col>
             <Col xs={2}>
-              <FaUserPlus size={72} />
+              <FaRegListAlt className="text-purple" size={72} />
             </Col>
           </Row>
         </Col>
-        <Col xs={6} className="btn btn-light btn-transparent-background">
+        <Col xs={6} className="btn btn-light btn-gray">
           <Row className="justify-content-around">
             <Col xs={4}>
               <div className="d-flex align-items-center h-100">
-                <h3 align="center">{t('studyVisits')}</h3>
+                <h3 align="center" className="text-purple">{t('finalRatings')}</h3>
               </div>
             </Col>
             <Col xs={2}>
-              <FaCommentDots size={72} />
+              <FaRegCheckCircle className="text-purple" size={72} />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      <Row className="my-2 p-3">
+        <Col xs={6} className="btn btn-light btn-gray">
+          <Row className="justify-content-around">
+            <Col xs={4}>
+              <div className="d-flex align-items-center h-100">
+                <h3 align="center" className="text-purple">{t('individualRatings')}</h3>
+              </div>
+            </Col>
+            <Col xs={2}>
+              <FaUserPlus className="text-purple" size={72} />
+            </Col>
+          </Row>
+        </Col>
+        <Col xs={6} className="btn btn-light btn-gray">
+          <Row className="justify-content-around">
+            <Col xs={4}>
+              <div className="d-flex align-items-center h-100">
+                <h3 align="center" className="text-purple">{t('studyVisits')}</h3>
+              </div>
+            </Col>
+            <Col xs={2}>
+              <FaCommentDots className="text-purple" size={72} />
             </Col>
           </Row>
         </Col>

@@ -59,11 +59,11 @@ function Page() {
         />
         </div>
 
-        <h1 className="text-center mb-4">{t('signIn')}</h1>
+        <h1 className="text-center mb-4 text-purple">{t('signIn')}</h1>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleForm} className="form">
           <div className="form-group">
-            <label htmlFor="email">{t('email')}</label>
+            <label htmlFor="email" className="text-purple">{t('email')}</label>
             <input
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -75,7 +75,7 @@ function Page() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">{t('password')}</label>
+            <label htmlFor="password" className="text-purple">{t('password')}</label>
             <input
               onChange={(e) => { setPassword(e.target.value) }}
               required
@@ -88,12 +88,12 @@ function Page() {
           </div>
           {loading ? (
             <div className="d-flex justify-content-center mt-3">
-              <div className="spinner-border text-primary" role="status">
+              <div className="spinner-border text-purple" role="status">
                 <span className="sr-only">Loading...</span>
               </div>
             </div>
           ) : (
-            <button type="submit" className="btn btn-primary w-100 mt-3">
+            <button type="submit" className="btn btn-primary w-100 mt-3 text-white">
               {t('signIn')}
             </button>
           )}
