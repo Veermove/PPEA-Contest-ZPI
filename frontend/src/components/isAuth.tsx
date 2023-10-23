@@ -8,7 +8,7 @@ function isAuth(Component: any) {
     const {user} = useAuthContext();
     useEffect(() => {
       if (!user) {
-        return redirect("/");
+        return redirect("/signin");
       }
     }, []);
 

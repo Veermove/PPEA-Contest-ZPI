@@ -3,22 +3,20 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { FaRegTimesCircle, FaRegListAlt, FaUserPlus, FaRegCheckCircle, FaCommentDots } from 'react-icons/fa';
 import { LuFolderEdit } from 'react-icons/lu';
 import { useTranslation } from '@/app/i18n/client';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/context/authContext';
 
 function Dashboard() {
-  const { locale } = useParams();
-  const lang = typeof locale === 'object' ? locale[0] : locale
-  const { t } = useTranslation(lang, 'dashboard');
+  const { t } = useTranslation('dashboard');
   const { user } = useAuthContext();
   const router = useRouter()
 
   if (!user) {
-    return router.push(`/${lang}`)
+    return router.push('/signin')
   }
 
   const handleItemClick = (path: string) => {
-    return router.push(`/${lang}/${path}`)
+    return router.push(`/${path}`)
   }
 
   return (

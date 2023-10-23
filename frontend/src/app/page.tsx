@@ -1,10 +1,14 @@
 'use client'
-import { useRouter } from "next/navigation";
-import { fallbackLocale } from "./i18n/settings";
+import { redirect } from "next/navigation";
+import { useAuthContext } from "@/context/authContext";
 
 function Page() {
-  const router = useRouter()
-  router.push(`/${fallbackLocale}`)
+  const { user } = useAuthContext()
+  if (user) {
+    return redirect(`/dashboard`)
+  } else {
+    return redirect(`/signin`)
+  }
 }
 
 export default Page;

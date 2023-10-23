@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import signIn from "@/services/firebase/auth/signin";
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useAuthContext } from "@/context/authContext";
 import { useTranslation } from "@/app/i18n/client";
 
@@ -10,10 +10,8 @@ const EMAIL_REGEX = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
 function Page() {
   const router = useRouter()
   const { user } = useAuthContext();
-  const { locale } = useParams();
-  const lang = typeof locale === 'object' ? locale[0] : locale
 
-  if (!!user) {
+  if (user) {
     router.push("/")
   }
 
@@ -22,7 +20,7 @@ function Page() {
   const [error, setError] = React.useState('')
   const [loading, setLoading] = React.useState(false)
 
-  const { t } = useTranslation(lang, 'signin')
+  const { t } = useTranslation('signin')
 
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -36,7 +34,7 @@ function Page() {
       setLoading(true)
       setError('')
       await signIn(email, password);
-      return router.push(`/${lang}/dashboard`)
+      return router.push(`/dashboard`)
     } catch (error) {
       const err = error as Error
       setError(err.message)
@@ -89,7 +87,6 @@ function Page() {
           {loading ? (
             <div className="d-flex justify-content-center mt-3">
               <div className="spinner-border text-purple" role="status">
-                <span className="sr-only">Loading...</span>
               </div>
             </div>
           ) : (

@@ -4,22 +4,16 @@ import { useRouter, usePathname, useParams } from "next/navigation";
 import { useAuthContext } from "@/context/authContext";
 import { Navbar, Nav, Dropdown } from "react-bootstrap";
 import { logout } from "@/services/firebase/auth/logout";
-import { fallbackLocale, locales } from "@/app/i18n/settings";
-import { useTranslation } from "@/app/i18n/client";
+import { locales } from "@/app/i18n/settings";
+import { useTranslation, changeLanguage } from "@/app/i18n/client";
 import './navbar.css'
 
 function AppNavbar() {
   const { user } = useAuthContext()
   const router = useRouter()
-  const params = useParams()
-  const locale = (typeof params.locale === 'object' ? params.locale[0] : params.locale)
-    || fallbackLocale
-  const pathname = usePathname()
 
   const handleLocaleSwitch = (newLocale: string): void => {
-    const newPathname = pathname.replace(/^\/[^\/]+/, `/${newLocale}`);
-    console.log('newPathname', newPathname)
-    return router.push(newPathname);
+    changeLanguage(newLocale);
   }
 
   const handleLogout = async () => {
@@ -33,7 +27,7 @@ function AppNavbar() {
     return router.push("/")
   }
 
-  const { t } = useTranslation(locale, 'navbar')
+  const { t } = useTranslation('navbar')
 
   return (
     <Navbar bg="light" expand="lg" className="px-4 py-3">
@@ -78,7 +72,7 @@ function AppNavbar() {
               </>
             ) : (
               <>
-                <Nav.Link href={`/${locale || fallbackLocale}/signin`} className="text-purple">
+                <Nav.Link href={'/signin'} className="text-purple">
                   {t('signIn')}
                 </Nav.Link>
               </>
