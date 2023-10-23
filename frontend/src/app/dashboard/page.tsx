@@ -22,7 +22,7 @@ function Dashboard() {
   return (
     <Container className="py-3 mt-4">
       <Row className="my-2 p-3">
-        <Col xs={6} className="btn btn-light btn-gray">
+        <Col xs={6} className="btn btn-light btn-gray" onClick={() => handleItemClick("/")}>
           <Row className="justify-content-around">
             <Col xs={4}>
               <div className="d-flex align-items-center h-100">
@@ -34,7 +34,7 @@ function Dashboard() {
             </Col>
           </Row>
         </Col>
-        <Col xs={6} className="btn btn-light btn-gray">
+        <Col xs={6} className="btn btn-light btn-gray" onClick={() => handleItemClick("/")}>
           <Row className="justify-content-around">
             <Col xs={4}>
               <div className="d-flex align-items-center h-100">
@@ -48,7 +48,7 @@ function Dashboard() {
         </Col>
       </Row>
       <Row className="my-2 p-3">
-        <Col xs={6} className="btn btn-light btn-gray">
+        <Col xs={6} className="btn btn-light btn-gray" onClick={() => handleItemClick("/")}>
           <Row className="justify-content-around">
             <Col xs={4}>
               <div className="d-flex align-items-center h-100">
@@ -60,7 +60,7 @@ function Dashboard() {
             </Col>
           </Row>
         </Col>
-        <Col xs={6} className="btn btn-light btn-gray">
+        <Col xs={6} className="btn btn-light btn-gray" onClick={() => handleItemClick("/")}>
           <Row className="justify-content-around">
             <Col xs={4}>
               <div className="d-flex align-items-center h-100">
@@ -74,7 +74,7 @@ function Dashboard() {
         </Col>
       </Row>
       <Row className="my-2 p-3">
-        <Col xs={6} className="btn btn-light btn-gray">
+        <Col xs={6} className="btn btn-light btn-gray" onClick={() => handleItemClick("/")}>
           <Row className="justify-content-around">
             <Col xs={4}>
               <div className="d-flex align-items-center h-100">
@@ -86,7 +86,7 @@ function Dashboard() {
             </Col>
           </Row>
         </Col>
-        <Col xs={6} className="btn btn-light btn-gray">
+        <Col xs={6} className="btn btn-light btn-gray" onClick={() => handleItemClick("/")}>
           <Row className="justify-content-around">
             <Col xs={4}>
               <div className="d-flex align-items-center h-100">

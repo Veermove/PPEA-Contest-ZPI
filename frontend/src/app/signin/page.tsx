@@ -64,6 +64,7 @@ function Page() {
             <label htmlFor="email" className="text-purple">{t('email')}</label>
             <input
               onChange={(e) => setEmail(e.target.value)}
+              value={email}
               required
               type="text"
               name="email"
@@ -76,6 +77,7 @@ function Page() {
             <label htmlFor="password" className="text-purple">{t('password')}</label>
             <input
               onChange={(e) => { setPassword(e.target.value) }}
+              value={password}
               required
               type="password"
               name="password"

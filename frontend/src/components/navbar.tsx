@@ -24,7 +24,7 @@ function AppNavbar() {
       console.error('Unable to logout:' + err.message)
     }
 
-    return router.push("/")
+    return router.push("/signin")
   }
 
   const { t } = useTranslation('navbar')
