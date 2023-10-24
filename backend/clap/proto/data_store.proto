@@ -64,7 +64,7 @@ message DetailsSubmissionResponse {
     int32        team_size   = 1;
     string       finish_date = 2;
     ProjectState status      = 3;
-    double       budget      = 4;
+    string       budget      = 4;
     string       description = 5;
 }
 
