@@ -10,6 +10,7 @@ $secondary: #849799;
 :root {
   --primary: #502C68;
   --secondary: #849799;
+  --lightgray: #A1A8B3;
 
   .btn-primary {
     @include button-variant($primary, darken($primary, 7.5%), darken($primary, 10%), lighten($primary, 5%), lighten($primary, 10%), darken($primary, 30%));
@@ -17,5 +18,13 @@ $secondary: #849799;
 
   .btn-outline-primary {
     @include button-outline-variant($primary, #222222, lighten($primary, 5%), $primary);
+  }
+
+  .btn-secondary {
+    @include button-variant($secondary, darken($secondary, 7.5%), darken($secondary, 10%), lighten($secondary, 5%), lighten($secondary, 10%), darken($secondary, 30%));
+  }
+
+  .btn-outline-secondary {
+    @include button-outline-variant($secondary, #222222, lighten($secondary, 5%), $secondary);
   }
 }

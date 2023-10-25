@@ -4,8 +4,9 @@ import { SubmissionDTO, SubmissionDetailsDTO } from "./model/submission";
 
 export class ClapApi {
     private readonly defaultHeaders: HeadersInit;
+    private readonly baseUrl = clapConfig.baseUrl;
 
-    constructor(readonly baseUrl: string, idToken: string) { 
+    constructor(idToken: string) { 
         this.defaultHeaders = buildDefaultHeaders(idToken);
     }
 

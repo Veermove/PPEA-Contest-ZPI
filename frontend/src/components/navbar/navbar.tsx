@@ -41,7 +41,7 @@ function AppNavbar() {
         />
       </Navbar.Brand>
       <Navbar.Text className="mx-3">
-        <h5 className="text-purple">Edition XXX</h5>
+        <h5 className="text-purple">Edition 2023</h5>
       </Navbar.Text>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
@@ -61,6 +61,9 @@ function AppNavbar() {
           {
             user ? (
               <>
+                <Nav.Link href="/assessor/submissions">
+                  {t('submissions')}
+                </Nav.Link>
                 {user?.providerData[0].email ? (
                   <Navbar.Text className="text-purple mx-3">
                     {user?.providerData[0].email}
@@ -72,7 +75,7 @@ function AppNavbar() {
               </>
             ) : (
               <>
-                <Nav.Link href={'/signin'} className="text-purple">
+                <Nav.Link href="/signin" className="text-purple">
                   {t('signIn')}
                 </Nav.Link>
               </>

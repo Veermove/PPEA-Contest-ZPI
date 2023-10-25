@@ -10,6 +10,7 @@ export enum RatingType {
 export interface Rating {
     ratingId: number;
     isDraft: boolean;
+    points: number;
     type: RatingType;
 }
 
