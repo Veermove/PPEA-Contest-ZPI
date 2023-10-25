@@ -27,9 +27,7 @@ services:
   
   clap:
     container_name: clap
-    build:
-      context: ./backend
-      dockerfile: dockerfile-java
+    build: ./backend/clap
     restart: on-failure
     ports:
       - 8000:8000
