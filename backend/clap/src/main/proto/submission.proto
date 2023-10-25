@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package backend.clap;
+
+import "google/protobuf/Empty.proto";
+
+option java_multiple_files = true;
+option java_outer_classname = "SubmissionProto";
+
+message Submission {
+  int32 submissionId = 1;
+  string name = 2;
+  int32 durationDays = 3;
+  int32 year = 4;
+  string ratingType = 5;
+  int32 ratingPoints = 6;
+}
+
+service SubmissionService {
+  rpc getAllSubmissions (google.protobuf.Empty) returns (SubmissionList);
+}
+
+message SubmissionList {
+  repeated Submission submissions = 1;
+}

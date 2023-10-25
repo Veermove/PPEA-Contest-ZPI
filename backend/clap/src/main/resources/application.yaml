@@ -1,6 +1,6 @@
 grpc:
   client:
-    myService:
+    submissionService:
       address: static://localhost:6565
       negotiationType: plaintext
 server:
@@ -11,5 +11,4 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://zpi-ist-fcbee.firebaseapp.com
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+          jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken%40system.gserviceaccount.com
