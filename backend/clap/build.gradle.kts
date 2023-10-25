@@ -42,7 +42,7 @@ dependencies {
     compileOnly("org.mapstruct:mapstruct:1.5.5.Final")
     testCompileOnly("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
-    testAnnotationProcessor("org.mapstruct:mapstruct- processor:1.5.5.Final")
+    testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     implementation("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 }
 

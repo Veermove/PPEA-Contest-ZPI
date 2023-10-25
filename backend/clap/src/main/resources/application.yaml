@@ -1,6 +1,6 @@
 grpc:
   client:
-    submissionService:
+    dataStore:
       address: static://localhost:6565
       negotiationType: plaintext
 server:
