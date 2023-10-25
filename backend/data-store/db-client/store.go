@@ -3,9 +3,9 @@ package dbclient
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"time"
-	envvar "zpi/data-store/cmd/env"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/zap"
@@ -22,11 +22,11 @@ type Store struct {
 
 func GetConnectionString() string {
 	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		envvar.GetOrPanic("PG_STORE_USER"),
-		envvar.GetOrPanic("PG_STORE_PASSWORD"),
-		envvar.GetOrPanic("PG_STORE_HOST"),
-		envvar.GetOrPanic("PG_STORE_PORT"),
-		envvar.GetOrPanic("PG_STORE_DATABASE"),
+		os.Getenv("PG_STORE_USER"),
+		os.Getenv("PG_STORE_PASSWORD"),
+		os.Getenv("PG_STORE_HOST"),
+		os.Getenv("PG_STORE_PORT"),
+		os.Getenv("PG_STORE_DATABASE"),
 	)
 }
 
@@ -37,11 +37,11 @@ func Open(ctx context.Context, log *zap.Logger) (*Store, error) {
 
 	var (
 		confs = strings.Join([]string{
-			fmt.Sprintf("%s=%s", "dbname", envvar.GetOrPanic("PG_STORE_DATABASE")),
-			fmt.Sprintf("%s=%s", "user", envvar.GetOrPanic("PG_STORE_USER")),
-			fmt.Sprintf("%s=%s", "password", envvar.GetOrPanic("PG_STORE_PASSWORD")),
-			fmt.Sprintf("%s=%s", "host", envvar.GetOrPanic("PG_STORE_HOST")),
-			fmt.Sprintf("%s=%s", "port", envvar.GetOrPanic("PG_STORE_PORT")),
+			fmt.Sprintf("%s=%s", "dbname", os.Getenv("PG_STORE_DATABASE")),
+			fmt.Sprintf("%s=%s", "user", os.Getenv("PG_STORE_USER")),
+			fmt.Sprintf("%s=%s", "password", os.Getenv("PG_STORE_PASSWORD")),
+			fmt.Sprintf("%s=%s", "host", os.Getenv("PG_STORE_HOST")),
+			fmt.Sprintf("%s=%s", "port", os.Getenv("PG_STORE_PORT")),
 		}, " ")
 		config, err = pgxpool.ParseConfig(confs)
 	)

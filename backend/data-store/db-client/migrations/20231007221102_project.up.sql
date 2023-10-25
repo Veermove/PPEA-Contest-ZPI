@@ -122,18 +122,17 @@ create index rating_submission_id_idx
 create table project.partial_rating (
     "partial_rating_id"     int generated always as identity primary key,
     "rating_id"             int not null,
-    -- "last_modified_by_id"   int not null,
     "criterion_id"          int not null,
+
     "points"                int not null,
     "justification"         text not null,
-    -- "last_modified"         date,
 
     constraint rating_partial_rating_fk
         foreign key (rating_id) references project.rating(rating_id),
 
     constraint pem_cirterion_partial_rating_fk
         foreign key (criterion_id) references edition.pem_criterion(pem_criterion_id)
-);
+) inherits (core.editable);
 
 --pytanie_jury
 create table project.jury_question (

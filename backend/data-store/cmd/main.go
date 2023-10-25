@@ -8,11 +8,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	_ "zpi/data-store/cmd/env"
 
-	dbclient "zpi/data-store/db-client"
+	dbclient "zpi/db-client"
 
-	store "zpi/data-store/pb"
+	store "zpi/pb"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

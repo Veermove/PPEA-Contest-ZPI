@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "bootstrap";
+
+$primary: #502C68;
+$secondary: #849799;
+
+:root {
+  --primary: #502C68;
+  --secondary: #849799;
+
+  .btn-primary {
+    @include button-variant($primary, darken($primary, 7.5%), darken($primary, 10%), lighten($primary, 5%), lighten($primary, 10%), darken($primary, 30%));
+  }
+
+  .btn-outline-primary {
+    @include button-outline-variant($primary, #222222, lighten($primary, 5%), $primary);
+  }
+}

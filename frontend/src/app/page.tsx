@@ -1,24 +1,15 @@
 'use client'
-import React from "react";
-import { useRouter } from "next/navigation";
+
 import { useAuthContext } from "@/context/authContext";
-import AppNavbar from "../components/navbar";
+import { redirect } from "next/navigation";
 
 function Page() {
   const { user } = useAuthContext()
-  const router = useRouter()
-
-  console.log(user);
-
-  React.useEffect(() => {
-    if (user == null) router.push("/signin")
-  }, [user])
-
-  return (
-    <>
-      <h1>Only logged in users can view this page</h1>
-    </>
-  );
+  if (user) {
+    return redirect(`/dashboard`)
+  } else {
+    return redirect(`/signin`)
+  }
 }
 
 export default Page;
