@@ -64,6 +64,17 @@ message DetailsSubmissionResponse {
     ProjectState status      = 3;
     string       budget      = 4;
     string       description = 5;
+    AppReport    report      = 6;
+}
+
+message AppReport {
+    bool is_draft                 = 1;
+    string report_submission_date = 2;
+    string project_goals          = 3;
+    string organisation_structure = 4;
+    string division_of_work       = 5;
+    string project_schedule       = 6;
+    string attatchments           = 7;
 }
 
 message Criterion {

@@ -2,6 +2,7 @@ package dbclient
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"os"
 	"strings"
@@ -26,6 +27,12 @@ var (
 		queries.ProjectRatingTypeIndividual: ds.RatingType_INDIVIDUAL,
 		queries.ProjectRatingTypeInitial:    ds.RatingType_INITIAL,
 		queries.ProjectRatingTypeFinal:      ds.RatingType_FINAL,
+	}
+	SubmissionStatesTypesMapping = map[queries.ProjectState]ds.ProjectState{
+		queries.ProjectStateDraft:     ds.ProjectState_DRAFT,
+		queries.ProjectStateSubmitted: ds.ProjectState_SUBMITTED,
+		queries.ProjectStateAccepted:  ds.ProjectState_ACCEPTED,
+		queries.ProjectStateRejected:  ds.ProjectState_REJECTED,
 	}
 )
 
@@ -75,6 +82,46 @@ func Open(ctx context.Context, log *zap.Logger) (*Store, error) {
 	}
 
 	return store, nil
+}
+
+func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId int32) (*ds.DetailsSubmissionResponse, error) {
+	details, err := queries.New(st.Pool).GetSubmissionDetails(ctx, submissionId)
+	if err == pgx.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	budget, err := details.Budget.EncodeText(nil, []byte{})
+
+	if err != nil { // is it normal that column is in undefined state?
+		budget = []byte{} // hope so
+	}
+
+	var submissionDate string
+	if details.ReportSubmissionDate.Valid && details.ReportSubmissionDate.Time != (time.Time{}) {
+		submissionDate = details.ReportSubmissionDate.Time.Format(time.RFC3339)
+	} else {
+		submissionDate = ""
+	}
+
+	return &ds.DetailsSubmissionResponse{
+		TeamSize:    details.TeamSize,
+		FinishDate:  details.FinishDate.Format(time.RFC3339),
+		Status:      SubmissionStatesTypesMapping[details.Status],
+		Budget:      string(budget),
+		Description: details.Description,
+		Report: &ds.AppReport{
+			IsDraft:               details.IsDraft,
+			ReportSubmissionDate:  submissionDate,
+			ProjectGoals:          Denullify(details.ProjectGoals),
+			OrganisationStructure: Denullify(details.OrganisationStructure),
+			DivisionOfWork:        Denullify(details.DivisionOfWork),
+			ProjectSchedule:       Denullify(details.ProjectSchedule),
+			Attatchments:          Denullify(details.Attatchments),
+		},
+	}, nil
 }
 
 func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorId int32) (*ds.SubmissionsResponse, error) {
@@ -141,6 +188,13 @@ func MapAssessorsFromSql(ass []queries.GetAssessorsForSubmissionRow) (asses []*d
 		})
 	}
 	return
+}
+
+func Denullify(s sql.NullString) string {
+	if !s.Valid {
+		return ""
+	}
+	return s.String
 }
 
 func (st *Store) Close() {

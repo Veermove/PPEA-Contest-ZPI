@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	dbclient "zpi/db-client"
 	ds "zpi/pb"
 
@@ -17,14 +18,20 @@ type DataStore struct {
 
 var _ ds.DataStoreServer = (*DataStore)(nil)
 
-func (s *DataStore) GetSubmissions(context.Context, *ds.SubmissionRequest) (*ds.SubmissionsResponse, error) {
-	panic("TODO: GetSubmissions")
+func (s *DataStore) GetSubmissions(ctx context.Context, req *ds.SubmissionRequest) (*ds.SubmissionsResponse, error) {
+	if req.GetAssessorId() == 0 {
+		return nil, fmt.Errorf("assessor id is required")
+	}
+	return s.Db.GetSubmissionsByAssessor(ctx, req.GetAssessorId())
 }
 
-func (s *DataStore) GetSubmissionDetails(context.Context, *ds.DetailsSubmissionRequest) (*ds.DetailsSubmissionResponse, error) {
-	panic("TODO: GetSubmissionDetails")
+func (s *DataStore) GetSubmissionDetails(ctx context.Context, req *ds.DetailsSubmissionRequest) (*ds.DetailsSubmissionResponse, error) {
+	if req.GetSubmissionId() == 0 {
+		return nil, fmt.Errorf("submission id is required")
+	}
+	return s.Db.GetSubmissionDetails(ctx, req.GetSubmissionId())
 }
 
-func (s *DataStore) GetSubmissionRatings(context.Context, *ds.RatingsSubmissionRequest) (*ds.RatingsSubmissionResponse, error) {
+func (s *DataStore) GetSubmissionRatings(ctx context.Context, req *ds.RatingsSubmissionRequest) (*ds.RatingsSubmissionResponse, error) {
 	panic("TODO: GetSubmissionRatings")
 }
