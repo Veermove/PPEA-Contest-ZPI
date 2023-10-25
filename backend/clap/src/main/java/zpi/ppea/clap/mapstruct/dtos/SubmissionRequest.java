@@ -9,11 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubmissionDTO {
-    private Integer id;
-    private String name;
-    private Integer durationDays;
-    private Integer year;
-    private String ratingType;
-    private Integer ratingPoints;
+public class SubmissionRequest {
+    private int assessorId;
 }
