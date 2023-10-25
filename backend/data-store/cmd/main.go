@@ -42,7 +42,10 @@ func main() {
 		l.Fatal("pinging db", zap.Error(err))
 	}
 
-	store.RegisterDataStoreServer(server, &DataStore{})
+	store.RegisterDataStoreServer(server, &DataStore{
+		Log: l,
+		Db:  sdb,
+	})
 
 	lis, err := net.Listen("tcp4", ":8080")
 

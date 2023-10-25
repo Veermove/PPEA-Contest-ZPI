@@ -7,13 +7,26 @@ import (
 	"strings"
 	"time"
 
+	ds "zpi/pb"
+	queries "zpi/sql"
+
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/sourcegraph/conc/iter"
 	"go.uber.org/zap"
 )
 
 const (
 	MaxPgConn = 10
 	MinPgConn = 3
+)
+
+var (
+	RatingTypesMapping = map[queries.ProjectRatingType]ds.RatingType{
+		queries.ProjectRatingTypeIndividual: ds.RatingType_INDIVIDUAL,
+		queries.ProjectRatingTypeInitial:    ds.RatingType_INITIAL,
+		queries.ProjectRatingTypeFinal:      ds.RatingType_FINAL,
+	}
 )
 
 type Store struct {
@@ -62,6 +75,72 @@ func Open(ctx context.Context, log *zap.Logger) (*Store, error) {
 	}
 
 	return store, nil
+}
+
+func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorId int32) (*ds.SubmissionsResponse, error) {
+	returnVal := &ds.SubmissionsResponse{Submissions: []*ds.Submission{}}
+
+	subs, err := queries.New(st.Pool).GetSubmissionsByAssessorId(ctx, assessorId)
+
+	if err == pgx.ErrNoRows {
+		return returnVal, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	submissions, err := iter.MapErr(subs, func(subm *queries.GetSubmissionsByAssessorIdRow) (*ds.Submission, error) {
+		submission := &ds.Submission{
+			SubmissionId: subm.SubmissionID,
+			Year:         subm.Year,
+			Name:         subm.Name,
+			DurationDays: subm.DurationDays,
+		}
+
+		assessors, errAs := queries.New(st.Pool).GetAssessorsForSubmission(ctx, subm.SubmissionID)
+
+		if errAs != nil && errAs != pgx.ErrNoRows {
+			return nil, errAs
+		}
+
+		ratings, errRt := queries.New(st.Pool).GetRatingsForSubission(ctx, subm.SubmissionID)
+
+		if errRt != nil && errRt != pgx.ErrNoRows {
+			return nil, errRt
+		}
+
+		submission.Assessors = MapAssessorsFromSql(assessors)
+		submission.Ratings = MapRatingsFromSql(ratings)
+		return submission, nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return &ds.SubmissionsResponse{Submissions: submissions}, nil
+}
+
+func MapRatingsFromSql(rts []queries.GetRatingsForSubissionRow) (ratings []*ds.Rating) {
+	for _, rt := range rts {
+		ratings = append(ratings, &ds.Rating{
+			RatingId:   rt.RatingID,
+			AssessorId: rt.AssessorID,
+			IsDraft:    rt.IsDraft,
+			Type:       RatingTypesMapping[rt.Type],
+		})
+	}
+	return
+}
+
+func MapAssessorsFromSql(ass []queries.GetAssessorsForSubmissionRow) (asses []*ds.Assessor) {
+	for _, a := range ass {
+		asses = append(asses, &ds.Assessor{
+			FirstName:  a.FirstName,
+			LastName:   a.LastName,
+			AssessorId: a.AssessorID,
+		})
+	}
+	return
 }
 
 func (st *Store) Close() {

@@ -45,7 +45,7 @@ create table person.applicant (
 
 -- asesor
 create table person.assessor (
-    "assessor_id" int generated always as identity primary key,
+    "assessor_id"      int generated always as identity primary key,
     "ipma_expert_id"   int unique not null,
 
     constraint assessor_person_fk
