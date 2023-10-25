@@ -1,0 +1,9 @@
+{
+    "signIn": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "incorrectEmail": "Incorrect email",
+    "invalidCredentialsError": "Login failed, invalid email or/and password.",
+    "tooManyRequestsError": "Login failed, too many requests. Please try again in few seconds.",
+    "defaultError": "Unexpected error. Please try again."
+}

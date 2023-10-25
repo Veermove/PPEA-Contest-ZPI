@@ -1,12 +1,20 @@
-import React from "react";
-import { useRouter } from "next/navigation";
+'use client'
+
+import { changeLanguage, useTranslation } from "@/app/i18n/client";
+import { locales } from "@/app/i18n/settings";
 import { useAuthContext } from "@/context/authContext";
-import { Navbar, Nav } from "react-bootstrap";
 import { logout } from "@/services/firebase/auth/logout";
+import { useRouter } from "next/navigation";
+import { Dropdown, Nav, Navbar } from "react-bootstrap";
+import './navbar.css';
 
 function AppNavbar() {
   const { user } = useAuthContext()
   const router = useRouter()
+
+  const handleLocaleSwitch = (newLocale: string): void => {
+    changeLanguage(newLocale);
+  }
 
   const handleLogout = async () => {
     try {
@@ -19,34 +27,53 @@ function AppNavbar() {
     return router.push("/signin")
   }
 
+  const { t } = useTranslation('navbar')
+
   return (
     <Navbar bg="light" expand="lg" className="px-4 py-3">
       <Navbar.Brand href="/" className="d-flex align-items-center">
-        <h4><span className="font-bold">PPEA</span><span className="d-none d-lg-inline"> - Polish Project Excellence Award</span></h4>
+        <img
+          src="/img/ppea-logo.png"
+          height="60"
+          width="120"
+          className="d-inline-block align-top"
+          alt="PPEA logo"
+        />
       </Navbar.Brand>
-      <Navbar.Text>
-        <h5>Edition XXX</h5>
+      <Navbar.Text className="mx-3">
+        <h5 className="text-purple">Edition XXX</h5>
       </Navbar.Text>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="mr-auto d-flex align-items-center">
+        <Nav className="d-flex align-items-center ml-auto">
+          <Dropdown className="mx-sm-auto">
+            <Dropdown.Toggle id="dropdown" className="btn-language">
+              {t('selectLanguage')}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {locales.map(locale => (
+                <Dropdown.Item className="text-purple" key={locale} onClick={() => handleLocaleSwitch(locale)}>{t(locale)}</Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
         </Nav>
         <Nav className="d-flex align-items-center">
           {
             user ? (
               <>
-                <Nav.Link href="/" className="text-dark">
-                  {user?.providerData[0].email}
-                </Nav.Link><Nav.Link className="text-dark" onClick={handleLogout}>
-                  Logout
+                {user?.providerData[0].email ? (
+                  <Navbar.Text className="text-purple mx-3">
+                    {user?.providerData[0].email}
+                  </Navbar.Text>
+                ) : <></>}
+                <Nav.Link className="text-purple" onClick={handleLogout}>
+                  {t('logout')}
                 </Nav.Link>
               </>
             ) : (
               <>
-                <Nav.Link href="/signup" className="text-dark">
-                  Sign up
-                </Nav.Link><Nav.Link href="/signin" className="text-dark">
-                  Sign in
+                <Nav.Link href={'/signin'} className="text-purple">
+                  {t('signIn')}
                 </Nav.Link>
               </>
             )
