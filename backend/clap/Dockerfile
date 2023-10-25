@@ -5,15 +5,15 @@ FROM openjdk:17-jdk-slim-buster
 WORKDIR /app
 
 # Copy the Gradle wrapper files (gradlew, gradlew.bat, and the gradle wrapper properties)
-COPY clap/gradlew /app/
-COPY clap/gradlew.bat /app/
-COPY clap/gradle /app/gradle
+COPY gradlew /app/
+COPY gradlew.bat /app/
+COPY gradle /app/gradle
 
 # Copy the Gradle build files (build.gradle and settings.gradle)
-COPY clap/build.gradle.kts clap/settings.gradle.kts /app/
+COPY build.gradle.kts settings.gradle.kts /app/
 
 # Copy the entire source code
-COPY clap/src /app/src
+COPY src /app/src
 
 # Copy proto files
 COPY proto /app/src/main/proto
