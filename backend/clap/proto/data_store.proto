@@ -87,12 +87,13 @@ message Criterion {
 }
 
 message PartialRating {
-    int32  criterion_id  = 1;
-    int32  points        = 2;
-    string justification = 3;
+    int32  partial_rating_id = 1;
+    int32  criterion_id      = 2;
+    int32  points            = 3;
+    string justification     = 4;
 
-    string modified    = 4;
-    string modified_by = 5;
+    string modified          = 5;
+    int32  modified_by       = 6;
 }
 
 message AssessorRatings {
@@ -105,7 +106,7 @@ message AssessorRatings {
 message RatingsSubmissionResponse {
     repeated Criterion criteria = 1;
 
-    AssessorRatings individual = 2;
+    repeated AssessorRatings individual = 2;
     AssessorRatings initial    = 3;
     AssessorRatings final      = 4;
 }

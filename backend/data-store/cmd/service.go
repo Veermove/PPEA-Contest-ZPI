@@ -33,5 +33,8 @@ func (s *DataStore) GetSubmissionDetails(ctx context.Context, req *ds.DetailsSub
 }
 
 func (s *DataStore) GetSubmissionRatings(ctx context.Context, req *ds.RatingsSubmissionRequest) (*ds.RatingsSubmissionResponse, error) {
-	panic("TODO: GetSubmissionRatings")
+	if req.GetSubmissionId() == 0 {
+		return nil, fmt.Errorf("submission id is required")
+	}
+	return s.Db.GetSubmissionRatings(ctx, req.GetSubmissionId())
 }

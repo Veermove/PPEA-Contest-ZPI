@@ -8,7 +8,12 @@ require (
 	google.golang.org/protobuf v1.31.0
 )
 
-require github.com/sourcegraph/conc v0.3.0
+require (
+	github.com/samber/lo v1.38.1
+	github.com/sourcegraph/conc v0.3.0
+)
+
+require golang.org/x/exp v0.0.0-20230315142452-642cacee5cc0 // indirect
 
 require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
