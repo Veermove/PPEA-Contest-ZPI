@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
+import zpi.ppea.clap.dtos.RatingDto;
 import zpi.ppea.clap.dtos.SubmissionDto;
 import zpi.ppea.clap.exceptions.UserNotAuthorizedException;
 import zpi.ppea.clap.mappers.DetailedSubmissionMapper;
@@ -31,7 +32,16 @@ public class SubmissionService {
                 SubmissionRequest.newBuilder().setAssessorId(userClaims.getAssessorId()).build()
         );
 
-        return SubmissionMapper.submissionListToDtos(allSubmissionsGrpc.getSubmissionsList());
+        List<SubmissionDto> submissionDtos = SubmissionMapper.submissionListToDtos(allSubmissionsGrpc.getSubmissionsList());
+
+        // count total rating
+        submissionDtos.forEach(
+                submissionDto -> submissionDto.setTotalRating(
+                        countTotalRating(submissionDto.getSubmissionId(), submissionDto.getRatings().stream().map(RatingDto::getRatingId).toList())
+                )
+        );
+
+        return submissionDtos;
     }
 
     public DetailsSubmissionResponseDto getDetailedSubmission(Integer submissionId) {
@@ -40,6 +50,33 @@ public class SubmissionService {
         );
 
         return DetailedSubmissionMapper.mapToDto(detailsSubmissionResponse);
+    }
+
+    public Integer countTotalRating(Integer submissionId, List<Integer> ratingIds) {
+        return ratingIds.stream()
+                .map(ratingId -> getRatingPoints(submissionId, ratingId))
+                .reduce(0, Integer::sum);
+    }
+
+    public Integer getRatingPoints(Integer submissionId, Integer ratingId) {
+        var ratings = dataStoreBlockingStub.getSubmissionRatings(RatingsSubmissionRequest.newBuilder()
+                .setSubmissionId(submissionId).build());
+        var individualSum = 0;
+        for (var individual : ratings.getIndividualList()) {
+            individualSum += individual.getPartialRatingsList().stream()
+                    .filter(r -> r.getPartialRatingId() == ratingId)
+                    .map(PartialRating::getPoints).toList()
+                    .stream().reduce(0, Integer::sum);
+        }
+        Integer initial = ratings.getInitial().getPartialRatingsList().stream()
+                .filter(r -> r.getPartialRatingId() == ratingId)
+                .map(PartialRating::getPoints).toList()
+                .stream().reduce(0, Integer::sum);
+        Integer finalRate = ratings.getFinal().getPartialRatingsList().stream()
+                .filter(r -> r.getPartialRatingId() == ratingId)
+                .map(PartialRating::getPoints).toList()
+                .stream().reduce(0, Integer::sum);
+        return individualSum + initial + finalRate;
     }
 
 }

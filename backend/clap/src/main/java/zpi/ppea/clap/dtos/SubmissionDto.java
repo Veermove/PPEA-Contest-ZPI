@@ -12,10 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubmissionDto {
-    private int submissionId;
-    private int year;
+    private Integer submissionId;
+    private Integer year;
     private String name;
-    private int durationDays;
+    private Integer durationDays;
     private List<AssessorDto> assessors;
     private List<RatingDto> ratings;
+
+    private Integer totalRating;
 }

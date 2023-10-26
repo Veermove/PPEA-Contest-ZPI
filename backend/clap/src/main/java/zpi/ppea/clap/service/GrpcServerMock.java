@@ -148,7 +148,7 @@ public class GrpcServerMock extends DataStoreGrpc.DataStoreImplBase {
 
         RatingsSubmissionResponse ratingsResponse = RatingsSubmissionResponse.newBuilder()
                 .addCriteria(criterion)
-                .setIndividual(0, individualRatings)
+                .addIndividual(individualRatings)
                 .setInitial(initialRatings)
                 .setFinal(finalRatings)
                 .build();

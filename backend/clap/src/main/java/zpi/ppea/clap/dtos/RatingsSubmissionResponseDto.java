@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RatingsSubmissionResponse {
+public class RatingsSubmissionResponseDto {
     private List<CriterionDto> criteria;
     private List<AssessorRatingsDto> individual;
     private AssessorRatingsDto initial;

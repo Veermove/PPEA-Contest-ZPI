@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RatingsSubmissionRequest {
+public class RatingsSubmissionRequestDto {
     private int submissionId;
 }
