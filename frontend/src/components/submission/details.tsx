@@ -2,9 +2,9 @@ import { useTranslation } from "@/app/i18n/client";
 import { SubmissionDTO, SubmissionDetailsDTO } from "@/services/clap/model/submission";
 import { useRouter } from "next/navigation";
 import { Button, Col, Container, Row } from "react-bootstrap";
-import SubmissionAttachment from "./submissionAttachment";
-import SubmissionDescription from "./submissionDescription";
-import SubmissionDetail from "./submissionDetail";
+import SubmissionAttachment from "./attachment";
+import SubmissionDescription from "./description";
+import SubmissionDetail from "./detail";
 
 function SubmissionDetails({ submission, submissionDetails }: { submission: SubmissionDTO, submissionDetails: SubmissionDetailsDTO }) {
 
