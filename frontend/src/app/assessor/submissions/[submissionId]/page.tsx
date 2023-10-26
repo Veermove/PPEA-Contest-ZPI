@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import useSWR from 'swr';
 
-function Submission({ submissionId, submission }: { submissionId: number, submission: SubmissionDTO }) {
+function Submission({ params }: { params: {submissionId: string} }) {
     const { user } = useAuthContext()
     let clapApi: ClapApi;
 
@@ -22,14 +22,19 @@ function Submission({ submissionId, submission }: { submissionId: number, submis
         })
     })
 
-    const { data: submissionDetails, error } = useSWR<SubmissionDetailsDTO>(() => clapApi.getSubmissionDetails(submissionId))
+    const id = parseInt(params.submissionId)
+
+    const { data: submissions, error: errorA } = useSWR<SubmissionDTO[]>(() => clapApi.getSubmissions(0))
+    const { data: submissionDetails, error } = useSWR<SubmissionDetailsDTO>(() => clapApi.getSubmissionDetails(id))
+
+    const submission = submissions?.find(submission => submission.submissionId === id)
   
     if (error || !submissionDetails) {
       // TODO error handling
       console.error(error)
     }
     return (
-        <SubmissionDetails submissionDetails={submissionDetails!} submission={submission} />
+        <SubmissionDetails submissionDetails={submissionDetails!} submission={submission!} />
     );
 }
 

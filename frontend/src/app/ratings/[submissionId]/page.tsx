@@ -20,7 +20,7 @@ function sortCriteria(a: PEMCriterion, b: PEMCriterion) {
   return a.subcriteria.localeCompare(b.subcriteria)
 }
 
-function RatingsForSubmission({ submissionId, submissionName }: { submissionId: number, submissionName: string }) {
+function RatingsForSubmission({ params }: { params: {submissionId: string} }) {
   const { user } = useAuthContext()
   const { t } = useTranslation('ratings/ratingsForSubmission')
 
@@ -37,6 +37,9 @@ function RatingsForSubmission({ submissionId, submissionName }: { submissionId: 
   })
 
   // const { data: submissionRatings, error } = useSWR<RatingsDTO>(() => clapApi.getSubmissionRatings(submissionId))
+  // const { data: submissionRatings, error } = useSWR<SubmissionDetailsDTO>(() => clapApi.getSubmissionDetails(submissionId))
+
+  const submissionName = 'Test Submission Name'
 
   const error = false
   const submissionRatings: RatingsDTO = {
@@ -166,8 +169,7 @@ function RatingsForSubmission({ submissionId, submissionName }: { submissionId: 
                 ratings={[finalRating!]}
                 criteria={sortedCriteria}
                 type={RatingType.FINAL}
-              >
-              </Ratings>
+              />
             </AccordionBody>
           </AccordionItem>
         </Accordion>
@@ -183,8 +185,7 @@ function RatingsForSubmission({ submissionId, submissionName }: { submissionId: 
                 ratings={[initialRating!]}
                 criteria={sortedCriteria}
                 type={RatingType.INITIAL}
-              >
-              </Ratings>
+              />
             </AccordionBody>
           </AccordionItem>
         </Accordion>
@@ -200,8 +201,7 @@ function RatingsForSubmission({ submissionId, submissionName }: { submissionId: 
                 ratings={individualRatings}
                 criteria={sortedCriteria}
                 type={RatingType.INDIVIDUAL}
-              >
-              </Ratings>
+              />
             </AccordionBody>
           </AccordionItem>
         </Accordion>

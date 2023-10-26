@@ -18,7 +18,7 @@ function Dashboard() {
   }
 
   const handleItemClick = (path: string) => {
-    return router.push(`/${path}`)
+    return router.push(`${path}`)
   }
 
   return (
@@ -27,7 +27,7 @@ function Dashboard() {
         firstTileProps={{
           text: t('projectSubmissions'),
           Icon: LuFolderEdit,
-          onClick: () => handleItemClick("/")
+          onClick: () => handleItemClick("/assessor/submissions")
         }}
         secondTileProps={{
           text: t('initialRatings'),
