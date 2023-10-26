@@ -19,7 +19,7 @@ function SubmissionDetails({ submission, submissionDetails }: { submission: Subm
   `
 
   return (
-    <Container className="p-1 min-w-full">
+    <Container className="min-w-fit px-3 py-2">
       <Row>
         <Col>
           <Button className="btn btn-secondary m-2 px-2 text-white" onClick={() => router.push('/assessor/submissions')}>{t('back')}</Button>
@@ -39,7 +39,7 @@ function SubmissionDetails({ submission, submissionDetails }: { submission: Subm
           <SubmissionDetail value="test" name="name" valueAlignment="center" />
           <SubmissionDetail value="test" name="name" valueAlignment="left" />
           <SubmissionDetail value="test" name="name" valueAlignment="right" />
-          <SubmissionDescription title="description" description={testText} />
+          <SubmissionDescription title="testDescription" description={testText} />
         </Col>
         <Col xs={6} className="border-l-2 border-lightgray mr-0 max-w-full">
           <SubmissionAttachment url={"/test"} name={"projectGoals"} />
