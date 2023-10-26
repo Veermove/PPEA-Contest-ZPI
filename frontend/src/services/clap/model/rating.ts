@@ -20,6 +20,7 @@ export interface PartialRating {
     points: number;
     justification: string;
     lastModified: Date;
+    criterionId: number;
 }
 
 export interface RatingsDTO {
