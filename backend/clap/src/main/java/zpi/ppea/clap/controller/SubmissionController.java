@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import zpi.ppea.clap.mapstruct.dtos.SubmissionDto;
+import zpi.ppea.clap.dtos.SubmissionDto;
 import zpi.ppea.clap.service.SubmissionService;
 
 import java.util.List;

@@ -4,9 +4,9 @@ import data_store.*;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
-import zpi.ppea.clap.mapstruct.dtos.AssessorDto;
-import zpi.ppea.clap.mapstruct.dtos.RatingDto;
-import zpi.ppea.clap.mapstruct.dtos.SubmissionDto;
+import zpi.ppea.clap.dtos.AssessorDto;
+import zpi.ppea.clap.dtos.RatingDto;
+import zpi.ppea.clap.dtos.SubmissionDto;
 
 import java.util.ArrayList;
 import java.util.List;

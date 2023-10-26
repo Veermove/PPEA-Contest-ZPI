@@ -1,4 +1,4 @@
-package zpi.ppea.clap.mapstruct.dtos;
+package zpi.ppea.clap.dtos;
 
 public enum RatingType {
     INDIVIDUAL,

@@ -1,4 +1,4 @@
-package zpi.ppea.clap.mapstruct.dtos;
+package zpi.ppea.clap.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubmissionRequest {
+public class RatingDto {
+    private int ratingId;
+    private boolean isDraft;
     private int assessorId;
+    private RatingType type;
 }
