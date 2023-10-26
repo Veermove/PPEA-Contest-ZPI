@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetailsSubmissionResponse {
+public class DetailsSubmissionResponseDto {
     private int teamSize;
     private String finishDate;
     private ProjectState status;

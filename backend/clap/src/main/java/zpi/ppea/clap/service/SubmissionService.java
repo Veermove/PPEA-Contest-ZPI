@@ -4,8 +4,10 @@ import data_store.*;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
+import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
 import zpi.ppea.clap.dtos.SubmissionDto;
 import zpi.ppea.clap.exceptions.UserNotAuthorizedException;
+import zpi.ppea.clap.mappers.DetailedSubmissionMapper;
 import zpi.ppea.clap.mappers.SubmissionMapper;
 
 import java.util.List;
@@ -32,5 +34,12 @@ public class SubmissionService {
         return SubmissionMapper.submissionListToDtos(allSubmissionsGrpc.getSubmissionsList());
     }
 
+    public DetailsSubmissionResponseDto getDetailedSubmission(Integer submissionId) {
+        DetailsSubmissionResponse detailsSubmissionResponse = dataStoreBlockingStub.getSubmissionDetails(
+                DetailsSubmissionRequest.newBuilder().setSubmissionId(submissionId).build()
+        );
+
+        return DetailedSubmissionMapper.mapToDto(detailsSubmissionResponse);
+    }
 
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
 import zpi.ppea.clap.dtos.SubmissionDto;
 import zpi.ppea.clap.exceptions.UserNotAuthorizedException;
 import zpi.ppea.clap.service.SubmissionService;
@@ -21,6 +22,11 @@ public class SubmissionController {
     @GetMapping
     public ResponseEntity<List<SubmissionDto>> getSubmissions() {
         return ResponseEntity.ok(submissionService.getSubmissions());
+    }
+
+    @GetMapping("/{submissionId}")
+    public ResponseEntity<DetailsSubmissionResponseDto> getDetailedSubmission(@PathVariable Integer submissionId) {
+        return ResponseEntity.ok(submissionService.getDetailedSubmission(submissionId));
     }
 
     @ExceptionHandler(UserNotAuthorizedException.class)

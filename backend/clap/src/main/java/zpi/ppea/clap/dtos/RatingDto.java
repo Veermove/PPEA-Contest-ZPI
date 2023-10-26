@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RatingDto {
-    private int ratingId;
+    private Integer ratingId;
     private boolean isDraft;
-    private int assessorId;
+    private Integer assessorId;
     private RatingType type;
+    private Integer points;
 }

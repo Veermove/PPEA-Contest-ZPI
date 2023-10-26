@@ -13,16 +13,17 @@ public class GrpcServerMock extends DataStoreGrpc.DataStoreImplBase {
 
     @Override
     public void getUserClaims(UserRequest request, StreamObserver<UserClaims> responseObserver) {
-        responseObserver.onNext(UserClaims.newBuilder()
-                .setAssessorId(1)
-                .setFirstName("Jan")
-                .setLastName("Nowak")
-                .setPersonId(1)
-                .setApplicantId(1)
-                .setAwardsRepresentativeId(1)
-                .setIpmaExpertId(1)
-                .setJuryMemberId(1)
-                .build());
+        UserClaims userClaims = UserClaims.newBuilder()
+                .setFirstName("John")
+                .setLastName("Doe")
+                .setAssessorId(123)
+                .setPersonId(456)
+                .setAwardsRepresentativeId(789)
+                .setJuryMemberId(101)
+                .setIpmaExpertId(202)
+                .setApplicantId(303)
+                .build();
+        responseObserver.onNext(userClaims);
         responseObserver.onCompleted();
     }
 
@@ -72,11 +73,88 @@ public class GrpcServerMock extends DataStoreGrpc.DataStoreImplBase {
 
     @Override
     public void getSubmissionDetails(DetailsSubmissionRequest request, StreamObserver<DetailsSubmissionResponse> responseObserver) {
-        super.getSubmissionDetails(request, responseObserver);
+        DetailsSubmissionResponse detailsResponse = DetailsSubmissionResponse.newBuilder()
+                .setTeamSize(5)
+                .setFinishDate("2023-12-31")
+                .setStatus(ProjectState.ACCEPTED)
+                .setBudget("$100,000")
+                .setDescription("Sample project description")
+                .setReport(AppReport.newBuilder()
+                        .setIsDraft(false)
+                        .setReportSubmissionDate("2023-12-31")
+                        .setProjectGoals("Sample project goals")
+                        .setOrganisationStructure("Sample org structure")
+                        .setDivisionOfWork("Sample division of work")
+                        .setProjectSchedule("Sample project schedule")
+                        .setAttatchments("Sample attachments")
+                        .build())
+                .build();
+        responseObserver.onNext(detailsResponse);
+        responseObserver.onCompleted();
     }
 
     @Override
     public void getSubmissionRatings(RatingsSubmissionRequest request, StreamObserver<RatingsSubmissionResponse> responseObserver) {
-        super.getSubmissionRatings(request, responseObserver);
+        Criterion criterion = Criterion.newBuilder()
+                .setCriterionId(1)
+                .setName("Criterion 1")
+                .setDescription("Description for Criterion 1")
+                .setArea("Area 1")
+                .setCriteria("Criteria 1")
+                .setSubcriteria("Subcriteria 1")
+                .build();
+
+        AssessorRatings individualRatings = AssessorRatings.newBuilder()
+                .setAssessorId(1)
+                .setFirstName("Assessor")
+                .setLastName("One")
+                .addPartialRatings(PartialRating.newBuilder()
+                        .setPartialRatingId(1)
+                        .setCriterionId(1)
+                        .setPoints(5)
+                        .setJustification("Highly rated")
+                        .setModified("2023-10-26")
+                        .setModifiedBy(123)
+                        .build())
+                .build();
+
+        AssessorRatings initialRatings = AssessorRatings.newBuilder()
+                .setAssessorId(2)
+                .setFirstName("Assessor")
+                .setLastName("Two")
+                .addPartialRatings(PartialRating.newBuilder()
+                        .setPartialRatingId(2)
+                        .setCriterionId(1)
+                        .setPoints(4)
+                        .setJustification("Well-rated")
+                        .setModified("2023-10-26")
+                        .setModifiedBy(124)
+                        .build())
+                .build();
+
+        AssessorRatings finalRatings = AssessorRatings.newBuilder()
+                .setAssessorId(3)
+                .setFirstName("Assessor")
+                .setLastName("Three")
+                .addPartialRatings(PartialRating.newBuilder()
+                        .setPartialRatingId(3)
+                        .setCriterionId(1)
+                        .setPoints(3)
+                        .setJustification("Moderately rated")
+                        .setModified("2023-10-26")
+                        .setModifiedBy(125)
+                        .build())
+                .build();
+
+        RatingsSubmissionResponse ratingsResponse = RatingsSubmissionResponse.newBuilder()
+                .addCriteria(criterion)
+                .setIndividual(0, individualRatings)
+                .setInitial(initialRatings)
+                .setFinal(finalRatings)
+                .build();
+
+        responseObserver.onNext(ratingsResponse);
+        responseObserver.onCompleted();
     }
+
 }
