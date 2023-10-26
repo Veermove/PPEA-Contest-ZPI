@@ -31,8 +31,23 @@ message RatingsSubmissionRequest {
     int32 submission_id = 1;
 }
 
+message UserRequest {
+    string email = 1;
+}
+
 message SubmissionsResponse {
     repeated Submission submissions = 1;
+}
+
+message UserClaims {
+    string first_name               = 1;
+    string last_name                = 2;
+    int32  assessor_id              = 3;
+    int32  person_id                = 4;
+    int32  awards_representative_id = 5;
+    int32  jury_member_id           = 6;
+    int32  ipma_expert_id           = 7;
+    int32  applicant_id             = 8;
 }
 
 message Submission {
@@ -112,6 +127,7 @@ message RatingsSubmissionResponse {
 }
 
 service DataStore {
+    rpc GetUserClaims       (UserRequest)              returns (UserClaims)                {}
     rpc GetSubmissions      (SubmissionRequest)        returns (SubmissionsResponse)       {}
     rpc GetSubmissionDetails(DetailsSubmissionRequest) returns (DetailsSubmissionResponse) {}
     rpc GetSubmissionRatings(RatingsSubmissionRequest) returns (RatingsSubmissionResponse) {}

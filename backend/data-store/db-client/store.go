@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	ds "zpi/pb"
+	pb "zpi/pb"
 	queries "zpi/sql"
 
 	"github.com/jackc/pgx/v4"
@@ -25,16 +25,16 @@ const (
 )
 
 var (
-	RatingTypesMapping = map[queries.ProjectRatingType]ds.RatingType{
-		queries.ProjectRatingTypeIndividual: ds.RatingType_INDIVIDUAL,
-		queries.ProjectRatingTypeInitial:    ds.RatingType_INITIAL,
-		queries.ProjectRatingTypeFinal:      ds.RatingType_FINAL,
+	RatingTypesMapping = map[queries.ProjectRatingType]pb.RatingType{
+		queries.ProjectRatingTypeIndividual: pb.RatingType_INDIVIDUAL,
+		queries.ProjectRatingTypeInitial:    pb.RatingType_INITIAL,
+		queries.ProjectRatingTypeFinal:      pb.RatingType_FINAL,
 	}
-	SubmissionStatesTypesMapping = map[queries.ProjectState]ds.ProjectState{
-		queries.ProjectStateDraft:     ds.ProjectState_DRAFT,
-		queries.ProjectStateSubmitted: ds.ProjectState_SUBMITTED,
-		queries.ProjectStateAccepted:  ds.ProjectState_ACCEPTED,
-		queries.ProjectStateRejected:  ds.ProjectState_REJECTED,
+	SubmissionStatesTypesMapping = map[queries.ProjectState]pb.ProjectState{
+		queries.ProjectStateDraft:     pb.ProjectState_DRAFT,
+		queries.ProjectStateSubmitted: pb.ProjectState_SUBMITTED,
+		queries.ProjectStateAccepted:  pb.ProjectState_ACCEPTED,
+		queries.ProjectStateRejected:  pb.ProjectState_REJECTED,
 	}
 )
 
@@ -97,7 +97,7 @@ func Open(ctx context.Context, log *zap.Logger) (*Store, error) {
 	return store, nil
 }
 
-func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId int32) (*ds.DetailsSubmissionResponse, error) {
+func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId int32) (*pb.DetailsSubmissionResponse, error) {
 	details, err := queries.New(st.Pool).GetSubmissionDetails(ctx, submissionId)
 	if err == pgx.ErrNoRows {
 		return nil, nil
@@ -119,13 +119,13 @@ func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId int32) (
 		submissionDate = ""
 	}
 
-	return &ds.DetailsSubmissionResponse{
+	return &pb.DetailsSubmissionResponse{
 		TeamSize:    details.TeamSize,
 		FinishDate:  details.FinishDate.Format(time.RFC3339),
 		Status:      SubmissionStatesTypesMapping[details.Status],
 		Budget:      string(budget),
 		Description: details.Description,
-		Report: &ds.AppReport{
+		Report: &pb.AppReport{
 			IsDraft:               details.IsDraft,
 			ReportSubmissionDate:  submissionDate,
 			ProjectGoals:          Denullify(details.ProjectGoals),
@@ -137,8 +137,8 @@ func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId int32) (
 	}, nil
 }
 
-func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorId int32) (*ds.SubmissionsResponse, error) {
-	returnVal := &ds.SubmissionsResponse{Submissions: []*ds.Submission{}}
+func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorId int32) (*pb.SubmissionsResponse, error) {
+	returnVal := &pb.SubmissionsResponse{Submissions: []*pb.Submission{}}
 
 	subs, err := queries.New(st.Pool).GetSubmissionsByAssessorId(ctx, assessorId)
 
@@ -149,8 +149,8 @@ func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorId int32)
 		return nil, fmt.Errorf("getting submissions by assessor id: %w", err)
 	}
 
-	submissions, err := iter.MapErr(subs, func(subm *queries.GetSubmissionsByAssessorIdRow) (*ds.Submission, error) {
-		submission := &ds.Submission{
+	submissions, err := iter.MapErr(subs, func(subm *queries.GetSubmissionsByAssessorIdRow) (*pb.Submission, error) {
+		submission := &pb.Submission{
 			SubmissionId: subm.SubmissionID,
 			Year:         subm.Year,
 			Name:         subm.Name,
@@ -177,10 +177,10 @@ func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorId int32)
 	if err != nil {
 		return nil, err
 	}
-	return &ds.SubmissionsResponse{Submissions: submissions}, nil
+	return &pb.SubmissionsResponse{Submissions: submissions}, nil
 }
 
-func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId int32) (*ds.RatingsSubmissionResponse, error) {
+func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId int32) (*pb.RatingsSubmissionResponse, error) {
 
 	// Run query to get slice of
 	// * AssessorID
@@ -205,7 +205,7 @@ func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId int32) (
 		)
 
 		// return value
-		returnVal = &ds.RatingsSubmissionResponse{}
+		returnVal = &pb.RatingsSubmissionResponse{}
 
 		// pool of workers for the rest of logic
 		workers = pool.New().
@@ -218,7 +218,7 @@ func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId int32) (
 	// Handle individual ratings
 	workers.Go(func(ctx context.Context) error {
 		individual, _ := ratingsByType[queries.ProjectRatingTypeIndividual]
-		individualRs := []*ds.AssessorRatings{}
+		individualRs := []*pb.AssessorRatings{}
 
 		// For each struct{ AssessorID, RatingID } ...
 		for _, i := range individual {
@@ -301,9 +301,9 @@ func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId int32) (
 			return fmt.Errorf("getting criteria for submission: %w", err)
 		}
 
-		crits := []*ds.Criterion{}
+		crits := []*pb.Criterion{}
 		for _, c := range critsRaw {
-			crits = append(crits, &ds.Criterion{
+			crits = append(crits, &pb.Criterion{
 				CriterionId: c.PemCriterionID,
 				Name:        c.Name,
 				Description: c.Description,
@@ -327,7 +327,7 @@ func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId int32) (
 // CreateAssessorRatings creates a new AssessorRatings object with the given rating ID, assessor ID, first name, and last name.
 // It retrieves partial ratings for the given assessor and rating ID, and remaps the values to create the new AssessorRatings object.
 // Returns the new AssessorRatings object and an error if there was any issue retrieving the partial ratings.
-func (st *Store) CreateAssessorRatings(ctx context.Context, ratingId int32, assessorId int32, firstN, lastN string) (*ds.AssessorRatings, error) {
+func (st *Store) CreateAssessorRatings(ctx context.Context, ratingId int32, assessorId int32, firstN, lastN string) (*pb.AssessorRatings, error) {
 
 	// Get partial ratings for this assessor and rating id
 	r, err := queries.New(st.Pool).GetPRatingsForAssessorAndRatingID(ctx,
@@ -338,14 +338,14 @@ func (st *Store) CreateAssessorRatings(ctx context.Context, ratingId int32, asse
 	}
 
 	// Remap values
-	initialRs := &ds.AssessorRatings{
+	initialRs := &pb.AssessorRatings{
 		AssessorId:     assessorId,
 		FirstName:      firstN,
 		LastName:       lastN,
-		PartialRatings: []*ds.PartialRating{},
+		PartialRatings: []*pb.PartialRating{},
 	}
 	for _, rt := range r {
-		initialRs.PartialRatings = append(initialRs.PartialRatings, &ds.PartialRating{
+		initialRs.PartialRatings = append(initialRs.PartialRatings, &pb.PartialRating{
 			PartialRatingId: rt.PartialRatingID,
 			CriterionId:     rt.CriterionID,
 			Points:          rt.Points,
@@ -358,32 +358,30 @@ func (st *Store) CreateAssessorRatings(ctx context.Context, ratingId int32, asse
 	return initialRs, nil
 }
 
-// P<T> -> I -> (T -> I -> E) -> P<E>
-func Embed[Promised any, Initial any, Embeded any](
-	f func(Promised, Initial) (Embeded, error),
-	promise *Promise[Promised],
-	initial Initial,
-) *Promise[Embeded] {
-	p := &Promise[Embeded]{Result: make(chan *Result[Embeded])}
-	go func() {
-		val, err := f((<-promise.Result).Val, initial)
-		p.Result <- &Result[Embeded]{Val: val, Err: err}
-	}()
-	return p
+func (st *Store) GetUserClaims(ctx context.Context, email string) (*pb.UserClaims, error) {
+	usr, err := queries.New(st.Pool).GetUserClaims(ctx, email)
+	if err == pgx.ErrNoRows {
+		return nil, fmt.Errorf("User not found")
+	} else if err != nil {
+		return nil, fmt.Errorf("getting user claims: %w", err)
+	}
+
+	return &pb.UserClaims{
+		FirstName:              usr.FirstName,
+		LastName:               usr.LastName,
+		PersonId:               usr.PersonID,
+		AssessorId:             DenullifyInt32(usr.AssessorID),
+		AwardsRepresentativeId: DenullifyInt32(usr.AwardsRepresentativeID),
+		JuryMemberId:           DenullifyInt32(usr.JuryMemberID),
+		IpmaExpertId:           DenullifyInt32(usr.IpmaExpertID),
+		ApplicantId:            DenullifyInt32(usr.ApplicantID),
+	}, nil
+
 }
 
-func Async[T any](f func() (T, error)) *Promise[T] {
-	p := &Promise[T]{Result: make(chan *Result[T])}
-	go func() {
-		val, err := f()
-		p.Result <- &Result[T]{Val: val, Err: err}
-	}()
-	return p
-}
-
-func MapRatingsFromSql(rts []queries.GetRatingsForSubissionRow) (ratings []*ds.Rating) {
+func MapRatingsFromSql(rts []queries.GetRatingsForSubissionRow) (ratings []*pb.Rating) {
 	for _, rt := range rts {
-		ratings = append(ratings, &ds.Rating{
+		ratings = append(ratings, &pb.Rating{
 			RatingId:   rt.RatingID,
 			AssessorId: rt.AssessorID,
 			IsDraft:    rt.IsDraft,
@@ -393,15 +391,22 @@ func MapRatingsFromSql(rts []queries.GetRatingsForSubissionRow) (ratings []*ds.R
 	return
 }
 
-func MapAssessorsFromSql(ass []queries.GetAssessorsForSubmissionRow) (asses []*ds.Assessor) {
+func MapAssessorsFromSql(ass []queries.GetAssessorsForSubmissionRow) (asses []*pb.Assessor) {
 	for _, a := range ass {
-		asses = append(asses, &ds.Assessor{
+		asses = append(asses, &pb.Assessor{
 			FirstName:  a.FirstName,
 			LastName:   a.LastName,
 			AssessorId: a.AssessorID,
 		})
 	}
 	return
+}
+
+func DenullifyInt32(s sql.NullInt32) int32 {
+	if !s.Valid || s.Int32 == 0 {
+		return 0
+	}
+	return s.Int32
 }
 
 func Denullify(s sql.NullString) string {
