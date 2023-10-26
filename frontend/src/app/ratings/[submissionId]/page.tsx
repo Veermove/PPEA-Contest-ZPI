@@ -154,7 +154,7 @@ function RatingsForSubmission({ submissionId, submissionName }: { submissionId: 
 
   return (
     <div className="my-2 mx-3">
-      <h3 className="my-3 text-purple">{t('submission')}: {submissionName}</h3>
+      <h3 className="my-3 text-purple">{submissionName}</h3>
       {!!finalRating && (
         <Accordion className="my-2">
           <AccordionItem eventKey="final">
