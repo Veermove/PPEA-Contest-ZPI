@@ -15,7 +15,7 @@ services:
       - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
-  
+
   frontend:
     container_name: frontend
     build: ./frontend
@@ -24,15 +24,26 @@ services:
       - 3000:3000
     networks:
         - full-stack-app
-  
+
   clap:
     container_name: clap
     build:
-      context: ./backend
-      dockerfile: dockerfile-java
+      context: ./backend/clap
+      dockerfile: Dockerfile
     restart: on-failure
     ports:
       - 8000:8000
+    networks:
+      - full-stack-app
+
+  dstor:
+    container_name: dstor
+    build:
+      context: ./backend/data-store
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - 8080:8080
     networks:
       - full-stack-app
 
