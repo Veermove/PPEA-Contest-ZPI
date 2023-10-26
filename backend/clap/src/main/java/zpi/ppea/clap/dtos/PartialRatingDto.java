@@ -10,9 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PartialRatingDto {
-    private int criterionId;
-    private int points;
+    private Integer partialRatingId;
+    private Integer criterionId;
+    private Integer points;
     private String justification;
     private String modified;
-    private String modifiedBy;
+    private Integer modifiedBy;
 }

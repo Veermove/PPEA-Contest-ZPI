@@ -15,4 +15,5 @@ public class DetailsSubmissionResponse {
     private ProjectState status;
     private String budget;
     private String description;
+    private AppReportDto appReportDto;
 }
