@@ -8,7 +8,7 @@ function SingleRating({ rating }: { rating: Rating }) {
 
   return (
     <Row className="text-black">
-      <Col xs={4}>{t(rating.type.toLocaleLowerCase())}:</Col>
+      <Col xs={4}>{t(rating.type)}:</Col>
       <Col xs={8}><p className="font-bold">{rating.points}</p></Col>
     </Row>
   )
