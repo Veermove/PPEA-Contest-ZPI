@@ -1,7 +1,7 @@
 import { useTranslation } from "@/app/i18n/client";
 
 function SubmissionDescription({ title, description }: { title: string, description: string }) {
-  const { t } = useTranslation('submissionDescription');
+  const { t } = useTranslation('submission/description');
   return (
     <div>
       <h5 className="text-purple text-left">{t(title)}:</h5>

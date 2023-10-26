@@ -13,7 +13,7 @@ function splitSubmissionList(submissionList: SubmissionDTO[]): { activeSubmissio
 
 function SubmissionList({ submissionList }: { submissionList: SubmissionDTO[] }) {
 
-    const {t} = useTranslation('submissionList');
+    const {t} = useTranslation('submission/list');
 
     const { activeSubmissions, archiveSubmissions } = splitSubmissionList(submissionList);
     return (
