@@ -25,7 +25,7 @@ function SubmissionDetails({ submission, submissionDetails }: { submission: Subm
           <Button className="btn btn-secondary m-2 px-2 text-white" onClick={() => router.push('/assessor/submissions')}>{t('back')}</Button>
         </Col>
         <Col>
-          <Button className="btn btn-primary m-2 px-2 text-white" onClick={() => router.push(`/ratings/${submission.submissionId}`)}>{t('ratings')}</Button>
+          <Button className="btn btn-primary m-2 px-2 text-white" onClick={() => router.push(`/ratings/${1}`)}>{t('ratings')}</Button>
         </Col>
       </Row>
       <Row>

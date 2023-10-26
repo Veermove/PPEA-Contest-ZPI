@@ -45,7 +45,7 @@ function AppNavbar() {
       </Navbar.Text>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="d-flex align-items-center ml-auto">
+        <Nav className="d-flex align-items-center ml-auto mr-3">
           <Dropdown className="mx-sm-auto">
             <Dropdown.Toggle id="dropdown" className="btn-language">
               {t('selectLanguage')}
@@ -61,13 +61,10 @@ function AppNavbar() {
           {
             user ? (
               <>
-                <Nav.Link href="/assessor/submissions">
-                  {t('submissions')}
-                </Nav.Link>
                 {user?.providerData[0].email ? (
-                  <Navbar.Text className="text-purple mx-3">
+                  <Nav.Link href="/dashboard" className="text-purple mx-3">
                     {user?.providerData[0].email}
-                  </Navbar.Text>
+                  </Nav.Link>
                 ) : <></>}
                 <Nav.Link className="text-purple" onClick={handleLogout}>
                   {t('logout')}
