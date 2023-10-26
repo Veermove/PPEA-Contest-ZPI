@@ -1,6 +1,6 @@
 'use client'
 
-import SubmissionDetails from "@/components/submission/submissionDetails";
+import SubmissionDetails from "@/components/submission/details";
 import { useAuthContext } from "@/context/authContext";
 import { ClapApi } from "@/services/clap/api";
 import { SubmissionDTO, SubmissionDetailsDTO } from "@/services/clap/model/submission";

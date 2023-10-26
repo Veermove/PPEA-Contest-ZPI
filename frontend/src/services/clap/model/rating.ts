@@ -11,6 +11,7 @@ export interface Rating {
     ratingId: number;
     isDraft: boolean;
     points: number;
+    assessorId: number;
     type: RatingType;
 }
 

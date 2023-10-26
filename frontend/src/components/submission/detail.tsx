@@ -11,7 +11,7 @@ function SubmissionDetail({ value, name, valueAlignment = "center" }: { value: s
           </Col>
           <Col xs={6} className="justify-content-end">
             <div className="bg-lightgray rounded-md py-1 px-2">
-                <h6 className={`text-${valueAlignment} text-purple`}>value</h6>
+                <h6 className={`text-${valueAlignment} text-purple`}>{value}</h6>
             </div>
           </Col>
         </Row>
