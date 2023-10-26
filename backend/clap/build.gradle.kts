@@ -34,16 +34,12 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
+    implementation("org.bitbucket.b_c:jose4j:0.9.3")
+
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
     testCompileOnly("org.projectlombok:lombok:1.18.30")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
-
-    compileOnly("org.mapstruct:mapstruct:1.5.5.Final")
-    testCompileOnly("org.mapstruct:mapstruct:1.5.5.Final")
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
-    testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
-    implementation("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 }
 
 tasks.withType<Test> {
