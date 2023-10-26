@@ -24,7 +24,6 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
         })}
       </Row>
     )
-
   }
 
   function buildRatingDisplay() {

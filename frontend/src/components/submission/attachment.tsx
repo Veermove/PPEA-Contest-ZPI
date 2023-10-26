@@ -5,14 +5,14 @@ import { FaPaperclip } from 'react-icons/fa';
 function SubmissionAttachment({ url, name }: { url: string, name: string }) {
   const { t } = useTranslation('submission/attachment');
   return (
-    <a href={url} className="no-underline visited:no-underline my-2">
+    <a href={url} className="no-underline visited:no-underline my-2 py-2">
       <Container className="py-3">
         <Row>
           <Col xs={8}>
             <h5 className="text-purple text-left">{t(name)}</h5>
           </Col>
           <Col xs={4} className="text-right">
-            <FaPaperclip size={25} className="text-purple" />
+            <FaPaperclip size={25} className="text-purple ml-auto" />
           </Col>
         </Row>
       </Container>
