@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Accordion, Button, Col, Container, Row } from "react-bootstrap";
 
 function SubmissionOverview({ submission, isActive }: { submission: SubmissionDTO, isActive: boolean }) {
-    const { t } = useTranslation('submissionOverview');
+    const { t } = useTranslation('submission/overview');
     const router = useRouter(); 
     
     function buildSingleRating(rating: Rating) {
@@ -20,13 +20,13 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
     function buildIndividualRatings(ratings: Rating[], assessors: Assesor[]) {
         return (
             <Row>
-                <Row><h6>{t('individual')}</h6></Row>
+                <Row><h6>{t('individual')}:</h6></Row>
                 {ratings.map(rating => {
                     const assessor = assessors.find(assessor => assessor.assesorId === rating.assessorId)
                     return (
                         <Row>
-                            <Col xs={6}>{assessor?.firstName} {assessor?.lastName}</Col>
-                            <Col xs={6}>{rating.points}</Col>
+                            <Col xs={4}>{assessor?.firstName} {assessor?.lastName}:</Col>
+                            <Col xs={8}>{rating.points}</Col>
                         </Row>
                     )
                 })}
@@ -64,8 +64,8 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
                 <Accordion.Header>
                     <Container>
                         <Row>
-                            <Col xs={6}>{t('contest')} {submission.contest.year}</Col>
-                            <Col xs={6}>{submission.name.substring(0, 20)}{submission.name.length > 20 && '...'}</Col>
+                            <Col xs={9}>{t('contest')} {submission.contest.year}</Col>
+                            <Col xs={3}>{submission.name.substring(0, 20)}{submission.name.length > 20 && '...'}</Col>
                         </Row>
                     </Container>
                 </Accordion.Header>

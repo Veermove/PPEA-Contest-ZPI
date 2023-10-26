@@ -3,7 +3,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { FaPaperclip } from 'react-icons/fa';
 
 function SubmissionAttachment({ url, name }: { url: string, name: string }) {
-  const { t } = useTranslation('submissionAttachment');
+  const { t } = useTranslation('submission/attachment');
   return (
     <a href={url} className="no-underline visited:no-underline my-2">
       <Container className="py-3">

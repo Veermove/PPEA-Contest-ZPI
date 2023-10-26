@@ -8,7 +8,7 @@ import SubmissionDetail from "./detail";
 
 function SubmissionDetails({ submission, submissionDetails }: { submission: SubmissionDTO, submissionDetails: SubmissionDetailsDTO }) {
 
-  const { t } = useTranslation('submissionDetails');
+  const { t } = useTranslation('submission/details');
   const router = useRouter();
 
   const testText =
@@ -20,7 +20,14 @@ function SubmissionDetails({ submission, submissionDetails }: { submission: Subm
 
   return (
     <Container className="p-1 min-w-full">
+      <Row>
+        <Col>
           <Button className="btn btn-secondary m-2 px-2 text-white" onClick={() => router.push('/assessor/submissions')}>{t('back')}</Button>
+        </Col>
+        <Col>
+          <Button className="btn btn-primary m-2 px-2 text-white" onClick={() => router.push(`/ratings/${submission.submissionId}`)}>{t('ratings')}</Button>
+        </Col>
+      </Row>
       <Row>
         {/* <h1 className="text-center text-purple">{t('submissionHeader')} {submission.name}</h1> */}
         <Row>
@@ -32,7 +39,7 @@ function SubmissionDetails({ submission, submissionDetails }: { submission: Subm
           <SubmissionDetail value="test" name="name" valueAlignment="center" />
           <SubmissionDetail value="test" name="name" valueAlignment="left" />
           <SubmissionDetail value="test" name="name" valueAlignment="right" />
-          <SubmissionDescription title="test" description={testText} />
+          <SubmissionDescription title="description" description={testText} />
         </Col>
         <Col xs={6} className="border-l-2 border-lightgray mr-0 max-w-full">
           <SubmissionAttachment url={"/test"} name={"projectGoals"} />
@@ -44,12 +51,6 @@ function SubmissionDetails({ submission, submissionDetails }: { submission: Subm
         </Col>
       </Row>
       {/* TODO it's scrolling horizontally */}
-      <Row>
-        <Col xs={8}><></></Col>
-        <Col xs={4}>
-          <Button className="btn btn-primary m-2 px-2 text-white" onClick={() => router.push(`/ratings/${submission.submissionId}`)}>{t('ratings')}</Button>
-        </Col>
-      </Row>
     </Container>
   )
 }

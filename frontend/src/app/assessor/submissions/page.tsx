@@ -52,16 +52,54 @@ function Submissions() {
       ratings: [
         {
           ratingId: 1,
-          type: RatingType.FINAL,
+          type: RatingType.INDIVIDUAL,
           points: 10,
-          isDraft: true,
+          isDraft: false,
           assessorId: 1
         }, {
           ratingId: 2,
-          type: RatingType.INITIAL,
+          type: RatingType.INDIVIDUAL,
           points: 10,
           isDraft: false,
           assessorId: 2
+        }
+      ]
+    },     {
+      durationDays: "25",
+      name: "Really Long Long Long Long Test Submission Name",
+      contest: {
+          contestId: 2,
+          year: 2020
+      },
+      submissionId: 2,
+      assesors: [
+          {
+            assesorId: 3,
+            firstName: "Test",
+            lastName: "Assessor",
+            email: "test@assessor.com",
+            personId: 3
+          }, {
+            assesorId: 4,
+            firstName: "Another",
+            lastName: "Assessor",
+            email: "test@assessor.com",
+            personId: 4
+          }
+        ],
+      ratings: [
+        {
+          ratingId: 6,
+          type: RatingType.FINAL,
+          points: 10,
+          isDraft: false,
+          assessorId: 4
+        }, {
+          ratingId: 5,
+          type: RatingType.INITIAL,
+          points: 10,
+          isDraft: false,
+          assessorId: 4
         }
       ]
     }

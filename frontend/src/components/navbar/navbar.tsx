@@ -41,7 +41,7 @@ function AppNavbar() {
         />
       </Navbar.Brand>
       <Navbar.Text className="mx-3">
-        <h5 className="text-purple">Edition 2023</h5>
+        <h5 className="text-purple">{t('edition')} 2023</h5>
       </Navbar.Text>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
