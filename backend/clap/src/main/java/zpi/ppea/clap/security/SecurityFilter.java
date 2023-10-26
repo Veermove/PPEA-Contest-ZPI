@@ -19,6 +19,9 @@ public class SecurityFilter extends OncePerRequestFilter {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var principal = (Jwt) authentication.getPrincipal();
         var token = principal.getTokenValue();
+
+        System.out.println(token);
+
         filterChain.doFilter(request, response);
     }
 }
