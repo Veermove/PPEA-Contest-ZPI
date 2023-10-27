@@ -13,6 +13,7 @@ public class GrpcServerMock extends DataStoreGrpc.DataStoreImplBase {
 
     @Override
     public void getUserClaims(UserRequest request, StreamObserver<UserClaims> responseObserver) {
+        log.info("Email received: {}", request.getEmail());
         UserClaims userClaims = UserClaims.newBuilder()
                 .setFirstName("John")
                 .setLastName("Doe")

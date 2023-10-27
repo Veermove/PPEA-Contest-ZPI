@@ -11,4 +11,13 @@ public class ValueConfig {
     @Value("${frontend.address}")
     private String frontendAddress;
 
+    @Value("${firebase.issuer}")
+    private String firebaseIssuer;
+
+    @Value("${firebase.audience}")
+    private String firebaseAudience;
+
+    @Value("${firebase.email}")
+    private String firebaseEmail;
+
 }

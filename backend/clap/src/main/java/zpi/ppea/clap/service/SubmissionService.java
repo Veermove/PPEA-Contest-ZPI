@@ -4,6 +4,7 @@ import data_store.*;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
+import zpi.ppea.clap.config.ValueConfig;
 import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
 import zpi.ppea.clap.dtos.RatingDto;
 import zpi.ppea.clap.dtos.SubmissionDto;
@@ -19,10 +20,11 @@ public class SubmissionService {
     @GrpcClient("dataStore")
     DataStoreGrpc.DataStoreBlockingStub dataStoreBlockingStub;
 
+    private final ValueConfig valueConfig;
+
     public List<SubmissionDto> getSubmissions() {
-        // getting email from token in progress
         UserClaims userClaims = dataStoreBlockingStub.getUserClaims(UserRequest.newBuilder()
-                .setEmail("test@example.com").build());
+                .setEmail(valueConfig.getFirebaseEmail()).build());
 
         if (userClaims == null || userClaims.getAssessorId() == 0) {
             throw new UserNotAuthorizedException("User not authorized");
