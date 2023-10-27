@@ -2,7 +2,7 @@ import { useTranslation } from "@/app/i18n/client";
 import { Col, Container, Row } from "react-bootstrap";
 
 function SubmissionDetail({ value, name, valueAlignment = "center" }: { value: string, name: string, valueAlignment: string }) {
-  const { t } = useTranslation('submissionDetail');
+  const { t } = useTranslation('submission/detail');
   return (
       <Container className="py-2">
         <Row className="justify-content-between align-items-center">

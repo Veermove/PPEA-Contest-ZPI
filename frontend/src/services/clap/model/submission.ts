@@ -39,7 +39,7 @@ export interface SubmissionDetailsDTO {
     durationDays: string;
     teamSize: number;
     finishDate: Date;
-    budget: number;
+    budget: string;
     description: string;
     report?: ApplicationReport;
 }
