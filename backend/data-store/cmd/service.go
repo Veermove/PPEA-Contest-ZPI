@@ -24,10 +24,10 @@ var (
 )
 
 func (s *DataStore) GetSubmissions(ctx context.Context, req *ds.SubmissionRequest) (*ds.SubmissionsResponse, error) {
-	if req.GetAssessorId() == 0 {
+	if !emailRegex.MatchString(req.GetAssessorEmail()) {
 		return nil, fmt.Errorf("assessor id is required")
 	}
-	return s.Db.GetSubmissionsByAssessor(ctx, req.GetAssessorId())
+	return s.Db.GetSubmissionsByAssessor(ctx, req.GetAssessorEmail())
 }
 
 func (s *DataStore) GetSubmissionDetails(ctx context.Context, req *ds.DetailsSubmissionRequest) (*ds.DetailsSubmissionResponse, error) {
@@ -42,11 +42,4 @@ func (s *DataStore) GetSubmissionRatings(ctx context.Context, req *ds.RatingsSub
 		return nil, fmt.Errorf("submission id is required")
 	}
 	return s.Db.GetSubmissionRatings(ctx, req.GetSubmissionId())
-}
-
-func (s *DataStore) GetUserClaims(ctx context.Context, req *ds.UserRequest) (*ds.UserClaims, error) {
-	if req.GetEmail() == "" || !emailRegex.MatchString(req.GetEmail()) {
-		return nil, fmt.Errorf("email is required")
-	}
-	return s.Db.GetUserClaims(ctx, req.GetEmail())
 }

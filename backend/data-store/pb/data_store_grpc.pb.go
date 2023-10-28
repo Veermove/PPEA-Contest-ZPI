@@ -19,7 +19,6 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	DataStore_GetUserClaims_FullMethodName        = "/data_store.DataStore/GetUserClaims"
 	DataStore_GetSubmissions_FullMethodName       = "/data_store.DataStore/GetSubmissions"
 	DataStore_GetSubmissionDetails_FullMethodName = "/data_store.DataStore/GetSubmissionDetails"
 	DataStore_GetSubmissionRatings_FullMethodName = "/data_store.DataStore/GetSubmissionRatings"
@@ -29,7 +28,6 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DataStoreClient interface {
-	GetUserClaims(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserClaims, error)
 	GetSubmissions(ctx context.Context, in *SubmissionRequest, opts ...grpc.CallOption) (*SubmissionsResponse, error)
 	GetSubmissionDetails(ctx context.Context, in *DetailsSubmissionRequest, opts ...grpc.CallOption) (*DetailsSubmissionResponse, error)
 	GetSubmissionRatings(ctx context.Context, in *RatingsSubmissionRequest, opts ...grpc.CallOption) (*RatingsSubmissionResponse, error)
@@ -41,15 +39,6 @@ type dataStoreClient struct {
 
 func NewDataStoreClient(cc grpc.ClientConnInterface) DataStoreClient {
 	return &dataStoreClient{cc}
-}
-
-func (c *dataStoreClient) GetUserClaims(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserClaims, error) {
-	out := new(UserClaims)
-	err := c.cc.Invoke(ctx, DataStore_GetUserClaims_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *dataStoreClient) GetSubmissions(ctx context.Context, in *SubmissionRequest, opts ...grpc.CallOption) (*SubmissionsResponse, error) {
@@ -83,7 +72,6 @@ func (c *dataStoreClient) GetSubmissionRatings(ctx context.Context, in *RatingsS
 // All implementations must embed UnimplementedDataStoreServer
 // for forward compatibility
 type DataStoreServer interface {
-	GetUserClaims(context.Context, *UserRequest) (*UserClaims, error)
 	GetSubmissions(context.Context, *SubmissionRequest) (*SubmissionsResponse, error)
 	GetSubmissionDetails(context.Context, *DetailsSubmissionRequest) (*DetailsSubmissionResponse, error)
 	GetSubmissionRatings(context.Context, *RatingsSubmissionRequest) (*RatingsSubmissionResponse, error)
@@ -94,9 +82,6 @@ type DataStoreServer interface {
 type UnimplementedDataStoreServer struct {
 }
 
-func (UnimplementedDataStoreServer) GetUserClaims(context.Context, *UserRequest) (*UserClaims, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserClaims not implemented")
-}
 func (UnimplementedDataStoreServer) GetSubmissions(context.Context, *SubmissionRequest) (*SubmissionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSubmissions not implemented")
 }
@@ -117,24 +102,6 @@ type UnsafeDataStoreServer interface {
 
 func RegisterDataStoreServer(s grpc.ServiceRegistrar, srv DataStoreServer) {
 	s.RegisterService(&DataStore_ServiceDesc, srv)
-}
-
-func _DataStore_GetUserClaims_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DataStoreServer).GetUserClaims(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DataStore_GetUserClaims_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataStoreServer).GetUserClaims(ctx, req.(*UserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _DataStore_GetSubmissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -198,10 +165,6 @@ var DataStore_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "data_store.DataStore",
 	HandlerType: (*DataStoreServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "GetUserClaims",
-			Handler:    _DataStore_GetUserClaims_Handler,
-		},
 		{
 			MethodName: "GetSubmissions",
 			Handler:    _DataStore_GetSubmissions_Handler,

@@ -158,10 +158,10 @@ func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId int32) (
 	}, nil
 }
 
-func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorId int32) (*pb.SubmissionsResponse, error) {
+func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorEmail string) (*pb.SubmissionsResponse, error) {
 	returnVal := &pb.SubmissionsResponse{Submissions: []*pb.Submission{}}
 
-	subs, err := queries.New(st.Pool).GetSubmissionsByAssessorId(ctx, assessorId)
+	subs, err := queries.New(st.Pool).GetSubmissionsByAssessorEmail(ctx, assessorEmail)
 
 	if err == pgx.ErrNoRows {
 		return returnVal, nil
@@ -170,7 +170,7 @@ func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorId int32)
 		return nil, fmt.Errorf("getting submissions by assessor id: %w", err)
 	}
 
-	submissions, err := iter.MapErr(subs, func(subm *queries.GetSubmissionsByAssessorIdRow) (*pb.Submission, error) {
+	submissions, err := iter.MapErr(subs, func(subm *queries.GetSubmissionsByAssessorEmailRow) (*pb.Submission, error) {
 		submission := &pb.Submission{
 			SubmissionId: subm.SubmissionID,
 			Year:         subm.Year,
@@ -234,109 +234,118 @@ func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId int32) (
 			WithMaxGoroutines(4).
 			WithCancelOnError().
 			WithFirstError()
+
+		invidualRatingsHandler = func(ctx context.Context) error {
+			individual, _ := ratingsByType[queries.ProjectRatingTypeIndividual]
+			individualRs := []*pb.AssessorRatings{}
+
+			// For each struct{ AssessorID, RatingID } ...
+			for _, i := range individual {
+
+				ast, err := st.CreateAssessorRatings(ctx,
+					i.RatingID,
+					i.AssessorID,
+					i.FirstName,
+					i.LastName,
+				)
+				if err != nil && err != pgx.ErrNoRows {
+					return fmt.Errorf("creating individual rating for rating %d, assessor %d: %w", i.RatingID, i.AssessorID, err)
+				}
+
+				// ... and append to individualRs.
+				individualRs = append(individualRs, ast)
+
+			}
+
+			returnVal.Individual = individualRs
+			return nil
+		}
+
+		initRatingsHandler = func(ctx context.Context) error {
+
+			initials, _ := ratingsByType[queries.ProjectRatingTypeInitial]
+
+			// Generally we expect only one initial rating per submission
+			if len(initials) > 1 {
+				return fmt.Errorf("more than one initial rating for submission %d", submissionId)
+
+			} else if len(initials) > 0 {
+				// Get initial rating
+				initial, err := st.CreateAssessorRatings(ctx,
+					initials[0].RatingID,
+					initials[0].AssessorID,
+					initials[0].FirstName,
+					initials[0].LastName,
+				)
+
+				if err != nil && err != pgx.ErrNoRows {
+					return fmt.Errorf("creating initial rating for rating %d, assessor %d: %w", initials[0].RatingID, initials[0].AssessorID, err)
+				}
+
+				returnVal.Initial = initial
+			}
+			return nil
+		}
+
+		finalRratingsHandler = func(ctx context.Context) error {
+			finals, _ := ratingsByType[queries.ProjectRatingTypeFinal]
+
+			// Generally we expect only one final rating per submission
+			if len(finals) > 1 {
+				return fmt.Errorf("more than one final rating for submission %d", submissionId)
+
+			} else if len(finals) > 0 {
+				// Get final rating
+				final, err := st.CreateAssessorRatings(ctx,
+					finals[0].RatingID,
+					finals[0].AssessorID,
+					finals[0].FirstName,
+					finals[0].LastName,
+				)
+
+				if err != nil {
+					return fmt.Errorf("creating final rating for rating %d, assessor %d: %w", finals[0].RatingID, finals[0].AssessorID, err)
+				}
+
+				returnVal.Final = final
+			}
+			return nil
+		}
+
+		criteriaHandler = func(ctx context.Context) error {
+			critsRaw, err := queries.New(st.Pool).GetCriteriaForSubmission(ctx, submissionId)
+			if err != nil && err != pgx.ErrNoRows {
+				return fmt.Errorf("getting criteria for submission: %w", err)
+			}
+
+			crits := []*pb.Criterion{}
+			for _, c := range critsRaw {
+				crits = append(crits, &pb.Criterion{
+					CriterionId: c.PemCriterionID,
+					Name:        c.Name,
+					Description: c.Description,
+					Area:        c.Area,
+					Criteria:    c.Criteria,
+					Subcriteria: Denullify(c.Subcriteria),
+				})
+			}
+
+			returnVal.Criteria = crits
+			return nil
+		}
 	)
 
 	// Handle individual ratings
-	workers.Go(func(ctx context.Context) error {
-		individual, _ := ratingsByType[queries.ProjectRatingTypeIndividual]
-		individualRs := []*pb.AssessorRatings{}
-
-		// For each struct{ AssessorID, RatingID } ...
-		for _, i := range individual {
-
-			ast, err := st.CreateAssessorRatings(ctx,
-				i.RatingID,
-				i.AssessorID,
-				i.FirstName,
-				i.LastName,
-			)
-			if err != nil && err != pgx.ErrNoRows {
-				return fmt.Errorf("creating individual rating for rating %d, assessor %d: %w", i.RatingID, i.AssessorID, err)
-			}
-
-			// ... and append to individualRs.
-			individualRs = append(individualRs, ast)
-
-		}
-
-		returnVal.Individual = individualRs
-		return nil
-	})
+	workers.Go(invidualRatingsHandler)
 
 	// Handle initial ratings
-	workers.Go(func(ctx context.Context) error {
-
-		initials, _ := ratingsByType[queries.ProjectRatingTypeInitial]
-
-		// Generally we expect only one initial rating per submission
-		if len(initials) > 1 {
-			return fmt.Errorf("more than one initial rating for submission %d", submissionId)
-
-		} else if len(initials) > 0 {
-			// Get initial rating
-			initial, err := st.CreateAssessorRatings(ctx,
-				initials[0].RatingID,
-				initials[0].AssessorID,
-				initials[0].FirstName,
-				initials[0].LastName,
-			)
-
-			if err != nil && err != pgx.ErrNoRows {
-				return fmt.Errorf("creating initial rating for rating %d, assessor %d: %w", initials[0].RatingID, initials[0].AssessorID, err)
-			}
-
-			returnVal.Initial = initial
-		}
-		return nil
-	})
+	workers.Go(initRatingsHandler)
 
 	// Handle final ratings
-	workers.Go(func(ctx context.Context) error {
-		finals, _ := ratingsByType[queries.ProjectRatingTypeFinal]
+	workers.Go(finalRratingsHandler)
 
-		// Generally we expect only one final rating per submission
-		if len(finals) > 1 {
-			return fmt.Errorf("more than one final rating for submission %d", submissionId)
-
-		} else if len(finals) > 0 {
-			// Get final rating
-			final, err := st.CreateAssessorRatings(ctx,
-				finals[0].RatingID,
-				finals[0].AssessorID,
-				finals[0].FirstName,
-				finals[0].LastName,
-			)
-
-			if err != nil {
-				return fmt.Errorf("creating final rating for rating %d, assessor %d: %w", finals[0].RatingID, finals[0].AssessorID, err)
-			}
-
-			returnVal.Final = final
-		}
-		return nil
-	})
-
-	workers.Go(func(ctx context.Context) error {
-		critsRaw, err := queries.New(st.Pool).GetCriteriaForSubmission(ctx, submissionId)
-		if err != nil && err != pgx.ErrNoRows {
-			return fmt.Errorf("getting criteria for submission: %w", err)
-		}
-
-		crits := []*pb.Criterion{}
-		for _, c := range critsRaw {
-			crits = append(crits, &pb.Criterion{
-				CriterionId: c.PemCriterionID,
-				Name:        c.Name,
-				Description: c.Description,
-				Area:        c.Area,
-				Criteria:    c.Criteria,
-				Subcriteria: Denullify(c.Subcriteria),
-			})
-		}
-
-		returnVal.Criteria = crits
-		return nil
-	})
+	// Fetch criteria
+	workers.Go(criteriaHandler)
 
 	if err := workers.Wait(); err != nil {
 		return nil, err
@@ -377,27 +386,6 @@ func (st *Store) CreateAssessorRatings(ctx context.Context, ratingId int32, asse
 	}
 
 	return initialRs, nil
-}
-
-func (st *Store) GetUserClaims(ctx context.Context, email string) (*pb.UserClaims, error) {
-	usr, err := queries.New(st.Pool).GetUserClaims(ctx, email)
-	if err == pgx.ErrNoRows {
-		return nil, fmt.Errorf("User not found")
-	} else if err != nil {
-		return nil, fmt.Errorf("getting user claims: %w", err)
-	}
-
-	return &pb.UserClaims{
-		FirstName:              usr.FirstName,
-		LastName:               usr.LastName,
-		PersonId:               usr.PersonID,
-		AssessorId:             DenullifyInt32(usr.AssessorID),
-		AwardsRepresentativeId: DenullifyInt32(usr.AwardsRepresentativeID),
-		JuryMemberId:           DenullifyInt32(usr.JuryMemberID),
-		IpmaExpertId:           DenullifyInt32(usr.IpmaExpertID),
-		ApplicantId:            DenullifyInt32(usr.ApplicantID),
-	}, nil
-
 }
 
 func MapRatingsFromSql(rts []queries.GetRatingsForSubissionRow) (ratings []*pb.Rating) {

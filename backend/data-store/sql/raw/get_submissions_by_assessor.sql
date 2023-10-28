@@ -1,4 +1,4 @@
--- name: GetSubmissionsByAssessorId :many
+-- name: GetSubmissionsByAssessorEmail :many
 select
     submission.submission_id as "submission_id",
     contest.year             as "year",
@@ -7,6 +7,7 @@ select
 from project.assessor_submission assessor_submission
 inner join project.submission submission on submission.submission_id = assessor_submission.submission_id
 inner join edition.contest    contest    on contest.contest_id       = submission.contest_id
+inner join person.base        person     on person.person_id         = submission.person_id
 where
-    assessor_submission.assessor_id = $1;
+    person.email = $1;
 

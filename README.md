@@ -37,7 +37,7 @@ $ docker compose down --volumes
 
 ### Connect to database
 ```bash
-docker exec -ti pgstore /usr/local/bin/psql -d datastore -U postgres
+docker exec -ti pgstore psql -d datastore -U postgres
 ```
 Remember to use the user and password from .env file.
 

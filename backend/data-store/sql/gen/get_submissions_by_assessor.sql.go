@@ -9,7 +9,7 @@ import (
 	"context"
 )
 
-const getSubmissionsByAssessorId = `-- name: GetSubmissionsByAssessorId :many
+const getSubmissionsByAssessorEmail = `-- name: GetSubmissionsByAssessorEmail :many
 select
     submission.submission_id as "submission_id",
     contest.year             as "year",
@@ -18,26 +18,27 @@ select
 from project.assessor_submission assessor_submission
 inner join project.submission submission on submission.submission_id = assessor_submission.submission_id
 inner join edition.contest    contest    on contest.contest_id       = submission.contest_id
+inner join person.base        person     on person.person_id         = submission.person_id
 where
-    assessor_submission.assessor_id = $1
+    person.email = $1
 `
 
-type GetSubmissionsByAssessorIdRow struct {
+type GetSubmissionsByAssessorEmailRow struct {
 	SubmissionID int32
 	Year         int32
 	Name         string
 	DurationDays int32
 }
 
-func (q *Queries) GetSubmissionsByAssessorId(ctx context.Context, assessorID int32) ([]GetSubmissionsByAssessorIdRow, error) {
-	rows, err := q.db.Query(ctx, getSubmissionsByAssessorId, assessorID)
+func (q *Queries) GetSubmissionsByAssessorEmail(ctx context.Context, email string) ([]GetSubmissionsByAssessorEmailRow, error) {
+	rows, err := q.db.Query(ctx, getSubmissionsByAssessorEmail, email)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetSubmissionsByAssessorIdRow
+	var items []GetSubmissionsByAssessorEmailRow
 	for rows.Next() {
-		var i GetSubmissionsByAssessorIdRow
+		var i GetSubmissionsByAssessorEmailRow
 		if err := rows.Scan(
 			&i.SubmissionID,
 			&i.Year,
