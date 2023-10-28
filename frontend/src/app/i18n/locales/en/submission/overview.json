@@ -5,5 +5,8 @@
     "contest": "Contest",
     "individual": "Individual ratings",
     "initial": "Initial rating",
-    "final": "Final rating"
+    "final": "Final rating",
+    "draftVersion": "Draft version",
+    "finalVersion": "Final version",
+    "givenBy": "given by"
 }

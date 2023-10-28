@@ -1,7 +1,7 @@
 import { PartialRating, Rating } from "./rating";
 
-export interface Assesor {
-    assesorId: number;
+export interface Assessor {
+    assessorId: number;
     personId: number;
     firstName: string;
     lastName: string;
@@ -28,7 +28,7 @@ export interface SubmissionDTO {
     submissionId: number;
     name: string;
     durationDays: string;
-    assesors: Assesor[];
+    assessors: Assessor[];
     ratings: Rating[];
     contest: ContestDTO;
 }

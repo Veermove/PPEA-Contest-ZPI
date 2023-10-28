@@ -1,15 +1,19 @@
 import { useTranslation } from "@/app/i18n/client";
 import { Rating } from "@/services/clap/model/rating";
+import { Assessor } from "@/services/clap/model/submission";
 import { Col, Row } from "react-bootstrap";
 
-function SingleRating({ rating }: { rating: Rating }) {
+function SingleRating({ rating, assessor }: { rating: Rating, assessor?: Assessor }) {
 
-  const {t} = useTranslation('submission/overview');
+  const { t } = useTranslation('submission/overview');
+
+  const buildDisplayedText = () => {
+    return t(rating.type) + (!!assessor ? ` ${t('givenBy')} ${assessor?.firstName} ${assessor?.lastName} ` : '') + (!!rating.isDraft ? `(${t('draftVersion')})` : `(${t('finalVersion')})`);
+  }
 
   return (
     <Row className="text-black">
-      <Col xs={4}>{t(rating.type)}:</Col>
-      <Col xs={8}><p className="font-bold">{rating.points}</p></Col>
+      <Col>{buildDisplayedText()} </Col>
     </Row>
   )
 }

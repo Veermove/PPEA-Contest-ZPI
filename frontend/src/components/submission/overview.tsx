@@ -1,6 +1,6 @@
 import { useTranslation } from "@/app/i18n/client";
 import { Rating, RatingType } from "@/services/clap/model/rating";
-import { Assesor, SubmissionDTO } from "@/services/clap/model/submission";
+import { Assessor, SubmissionDTO } from "@/services/clap/model/submission";
 import { useRouter } from "next/navigation";
 import { Accordion, Button, Col, Container, Row } from "react-bootstrap";
 import SingleRating from "./singleRating";
@@ -9,16 +9,16 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
   const { t } = useTranslation('submission/overview');
   const router = useRouter();
 
-  function buildIndividualRatings(ratings: Rating[], assessors: Assesor[]) {
+  function buildIndividualRatings(ratings: Rating[], assessors: Assessor[]) {
     return (
       <Row className="mt-2 text-black">
         <Row><h6>{t('individual')}:</h6></Row>
         {ratings.map(rating => {
-          const assessor = assessors.find(assessor => assessor.assesorId === rating.assessorId)
+          const assessor = assessors.find(assessor => assessor.assessorId === rating.assessorId)
           return (
             <Row>
-              <Col xs={4}>{assessor?.firstName} {assessor?.lastName}:</Col>
-              <Col xs={8} className="font-bold">{rating.points}</Col>
+              <Col xs={3} className="font-bold">{assessor?.firstName} {assessor?.lastName}:</Col>
+              <Col xs={9}>{rating.isDraft ? t('draftVersion') : t('finalVersion')}</Col>
             </Row>
           )
         })}
@@ -33,15 +33,21 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
     return (
       <Container>
         {
-          (finalRatings.length ? SingleRating({ rating: finalRatings[0] }) :
-            initialRatings.length ? SingleRating({ rating: initialRatings[0] }) :
-              individualRatings.length && buildIndividualRatings(individualRatings, submission.assesors))
+          (finalRatings.length ? SingleRating({ 
+            rating: finalRatings[0], 
+            assessor: submission.assessors.find(assessor => assessor.assessorId === finalRatings[0].assessorId) 
+          }) :
+            initialRatings.length ? SingleRating({ 
+              rating: initialRatings[0],
+              assessor: submission.assessors.find(assessor => assessor.assessorId === initialRatings[0].assessorId) 
+            }) :
+              individualRatings.length && buildIndividualRatings(individualRatings, submission.assessors))
         }
         <Row className="mt-2 text-black">
           <Col xs={4}>{t('assessors')}:</Col>
           <Col xs={8}>
             <ul className="list-disc">
-              {submission.assesors.map(assessor => <li key={assessor.assesorId}>{assessor.firstName} {assessor.lastName}</li>)}
+              {submission.assessors.map(assessor => <li key={assessor.assessorId}>{assessor.firstName} {assessor.lastName}</li>)}
             </ul>
           </Col>
         </Row>
