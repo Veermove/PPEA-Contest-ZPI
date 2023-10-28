@@ -7,12 +7,6 @@ WORKDIR /app
 # Copy the local source code to the container
 COPY . .
 
-ENV PG_STORE_USER=postgres
-ENV PG_STORE_PASSWORD=postgres
-ENV PG_STORE_HOST=localhost
-ENV PG_STORE_PORT=5432
-ENV PG_STORE_DATABASE=datastore
-
 # Build the Go application inside the container
 RUN make build
 
@@ -20,4 +14,4 @@ RUN make build
 EXPOSE 8080
 
 # Define the command to run your application
-CMD ["./data_store"]
+CMD ["./data_store", "-debug", "-initdict"]

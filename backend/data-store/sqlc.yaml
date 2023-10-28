@@ -6,6 +6,6 @@ sql:
     gen:
         go:
             package: "queries"
-            out: "sql"
+            out: "sql/gen"
             sql_package: "pgx/v4"
 

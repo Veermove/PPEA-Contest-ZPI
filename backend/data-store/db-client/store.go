@@ -9,7 +9,7 @@ import (
 	"time"
 
 	pb "zpi/pb"
-	queries "zpi/sql"
+	queries "zpi/sql/gen"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -63,7 +63,7 @@ func GetConnectionString() string {
 	)
 }
 
-func Open(ctx context.Context, log *zap.Logger) (*Store, error) {
+func Open(ctx context.Context, log *zap.Logger, init_dict bool) (*Store, error) {
 	if migErr := RunMigrations(log); migErr != nil {
 		return nil, fmt.Errorf("running migrations: %w", migErr)
 	}
@@ -92,6 +92,23 @@ func Open(ctx context.Context, log *zap.Logger) (*Store, error) {
 	store.Pool, err = pgxpool.ConnectConfig(ctx, config)
 	if err != nil {
 		return nil, err
+	}
+
+	if init_dict {
+		conn, err := store.Pool.Acquire(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("acquiring connection for init dict: %w", err)
+		}
+		defer conn.Release()
+		b, err := os.ReadFile("sql/init/init.sql")
+		if err != nil {
+			return nil, fmt.Errorf("reading init.sql: %w", err)
+		}
+		_, err = conn.Exec(ctx, string(b))
+
+		if err != nil {
+			return nil, fmt.Errorf("executing init.sql: %w", err)
+		}
 	}
 
 	return store, nil
