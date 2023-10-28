@@ -33,13 +33,13 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
     return (
       <Container>
         {
-          (finalRatings.length ? SingleRating({ 
-            rating: finalRatings[0], 
-            assessor: submission.assessors.find(assessor => assessor.assessorId === finalRatings[0].assessorId) 
+          (finalRatings.length ? SingleRating({
+            rating: finalRatings[0],
+            assessor: submission.assessors.find(assessor => assessor.assessorId === finalRatings[0].assessorId)
           }) :
-            initialRatings.length ? SingleRating({ 
+            initialRatings.length ? SingleRating({
               rating: initialRatings[0],
-              assessor: submission.assessors.find(assessor => assessor.assessorId === initialRatings[0].assessorId) 
+              assessor: submission.assessors.find(assessor => assessor.assessorId === initialRatings[0].assessorId)
             }) :
               individualRatings.length && buildIndividualRatings(individualRatings, submission.assessors))
         }

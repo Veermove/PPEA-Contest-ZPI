@@ -3,8 +3,8 @@
 import SubmissionDetails from "@/components/submission/details";
 import { useAuthContext } from "@/context/authContext";
 import { ClapApi } from "@/services/clap/api";
-import { RatingType } from "@/services/clap/model/rating";
 import { SubmissionDTO, SubmissionDetailsDTO } from "@/services/clap/model/submission";
+import { useLocalStorage } from "@uidotdev/usehooks";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
@@ -27,81 +27,80 @@ function Submission({ params }: { params: { submissionId: string } }) {
   // const { data: submissions, error: errorA } = useSWR<SubmissionDTO[]>(() => clapApi.getSubmissions(0))
   // const { data: submissionDetails, error } = useSWR<SubmissionDetailsDTO>(() => clapApi.getSubmissionDetails(id))
 
-  const submissions: SubmissionDTO[] = [
-    {
-      durationDays: "20",
-      name: "Test Submission Name",
-      contest: {
-        contestId: 1,
-        year: 2023
-      },
-      submissionId: 1,
-      assessors: [
-        {
-          assessorId: 1,
-          firstName: "Test",
-          lastName: "Assessor",
-          email: "test@assessor.com",
-          personId: 1
-        }, {
-          assessorId: 2,
-          firstName: "Another",
-          lastName: "Assessor",
-          email: "test@assessor.com",
-          personId: 2
-        }
-      ],
-      ratings: [
-        {
-          ratingId: 1,
-          type: RatingType.INDIVIDUAL,
-          isDraft: false,
-          assessorId: 1
-        }, {
-          ratingId: 2,
-          type: RatingType.INDIVIDUAL,
-          isDraft: false,
-          assessorId: 2
-        }
-      ]
-    }, {
-      durationDays: "25",
-      name: "Really Long Long Long Long Test Submission Name",
-      contest: {
-        contestId: 2,
-        year: 2020
-      },
-      submissionId: 2,
-      assessors: [
-        {
-          assessorId: 3,
-          firstName: "Test",
-          lastName: "Assessor",
-          email: "test@assessor.com",
-          personId: 3
-        }, {
-          assessorId: 4,
-          firstName: "Another",
-          lastName: "Assessor",
-          email: "test@assessor.com",
-          personId: 4
-        }
-      ],
-      ratings: [
-        {
-          ratingId: 6,
-          type: RatingType.FINAL,
-          isDraft: false,
-          assessorId: 4
-        }, {
-          ratingId: 5,
-          type: RatingType.INITIAL,
-          isDraft: false,
-          assessorId: 4
-        }
-      ]
-    }
-  ];
+  // const submission: SubmissionDTO =
+  //   {
+  //     durationDays: "20",
+  //     name: "Test Submission Name",
+  //     contest: {
+  //       contestId: 1,
+  //       year: 2023
+  //     },
+  //     submissionId: 1,
+  //     assessors: [
+  //       {
+  //         assessorId: 1,
+  //         firstName: "Test",
+  //         lastName: "Assessor",
+  //         email: "test@assessor.com",
+  //         personId: 1
+  //       }, {
+  //         assessorId: 2,
+  //         firstName: "Another",
+  //         lastName: "Assessor",
+  //         email: "test@assessor.com",
+  //         personId: 2
+  //       }
+  //     ],
+  //     ratings: [
+  //       {
+  //         ratingId: 1,
+  //         type: RatingType.INDIVIDUAL,
+  //         isDraft: false,
+  //         assessorId: 1
+  //       }, {
+  //         ratingId: 2,
+  //         type: RatingType.INDIVIDUAL,
+  //         isDraft: false,
+  //         assessorId: 2
+  //       }
+  //     ]
+  //   }, {
+  //     durationDays: "25",
+  //     name: "Really Long Long Long Long Test Submission Name",
+  //     contest: {
+  //       contestId: 2,
+  //       year: 2020
+  //     },
+  //     submissionId: 2,
+  //     assessors: [
+  //       {
+  //         assessorId: 3,
+  //         firstName: "Test",
+  //         lastName: "Assessor",
+  //         email: "test@assessor.com",
+  //         personId: 3
+  //       }, {
+  //         assessorId: 4,
+  //         firstName: "Another",
+  //         lastName: "Assessor",
+  //         email: "test@assessor.com",
+  //         personId: 4
+  //       }
+  //     ],
+  //     ratings: [
+  //       {
+  //         ratingId: 6,
+  //         type: RatingType.FINAL,
+  //         isDraft: false,
+  //         assessorId: 4
+  //       }, {
+  //         ratingId: 5,
+  //         type: RatingType.INITIAL,
+  //         isDraft: false,
+  //         assessorId: 4
+  //       }
+  //     ]
+  //   };
 
   const submissionDetails: SubmissionDetailsDTO = {
     durationDays: "20",
@@ -125,7 +124,11 @@ function Submission({ params }: { params: { submissionId: string } }) {
     }
   }
 
+  const [submissions] = useLocalStorage<SubmissionDTO[]>("submissions", []);
   const submission = submissions?.find(submission => submission.submissionId === id)
+  if (!submission) {
+    return redirect('/assessor/submissions');
+  }
 
   const error = false
   if (error || !submission || !submissionDetails) {
