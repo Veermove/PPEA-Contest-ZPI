@@ -34,15 +34,15 @@ function Submissions() {
           year: 2023
       },
       submissionId: 1,
-      assesors: [
+      assessors: [
           {
-            assesorId: 1,
+            assessorId: 1,
             firstName: "Test",
             lastName: "Assessor",
             email: "test@assessor.com",
             personId: 1
           }, {
-            assesorId: 2,
+            assessorId: 2,
             firstName: "Another",
             lastName: "Assessor",
             email: "test@assessor.com",
@@ -53,13 +53,11 @@ function Submissions() {
         {
           ratingId: 1,
           type: RatingType.INDIVIDUAL,
-          points: 10,
           isDraft: false,
           assessorId: 1
         }, {
           ratingId: 2,
           type: RatingType.INDIVIDUAL,
-          points: 10,
           isDraft: false,
           assessorId: 2
         }
@@ -72,15 +70,15 @@ function Submissions() {
           year: 2020
       },
       submissionId: 2,
-      assesors: [
+      assessors: [
           {
-            assesorId: 3,
+            assessorId: 3,
             firstName: "Test",
             lastName: "Assessor",
             email: "test@assessor.com",
             personId: 3
           }, {
-            assesorId: 4,
+            assessorId: 4,
             firstName: "Another",
             lastName: "Assessor",
             email: "test@assessor.com",
@@ -91,13 +89,11 @@ function Submissions() {
         {
           ratingId: 6,
           type: RatingType.FINAL,
-          points: 10,
           isDraft: false,
           assessorId: 4
         }, {
           ratingId: 5,
           type: RatingType.INITIAL,
-          points: 10,
           isDraft: false,
           assessorId: 4
         }

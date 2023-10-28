@@ -5,5 +5,8 @@
     "contest": "Edycja",
     "individual": "Oceny indywidualne",
     "initial": "Ocena wstępna",
-    "final": "Ocena końcowa"
+    "final": "Ocena końcowa",
+    "draftVersion": "Wersja robocza",
+    "finalVersion": "Wersja końcowa",
+    "givenBy": "wystawiona przez"
 }
