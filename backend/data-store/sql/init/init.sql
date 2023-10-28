@@ -5,10 +5,24 @@ truncate table person.ipma_expert cascade;
 truncate table person.applicant cascade;
 truncate table person.ipma_expert cascade;
 truncate table person.assessor cascade;
+
+alter sequence person.applicant_applicant_id_seq                         restart with 1;
+alter sequence person.assessor_assessor_id_seq                           restart with 1;
+alter sequence person.awards_representative_awards_representative_id_seq restart with 1;
+alter sequence person.base_person_id_seq                                 restart with 1;
+alter sequence person.ipma_expert_ipma_expert_id_seq                     restart with 1;
+alter sequence person.jury_member_jury_member_id_seq                     restart with 1;
+
 truncate table edition.contest cascade;
 truncate table edition.jury_member_contest cascade;
 truncate table edition.awards_representative_contest cascade;
 truncate table edition.pem_criterion cascade;
+
+alter sequence edition.awards_representative_contest_awards_representative_contest_seq restart with 1;
+alter sequence edition.contest_contest_id_seq                                          restart with 1;
+alter sequence edition.jury_member_contest_jury_member_contest_id_seq                  restart with 1;
+alter sequence edition.pem_criterion_pem_criterion_id_seq                              restart with 1;
+
 truncate table project.submission cascade;
 truncate table project.application_report cascade;
 truncate table project.assessor_submission cascade;
@@ -16,6 +30,15 @@ truncate table project.applicant_submission cascade;
 truncate table project.rating cascade;
 truncate table project.partial_rating cascade;
 truncate table project.ipma_expert_submission cascade;
+
+alter sequence project.applicant_submission_applicant_submission_id_seq     restart with 1;
+alter sequence project.application_report_application_report_id_seq         restart with 1;
+alter sequence project.assessor_submission_assessor_submission_id_seq       restart with 1;
+alter sequence project.ipma_expert_submission_ipma_expert_submission_id_seq restart with 1;
+alter sequence project.jury_question_jury_question_id_seq                   restart with 1;
+alter sequence project.partial_rating_partial_rating_id_seq                 restart with 1;
+alter sequence project.rating_rating_id_seq                                 restart with 1;
+alter sequence project.submission_submission_id_seq                         restart with 1;
 
 insert into person.base (first_name, last_name, email) values
     ('Rusticanella', 'Gombardino', 'rusticanella.gombardino@email.com'),
