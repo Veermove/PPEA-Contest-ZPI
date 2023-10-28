@@ -18,6 +18,4 @@ public class SubmissionDto {
     private Integer durationDays;
     private List<AssessorDto> assessors;
     private List<RatingDto> ratings;
-
-    private Integer totalRating;
 }

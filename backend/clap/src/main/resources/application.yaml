@@ -19,4 +19,3 @@ frontend:
 firebase:
   issuer: https://securetoken.google.com/zpi-ist-fcbee
   audience: zpi-ist-fcbee
-  email:

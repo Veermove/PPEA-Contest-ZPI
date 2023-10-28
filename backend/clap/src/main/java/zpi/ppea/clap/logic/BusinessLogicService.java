@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -82,10 +84,10 @@ public class BusinessLogicService {
                 log.info("Area: {}, Average Points: {}", area, averagePoints)
         );
 
-        return averagePointsByArea.values().stream()
+        return BigDecimal.valueOf(averagePointsByArea.values().stream()
                 .mapToDouble(Double::doubleValue)
                 .average()
-                .orElse(0.0);
+                .orElse(0.0)).setScale(2, RoundingMode.CEILING).doubleValue();
     }
 
 }

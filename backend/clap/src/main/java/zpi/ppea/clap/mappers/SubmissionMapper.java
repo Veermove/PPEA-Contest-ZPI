@@ -50,6 +50,7 @@ public class SubmissionMapper {
         return ratings.stream()
                 .map(rating -> RatingDto.builder()
                         .ratingId(rating.getRatingId())
+                        .assessorId(rating.getAssessorId())
                         .isDraft(rating.getIsDraft())
                         .type(RatingType.valueOf(rating.getType().name()))
                         .build())

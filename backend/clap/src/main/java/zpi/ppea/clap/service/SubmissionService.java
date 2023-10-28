@@ -8,6 +8,7 @@ import zpi.ppea.clap.config.ValueConfig;
 import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
 import zpi.ppea.clap.dtos.SubmissionDto;
 import zpi.ppea.clap.exceptions.UserNotAuthorizedException;
+import zpi.ppea.clap.logic.BusinessLogicService;
 import zpi.ppea.clap.mappers.DetailedSubmissionMapper;
 import zpi.ppea.clap.mappers.SubmissionMapper;
 
@@ -20,6 +21,7 @@ public class SubmissionService {
     DataStoreGrpc.DataStoreBlockingStub dataStoreBlockingStub;
 
     private final ValueConfig valueConfig;
+    private final BusinessLogicService businessLogicService;
 
     public List<SubmissionDto> getSubmissions() {
         UserClaims userClaims = dataStoreBlockingStub.getUserClaims(UserRequest.newBuilder()
@@ -33,9 +35,7 @@ public class SubmissionService {
                 SubmissionRequest.newBuilder().setAssessorId(userClaims.getAssessorId()).build()
         );
 
-        List<SubmissionDto> submissionDtos = SubmissionMapper.submissionListToDtos(allSubmissionsGrpc.getSubmissionsList());
-
-        return submissionDtos;
+        return SubmissionMapper.submissionListToDtos(allSubmissionsGrpc.getSubmissionsList());
     }
 
     public DetailsSubmissionResponseDto getDetailedSubmission(Integer submissionId) {
@@ -43,7 +43,9 @@ public class SubmissionService {
                 DetailsSubmissionRequest.newBuilder().setSubmissionId(submissionId).build()
         );
 
-        return DetailedSubmissionMapper.mapToDto(detailsSubmissionResponse);
+        DetailsSubmissionResponseDto dto = DetailedSubmissionMapper.mapToDto(detailsSubmissionResponse);
+        dto.setPoints(businessLogicService.getRatingPointsByArea(submissionId));
+        return dto;
     }
 
 }

@@ -10,10 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DetailsSubmissionResponseDto {
-    private int teamSize;
+    private Integer teamSize;
     private String finishDate;
     private ProjectState status;
     private String budget;
     private String description;
     private AppReportDto appReportDto;
+    private Double points;
 }

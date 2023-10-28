@@ -14,5 +14,4 @@ public class RatingDto {
     private boolean isDraft;
     private Integer assessorId;
     private RatingType type;
-    private Integer points;
 }
