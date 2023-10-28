@@ -104,11 +104,15 @@ func Open(ctx context.Context, log *zap.Logger, init_dict bool) (*Store, error) 
 		if err != nil {
 			return nil, fmt.Errorf("reading init.sql: %w", err)
 		}
-		_, err = conn.Exec(ctx, string(b))
 
-		if err != nil {
-			return nil, fmt.Errorf("executing init.sql: %w", err)
+		for i, stmt := range strings.Split(string(b), ";") {
+			_, err = conn.Exec(ctx, stmt)
+
+			if err != nil {
+				return nil, fmt.Errorf("executing init.sql, stmt %d : %w", i, err)
+			}
 		}
+
 	}
 
 	return store, nil

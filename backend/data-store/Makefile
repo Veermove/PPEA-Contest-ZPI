@@ -38,6 +38,11 @@ run:
 	$(GOBUILD) -o $(DEBUG_EXEC) -ldflags "-X main.BuildDate=`date +%Y%m%d-%H%M%S`" $(LOCATED)
 	$(DEBUG_EXEC) -debug
 
+run-dict:
+	@echo "[INFO] Building and running $(DEBUG_EXEC)"
+	$(GOBUILD) -o $(DEBUG_EXEC) -ldflags "-X main.BuildDate=`date +%Y%m%d-%H%M%S`" $(LOCATED)
+	$(DEBUG_EXEC) -debug -initdict
+
 install:
 	@echo "[INFO] Installing dependencies..."
 	$(GOGET)
