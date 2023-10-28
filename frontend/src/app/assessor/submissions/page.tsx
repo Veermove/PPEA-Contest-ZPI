@@ -5,6 +5,7 @@ import { useAuthContext } from "@/context/authContext";
 import { ClapApi } from "@/services/clap/api";
 import { RatingType } from "@/services/clap/model/rating";
 import { SubmissionDTO } from "@/services/clap/model/submission";
+import { useLocalStorage } from "@uidotdev/usehooks";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
@@ -21,6 +22,8 @@ function Submissions() {
       clapApi = new ClapApi( await user.getIdToken())
     })
   })
+
+  const [submissions, setSubmissions] = useLocalStorage<SubmissionDTO[]>("submissions", []);
 
   // const { data: submissionList, error } = useSWR<SubmissionDTO[]>(() => clapApi.getSubmissions(userData?.assessorId!))
   const error = false;
@@ -101,11 +104,13 @@ function Submissions() {
     }
   ];
 
-
   if (error || !submissionList || !submissionList.length) {
     // TODO error handling
     console.error(error)
   }
+
+  setSubmissions(submissionList);
+
   return (
     <>
       <SubmissionList submissionList={submissionList} />
