@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
 import zpi.ppea.clap.dtos.SubmissionDto;
+import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.exceptions.UserNotAuthorizedException;
 import zpi.ppea.clap.service.SubmissionService;
 
@@ -31,8 +32,12 @@ public class SubmissionController {
 
     @ExceptionHandler(UserNotAuthorizedException.class)
     public ResponseEntity<String> handleUserNotAuthorizedException(UserNotAuthorizedException ex) {
-        // Handle the custom exception and return an appropriate response
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(NoAccessToResource.class)
+    public ResponseEntity<String> handleNoAccessToResourceException(NoAccessToResource ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
 }

@@ -12,7 +12,7 @@ services:
       - POSTGRES_PASSWORD=${PG_STORE_PASSWORD}
       - POSTGRES_DB=${PG_STORE_DATABASE}
     ports:
-      - '5432:5432'
+      - '5432'
     volumes:
       - db:/var/lib/postgresql/data
     networks:
@@ -26,7 +26,7 @@ services:
       dockerfile: Dockerfile
     restart: on-failure
     ports:
-      - '8080:8080'
+      - '8080'
     networks:
       - zpi-app
 

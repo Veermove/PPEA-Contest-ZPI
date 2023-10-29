@@ -23,7 +23,7 @@ public class BusinessLogicService {
     @GrpcClient("dataStore")
     DataStoreGrpc.DataStoreBlockingStub dataStoreBlockingStub;
 
-    public Double getRatingPointsByArea(Integer submissionId) {
+    public Double calculateSubmissionRating(Integer submissionId) {
         var ratings = dataStoreBlockingStub.getSubmissionRatings(RatingsSubmissionRequest.newBuilder()
                 .setSubmissionId(submissionId).build());
 
@@ -42,11 +42,11 @@ public class BusinessLogicService {
         Map<Integer, Criterion> criteriaMap = criterias.stream().collect(Collectors.toMap(Criterion::getCriterionId, c -> c));
 
         // Perform the inner join operation
-        List<BigCriterion> innerJoinCriteria = partialRatings.stream()
+        List<RatedCriterion> innerJoinCriteria = partialRatings.stream()
                 .map(partialRating -> {
                     Criterion criterion = criteriaMap.get(partialRating.getCriterionId());
                     if (criterion != null) {
-                        return new BigCriterion(
+                        return new RatedCriterion(
                                 criterion.getCriterionId(),
                                 criterion.getName(),
                                 criterion.getDescription(),
@@ -68,8 +68,8 @@ public class BusinessLogicService {
 
         // Group by "area" and calculate the mean of "points"
         Map<String, Double> averagePointsByArea = innerJoinCriteria.stream()
-                .collect(Collectors.groupingBy(BigCriterion::getArea,
-                        Collectors.averagingInt(BigCriterion::getPoints)));
+                .collect(Collectors.groupingBy(RatedCriterion::getArea,
+                        Collectors.averagingInt(RatedCriterion::getPoints)));
 
         // Print the result
         averagePointsByArea.forEach((area, averagePoints) ->

@@ -16,7 +16,5 @@ public class ValueConfig {
 
     @Value("${firebase.audience}")
     private String firebaseAudience;
-    
-    private String firebaseEmail;
 
 }
