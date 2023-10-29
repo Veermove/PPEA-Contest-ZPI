@@ -6,7 +6,6 @@ import data_store.SubmissionRequest;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
-import zpi.ppea.clap.config.ValueConfig;
 import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
 import zpi.ppea.clap.dtos.SubmissionDto;
 import zpi.ppea.clap.exceptions.NoAccessToResource;
@@ -23,8 +22,7 @@ import java.util.concurrent.ExecutionException;
 public class SubmissionService {
     @GrpcClient("dataStore")
     DataStoreGrpc.DataStoreFutureStub dataStoreFutureStub;
-
-    private final ValueConfig valueConfig;
+    
     private final BusinessLogicService businessLogicService;
     private final TokenDecoder tokenDecoder;
 
@@ -46,7 +44,7 @@ public class SubmissionService {
                 DetailsSubmissionRequest.newBuilder().setSubmissionId(submissionId).build()
         );
 
-        DetailsSubmissionResponseDto dto = null;
+        DetailsSubmissionResponseDto dto;
         try {
             dto = DetailedSubmissionMapper.mapToDto(detailsSubmissionResponse.get());
         } catch (InterruptedException | ExecutionException e) {
