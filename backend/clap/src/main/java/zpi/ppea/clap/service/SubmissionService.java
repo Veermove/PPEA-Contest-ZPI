@@ -46,8 +46,10 @@ public class SubmissionService {
         SubmissionsResponse allAssessorsSubmissions = dataStoreBlockingStub.getSubmissions(
                 SubmissionRequest.newBuilder().setAssessorEmail(valueConfig.getFirebaseEmail()).build()
         );
-        if (!allAssessorsSubmissions.getSubmissionsList().stream().map(Submission::getSubmissionId).toList().contains(submissionId))
+        if (allAssessorsSubmissions.getSubmissionsList().stream()
+                .noneMatch(submission -> submission.getSubmissionId() == submissionId)) {
             throw new NoAccessToResource("No access to this resource");
+        }
     }
 
 }
