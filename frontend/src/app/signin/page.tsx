@@ -12,16 +12,16 @@ function Page() {
   const router = useRouter()
   const { user } = useAuthContext();
 
-  if (user) {
-    router.push("/")
-  }
-
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [error, setError] = React.useState('')
   const [loading, setLoading] = React.useState(false)
 
   const { t } = useTranslation('signin')
+
+  if (!!user) {
+    router.push("/")
+  }
 
   const translateSigninError = (error: Error) => {
     if (error.message.includes('invalid-login-credentials')) {
@@ -34,7 +34,7 @@ function Page() {
     }
   }
 
-  const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     if (!email.match(EMAIL_REGEX)) {
@@ -42,20 +42,21 @@ function Page() {
       return
     }
 
-    try {
-      setLoading(true)
-      setError('')
-      await signIn(email, password);
-      return router.push('/dashboard')
-    } catch (error) {
-      const err = error as Error
-      setError(translateSigninError(err))
-      return console.log(error)
-    } finally {
-      setLoading(false)
-    }
-
+    setLoading(true)
+    setError('')
+    signIn(email, password)
+      .then(() => {
+        router.push('/dashboard')
+      })
+      .catch((error) => {
+        console.error('Error signing in');
+        const err = error as Error
+        setError(translateSigninError(err))
+        return console.error(error)
+      })
+      .finally(() => setLoading(false))
   }
+
   return (
     <div className="d-flex justify-content-center align-items-center h-100 mt-3">
       <div className="form-wrapper p-5">

@@ -14,8 +14,8 @@ function Submissions() {
   let clapApi: ClapApi;
 
   if (!user || !userData?.assessorId) {
-      return redirect('/');
-    }
+    return redirect('/');
+  }
     
   useEffect(() => {
     (async () => {
