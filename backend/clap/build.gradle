@@ -24,6 +24,7 @@ dependencies {
         "org.springframework.boot:spring-boot-starter-security",
         "org.springframework.boot:spring-boot-starter-web",
         "org.projectlombok:lombok",
+        'org.mapstruct:mapstruct:1.5.5.Final',
         "org.bitbucket.b_c:jose4j:0.9.3"
     )
     annotationProcessor (
