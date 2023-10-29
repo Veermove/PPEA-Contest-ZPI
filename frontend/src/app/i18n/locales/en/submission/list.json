@@ -1,4 +1,5 @@
 {
     "activeSubmission": "Active submission",
-    "archiveSubmissions": "Archive submissions"
+    "archiveSubmissions": "Archive submissions",
+    "noSubmissions": "Couldn't find any submissions"
 }
