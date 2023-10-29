@@ -1,12 +1,15 @@
 'use client'
 
+import Error from "@/components/error";
+import Spinner from "@/components/spinner";
 import SubmissionDetails from "@/components/submission/details";
 import { useAuthContext } from "@/context/authContext";
 import { ClapApi } from "@/services/clap/api";
 import { SubmissionDTO, SubmissionDetailsDTO } from "@/services/clap/model/submission";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function Submission({ params }: { params: { submissionId: string } }) {
   const { user } = useAuthContext()
@@ -16,112 +19,9 @@ function Submission({ params }: { params: { submissionId: string } }) {
     return redirect('/');
   }
 
-  useEffect(() => {
-    (async () => {
-      clapApi = new ClapApi(await user.getIdToken())
-    })
-  })
-
   const id = parseInt(params.submissionId)
-
-  // const { data: submissions, error: errorA } = useSWR<SubmissionDTO[]>(() => clapApi.getSubmissions(0))
-  // const { data: submissionDetails, error } = useSWR<SubmissionDetailsDTO>(() => clapApi.getSubmissionDetails(id))
-
-  // const submission: SubmissionDTO =
-  //   {
-  //     durationDays: "20",
-  //     name: "Test Submission Name",
-  //     contest: {
-  //       contestId: 1,
-  //       year: 2023
-  //     },
-  //     submissionId: 1,
-  //     assessors: [
-  //       {
-  //         assessorId: 1,
-  //         firstName: "Test",
-  //         lastName: "Assessor",
-  //         email: "test@assessor.com",
-  //         personId: 1
-  //       }, {
-  //         assessorId: 2,
-  //         firstName: "Another",
-  //         lastName: "Assessor",
-  //         email: "test@assessor.com",
-  //         personId: 2
-  //       }
-  //     ],
-  //     ratings: [
-  //       {
-  //         ratingId: 1,
-  //         type: RatingType.INDIVIDUAL,
-  //         isDraft: false,
-  //         assessorId: 1
-  //       }, {
-  //         ratingId: 2,
-  //         type: RatingType.INDIVIDUAL,
-  //         isDraft: false,
-  //         assessorId: 2
-  //       }
-  //     ]
-  //   }, {
-  //     durationDays: "25",
-  //     name: "Really Long Long Long Long Test Submission Name",
-  //     contest: {
-  //       contestId: 2,
-  //       year: 2020
-  //     },
-  //     submissionId: 2,
-  //     assessors: [
-  //       {
-  //         assessorId: 3,
-  //         firstName: "Test",
-  //         lastName: "Assessor",
-  //         email: "test@assessor.com",
-  //         personId: 3
-  //       }, {
-  //         assessorId: 4,
-  //         firstName: "Another",
-  //         lastName: "Assessor",
-  //         email: "test@assessor.com",
-  //         personId: 4
-  //       }
-  //     ],
-  //     ratings: [
-  //       {
-  //         ratingId: 6,
-  //         type: RatingType.FINAL,
-  //         isDraft: false,
-  //         assessorId: 4
-  //       }, {
-  //         ratingId: 5,
-  //         type: RatingType.INITIAL,
-  //         isDraft: false,
-  //         assessorId: 4
-  //       }
-  //     ]
-  //   };
-
-  const submissionDetails: SubmissionDetailsDTO = {
-    durationDays: "20",
-    name: "Test Submission Name",
-    submissionId: 1,
-    budget: "1 000 000 zł",
-    finishDate: new Date(),
-    description: `
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac fermentum neque, id dapibus ante. Sed cursus congue tempor. Mauris non ante pharetra purus pulvinar sodales id ac sapien. Ut sed vulputate velit. Proin ac risus mi. Maecenas eleifend odio finibus, volutpat sem ut, gravida tortor. Duis dolor lacus, porta pretium ligula at, sodales vulputate ante. Ut suscipit tortor ut convallis varius. Donec porta nunc est, non hendrerit ligula sagittis sed. Nunc nec tempus est, non viverra elit. Phasellus mauris enim, congue ut purus nec, dignissim volutpat sapien. Cras feugiat rhoncus neque, non gravida est aliquet quis. Sed vel magna. 
-    `,
-    teamSize: 10,
-    report: {
-      applicationReportId: 123,
-      projectGoals: 'https://www.google.com',
-      organisationStructure: 'https://www.google.com',
-      divisionOfWork: 'https://www.google.com',
-      projectSchedule: 'https://www.google.com',
-      attachements: 'https://www.google.com',
-      isDraft: false,
-      reportSubmissionDate: new Date()
-    }
+  if (Number.isNaN(id)) {
+    return redirect('/assessor/submissions');
   }
 
   const [submissions] = useLocalStorage<SubmissionDTO[]>("submissions", []);
@@ -130,10 +30,39 @@ function Submission({ params }: { params: { submissionId: string } }) {
     return redirect('/assessor/submissions');
   }
 
-  const error = false
-  if (error || !submission || !submissionDetails) {
-    // TODO error handling
-    console.error(error)
+  const [submissionDetails, setSubmissionDetails] = useState<SubmissionDetailsDTO | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true)
+      if (!clapApi) {
+        clapApi = new ClapApi(await user.getIdToken());
+      }
+      clapApi.getSubmissionDetails(id).then((submissionDetails) => {
+        setSubmissionDetails(submissionDetails);
+      })
+        .catch((error) => {
+          console.error(error);
+          setError(true);
+        })
+        .finally(() => {
+          setLoading(false);
+        })
+    })()
+  }, [])
+
+  const { t } = useTranslation('submission/details')
+
+  if (loading) {
+    return (
+      <Spinner />
+    )
+  } else if (error) {
+    return (
+      <Error text={t('error')} />
+    )
   }
   return (
     <SubmissionDetails submissionDetails={submissionDetails!} submission={submission!} />

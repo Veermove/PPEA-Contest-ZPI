@@ -18,22 +18,20 @@ function SubmissionDetails({ submission, submissionDetails }: { submission: Subm
           <Button className="btn btn-secondary m-2 px-2 text-white" onClick={() => router.push('/assessor/submissions')}>{t('back')}</Button>
         </Col>
         <Col>
-          <Button className="btn btn-primary m-2 px-2 text-white" onClick={() => router.push(`/ratings/${1}`)}>{t('ratings')}</Button>
+          <Button className="btn btn-primary m-2 px-2 text-white" onClick={() => router.push(`/ratings/${submission.submissionId}`)}>{t('ratings')}</Button>
         </Col>
       </Row>
       <Row>
-        {/* <h1 className="text-center text-purple">{t('submissionHeader')} {submission.name}</h1> */}
         <Row>
           <h1 className="text-left text-purple my-2">{t('submissionHeader')} {submission.name}</h1>
         </Row>
       </Row>
       <Row className="mt-2 justify-content-between divide-x max-w-full">
         <Col xs={6} className="max-w-full">
-          <SubmissionDetail value={submissionDetails.durationDays} name="durationDays" valueAlignment="center" />
           <SubmissionDetail value={submissionDetails.teamSize.toString()} name="teamSize" valueAlignment="center" />
-          <SubmissionDetail value={submissionDetails.finishDate.toDateString()} name="finishDate" valueAlignment="center" />
+          <SubmissionDetail value={new Date(submissionDetails.finishDate).toDateString()} name="finishDate" valueAlignment="center" />
           <SubmissionDetail value={submissionDetails.budget} name="budget" valueAlignment="center" />
-          {!!submissionDetails.report?.reportSubmissionDate && <SubmissionDetail value={submissionDetails.report!.reportSubmissionDate!.toDateString()} name="reportSubmissionDate" valueAlignment="center" />}
+          {!!submissionDetails.report?.reportSubmissionDate && <SubmissionDetail value={new Date(submissionDetails.report!.reportSubmissionDate!).toDateString()} name="reportSubmissionDate" valueAlignment="center" />}
           <SubmissionDescription title="description" description={submissionDetails.description} />
         </Col>
         <Col xs={6} className="border-l-2 border-lightgray mr-0 max-w-full">

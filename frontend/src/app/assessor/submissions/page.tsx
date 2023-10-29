@@ -2,6 +2,7 @@
 
 import { useTranslation } from "@/app/i18n/client";
 import Error from "@/components/error";
+import Spinner from "@/components/spinner";
 import SubmissionList from "@/components/submission/list";
 import { useAuthContext } from "@/context/authContext";
 import { ClapApi } from "@/services/clap/api";
@@ -45,21 +46,15 @@ function Submissions() {
   }, [])
 
   if (loading) {
-    return (
-      <div className="d-flex justify-content-center mt-3">
-        <div className="spinner-border text-purple" role="status">
-        </div>
-      </div>
-    )
+    return <Spinner />
   } else if (error || !submissionList.length) {
     return Error({ text: t('noSubmissions') })
-  } else {
-    return (
-      <>
-        <SubmissionList submissionList={submissionList} />
-      </>
-    );
   }
+  return (
+    <>
+      <SubmissionList submissionList={submissionList} />
+    </>
+  );
 }
 
 export default Submissions;
