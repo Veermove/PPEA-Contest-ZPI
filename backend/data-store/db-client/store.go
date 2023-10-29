@@ -127,12 +127,6 @@ func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId int32) (
 		return nil, fmt.Errorf("getting submission details: %w", err)
 	}
 
-	budget, err := details.Budget.EncodeText(nil, []byte{})
-
-	if err != nil { // is it normal that column is in undefined state?
-		budget = []byte{} // hope so
-	}
-
 	var submissionDate string
 	if details.ReportSubmissionDate.Valid && details.ReportSubmissionDate.Time != (time.Time{}) {
 		submissionDate = details.ReportSubmissionDate.Time.Format(time.RFC3339)
@@ -144,7 +138,7 @@ func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId int32) (
 		TeamSize:    details.TeamSize,
 		FinishDate:  details.FinishDate.Format(time.RFC3339),
 		Status:      SubmissionStatesTypesMapping[details.Status],
-		Budget:      string(budget),
+		Budget:      details.SubmissionBudget,
 		Description: details.Description,
 		Report: &pb.AppReport{
 			IsDraft:               details.IsDraft,

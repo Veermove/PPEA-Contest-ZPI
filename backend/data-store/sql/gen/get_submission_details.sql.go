@@ -9,8 +9,6 @@ import (
 	"context"
 	"database/sql"
 	"time"
-
-	"github.com/jackc/pgtype"
 )
 
 const getSubmissionDetails = `-- name: GetSubmissionDetails :one
@@ -18,7 +16,7 @@ select
     submission.team_size,
     submission.finish_date,
     submission.status,
-    submission.budget,
+    submission.budget::text,
     submission.description,
     report.is_draft,
     report.report_submission_date,
@@ -36,7 +34,7 @@ type GetSubmissionDetailsRow struct {
 	TeamSize              int32
 	FinishDate            time.Time
 	Status                ProjectState
-	Budget                pgtype.Numeric
+	SubmissionBudget      string
 	Description           string
 	IsDraft               bool
 	ReportSubmissionDate  sql.NullTime
@@ -54,7 +52,7 @@ func (q *Queries) GetSubmissionDetails(ctx context.Context, submissionID int32) 
 		&i.TeamSize,
 		&i.FinishDate,
 		&i.Status,
-		&i.Budget,
+		&i.SubmissionBudget,
 		&i.Description,
 		&i.IsDraft,
 		&i.ReportSubmissionDate,
