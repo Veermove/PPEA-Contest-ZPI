@@ -83,10 +83,10 @@ public class SubmissionService {
             .criteria(DtoMapper.INSTANCE.criterionListToDto(
                 Optional.ofNullable(resp.getCriteriaList()).orElse(List.of())
             ))
-            .individual(DtoMapper.INSTANCE.assessorRatingsListToDtos(
+            .individualRatings(DtoMapper.INSTANCE.assessorRatingsListToDtos(
                 Optional.ofNullable(resp.getIndividualList()).orElse(List.of())
             ))
-            .initial(DtoMapper.INSTANCE.assessorRatingsToDtos(resp.getInitial()))
+            .initialRating(DtoMapper.INSTANCE.assessorRatingsToDtos(resp.getInitial()))
             .finalRating(DtoMapper.INSTANCE.assessorRatingsToDtos(resp.getInitial()))
             .build();
     }

@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RatingsSubmissionResponseDto {
     private List<CriterionDto> criteria;
-    private List<AssessorRatingsDto> individual;
-    private AssessorRatingsDto initial;
+    private List<AssessorRatingsDto> individualRatings;
+    private AssessorRatingsDto initialRating;
     private AssessorRatingsDto finalRating;
 }
