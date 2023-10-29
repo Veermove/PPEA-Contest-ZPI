@@ -6,8 +6,7 @@ import { useAuthContext } from "@/context/authContext";
 import signIn from "@/services/firebase/auth/signin";
 import { useRouter } from 'next/navigation';
 import React from "react";
-
-const EMAIL_REGEX = /^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
+import isEmail from 'validator/es/lib/isEmail';
 
 function Page() {
   const router = useRouter()
@@ -38,7 +37,7 @@ function Page() {
   const handleForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (!email.match(EMAIL_REGEX)) {
+    if (!isEmail(email)) {
       setError(t('incorrectEmail'))
       return
     }
