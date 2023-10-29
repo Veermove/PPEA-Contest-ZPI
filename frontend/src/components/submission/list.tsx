@@ -6,7 +6,7 @@ import SubmissionOverview from "./overview";
 
 function splitSubmissionList(submissionList: SubmissionDTO[]): { activeSubmissions: SubmissionDTO[], archiveSubmissions: SubmissionDTO[] } {
   return submissionList.reduce((result: { activeSubmissions: SubmissionDTO[], archiveSubmissions: SubmissionDTO[] }, submission) => {
-    result[submission.ratings.filter(rating => rating.type === RatingType.FINAL && rating.isDraft === false).length > 0 ? 'archiveSubmissions' : 'activeSubmissions'].push(submission)
+    result[submission.ratings.filter(rating => rating.type === RatingType.FINAL && rating.draft === false).length > 0 ? 'archiveSubmissions' : 'activeSubmissions'].push(submission)
     return result;
   }, { activeSubmissions: [], archiveSubmissions: [] })
 }

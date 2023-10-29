@@ -2,14 +2,14 @@ import { PEMCriterion } from "./criterion";
 import { AssessorsRatings } from "./submission";
 
 export enum RatingType {
-    INDIVIDUAL = "individual",
-    INITIAL = "initial",
-    FINAL = "final"
+    INDIVIDUAL = "INDIVIDUAL",
+    INITIAL = "INITIAL",
+    FINAL = "FINAL"
 }
 
 export interface Rating {
     ratingId: number;
-    isDraft: boolean;
+    draft: boolean;
     assessorId: number;
     type: RatingType;
 }
