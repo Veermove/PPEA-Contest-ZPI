@@ -10,16 +10,16 @@ import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
 function Submissions() {
-  const { user, userData } = useAuthContext()
+  const { user } = useAuthContext()
   let clapApi: ClapApi;
 
-  if (!user || !userData?.assessorId) {
+  if (!user) {
     return redirect('/');
   }
-    
+
   useEffect(() => {
     (async () => {
-      clapApi = new ClapApi( await user.getIdToken())
+      clapApi = new ClapApi(await user.getIdToken())
     })
   })
 
@@ -33,25 +33,25 @@ function Submissions() {
       durationDays: "20",
       name: "Test Submission Name",
       contest: {
-          contestId: 1,
-          year: 2023
+        contestId: 1,
+        year: 2023
       },
       submissionId: 1,
       assessors: [
-          {
-            assessorId: 1,
-            firstName: "Test",
-            lastName: "Assessor",
-            email: "test@assessor.com",
-            personId: 1
-          }, {
-            assessorId: 2,
-            firstName: "Another",
-            lastName: "Assessor",
-            email: "test@assessor.com",
-            personId: 2
-          }
-        ],
+        {
+          assessorId: 1,
+          firstName: "Test",
+          lastName: "Assessor",
+          email: "test@assessor.com",
+          personId: 1
+        }, {
+          assessorId: 2,
+          firstName: "Another",
+          lastName: "Assessor",
+          email: "test@assessor.com",
+          personId: 2
+        }
+      ],
       ratings: [
         {
           ratingId: 1,
@@ -65,29 +65,29 @@ function Submissions() {
           assessorId: 2
         }
       ]
-    },     {
+    }, {
       durationDays: "25",
       name: "Really Long Long Long Long Test Submission Name",
       contest: {
-          contestId: 2,
-          year: 2020
+        contestId: 2,
+        year: 2020
       },
       submissionId: 2,
       assessors: [
-          {
-            assessorId: 3,
-            firstName: "Test",
-            lastName: "Assessor",
-            email: "test@assessor.com",
-            personId: 3
-          }, {
-            assessorId: 4,
-            firstName: "Another",
-            lastName: "Assessor",
-            email: "test@assessor.com",
-            personId: 4
-          }
-        ],
+        {
+          assessorId: 3,
+          firstName: "Test",
+          lastName: "Assessor",
+          email: "test@assessor.com",
+          personId: 3
+        }, {
+          assessorId: 4,
+          firstName: "Another",
+          lastName: "Assessor",
+          email: "test@assessor.com",
+          personId: 4
+        }
+      ],
       ratings: [
         {
           ratingId: 6,
