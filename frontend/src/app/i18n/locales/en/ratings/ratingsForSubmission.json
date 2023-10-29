@@ -1,5 +1,6 @@
 {
     "finalRating": "Final Rating",
     "initialRating": "Initial Rating",
-    "individualRatings": "Individual Ratings"
+    "individualRatings": "Individual Ratings",
+    "error": "Could not retrieve ratings"
 }

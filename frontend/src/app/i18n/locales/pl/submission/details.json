@@ -1,5 +1,6 @@
 {
     "submissionHeader": "Zgłoszenie projektu",
     "back": "Powrót do listy",
-    "ratings": "Oceny"
+    "ratings": "Oceny",
+    "error": "Nie udało się pobrać danych tego zgłoszenia"
 }
