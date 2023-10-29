@@ -1,6 +1,8 @@
 package zpi.ppea.clap.service;
 
-import data_store.*;
+import data_store.DataStoreGrpc;
+import data_store.DetailsSubmissionRequest;
+import data_store.SubmissionRequest;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
@@ -11,44 +13,60 @@ import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.logic.BusinessLogicService;
 import zpi.ppea.clap.mappers.DetailedSubmissionMapper;
 import zpi.ppea.clap.mappers.SubmissionMapper;
+import zpi.ppea.clap.security.TokenDecoder;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
 public class SubmissionService {
     @GrpcClient("dataStore")
-    DataStoreGrpc.DataStoreBlockingStub dataStoreBlockingStub;
+    DataStoreGrpc.DataStoreFutureStub dataStoreFutureStub;
 
     private final ValueConfig valueConfig;
     private final BusinessLogicService businessLogicService;
+    private final TokenDecoder tokenDecoder;
 
     public List<SubmissionDto> getSubmissions() {
-        SubmissionsResponse allSubmissionsGrpc = dataStoreBlockingStub.getSubmissions(
-                SubmissionRequest.newBuilder().setAssessorEmail(valueConfig.getFirebaseEmail()).build()
+        var allSubmissionsGrpc = dataStoreFutureStub.getSubmissions(
+                SubmissionRequest.newBuilder().setAssessorEmail(tokenDecoder.getEmail()).build()
         );
 
-        return SubmissionMapper.submissionListToDtos(allSubmissionsGrpc.getSubmissionsList());
+        try {
+            return SubmissionMapper.submissionListToDtos(allSubmissionsGrpc.get().getSubmissionsList());
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public DetailsSubmissionResponseDto getDetailedSubmission(Integer submissionId) {
         checkAccessToResource(submissionId);
-        DetailsSubmissionResponse detailsSubmissionResponse = dataStoreBlockingStub.getSubmissionDetails(
+        var detailsSubmissionResponse = dataStoreFutureStub.getSubmissionDetails(
                 DetailsSubmissionRequest.newBuilder().setSubmissionId(submissionId).build()
         );
 
-        DetailsSubmissionResponseDto dto = DetailedSubmissionMapper.mapToDto(detailsSubmissionResponse);
+        DetailsSubmissionResponseDto dto = null;
+        try {
+            dto = DetailedSubmissionMapper.mapToDto(detailsSubmissionResponse.get());
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
         dto.setPoints(businessLogicService.calculateSubmissionRating(submissionId));
         return dto;
     }
 
     private void checkAccessToResource(Integer submissionId) {
-        SubmissionsResponse allAssessorsSubmissions = dataStoreBlockingStub.getSubmissions(
-                SubmissionRequest.newBuilder().setAssessorEmail(valueConfig.getFirebaseEmail()).build()
+        var allAssessorsSubmissions = dataStoreFutureStub.getSubmissions(
+                SubmissionRequest.newBuilder().setAssessorEmail(tokenDecoder.getEmail()).build()
         );
-        if (allAssessorsSubmissions.getSubmissionsList().stream()
-                .noneMatch(submission -> submission.getSubmissionId() == submissionId)) {
-            throw new NoAccessToResource("No access to this resource");
+        try {
+            if (allAssessorsSubmissions.get().getSubmissionsList().stream()
+                    .noneMatch(submission -> submission.getSubmissionId() == submissionId)) {
+                throw new NoAccessToResource("No access to this resource");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
         }
     }
 
