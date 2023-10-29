@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BigCriterion {
+public class RatedCriterion {
     private Integer criterionId;
     private String name;
     private String description;

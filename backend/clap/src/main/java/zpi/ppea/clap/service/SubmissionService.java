@@ -36,7 +36,7 @@ public class SubmissionService {
         );
 
         DetailsSubmissionResponseDto dto = DetailedSubmissionMapper.mapToDto(detailsSubmissionResponse);
-        dto.setPoints(businessLogicService.getRatingPointsByArea(submissionId));
+        dto.setPoints(businessLogicService.calculateSubmissionRating(submissionId));
         return dto;
     }
 
