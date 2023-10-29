@@ -75,3 +75,6 @@ next-env.d.ts
 **/.gradle
 **/build
 **/.iml
+
+**/bin
+**/.vscode

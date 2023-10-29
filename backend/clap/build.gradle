@@ -28,7 +28,8 @@ dependencies {
         "org.bitbucket.b_c:jose4j:0.9.3"
     )
     annotationProcessor (
-        "org.projectlombok:lombok"
+        "org.projectlombok:lombok",
+        "org.mapstruct:mapstruct-processor:1.5.5.Final"
     )
     developmentOnly(
         "org.springframework.boot:spring-boot-devtools"
