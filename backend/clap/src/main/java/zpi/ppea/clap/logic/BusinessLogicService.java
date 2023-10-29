@@ -13,6 +13,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,8 +27,12 @@ public class BusinessLogicService {
         var ratings = dataStoreBlockingStub.getSubmissionRatings(RatingsSubmissionRequest.newBuilder()
                 .setSubmissionId(submissionId).build());
 
-        // Take criterias and partial ratings
-        var criterias = ratings.getCriteriaList();
+        // Take criterias (distinct by id) and partial ratings
+        var criterias = ratings.getCriteriaList().stream()
+                .collect(Collectors.toMap(Criterion::getCriterionId, criterion -> criterion, (existing, replacement) -> existing))
+                .values()
+                .stream()
+                .toList();
         var partialRatings = new ArrayList<PartialRating>();
         partialRatings.addAll(ratings.getFinal().getPartialRatingsList());
         partialRatings.addAll(ratings.getInitial().getPartialRatingsList());
@@ -36,12 +41,11 @@ public class BusinessLogicService {
         // Create a map to index the CriterionDto objects by criterionId
         Map<Integer, Criterion> criteriaMap = criterias.stream().collect(Collectors.toMap(Criterion::getCriterionId, c -> c));
 
-        // Perform the left join operation
-        List<BigCriterion> leftJoinCriteria = partialRatings.stream()
+        // Perform the inner join operation
+        List<BigCriterion> innerJoinCriteria = partialRatings.stream()
                 .map(partialRating -> {
                     Criterion criterion = criteriaMap.get(partialRating.getCriterionId());
                     if (criterion != null) {
-                        // Create a new BigCriterion with the combined information
                         return new BigCriterion(
                                 criterion.getCriterionId(),
                                 criterion.getName(),
@@ -56,26 +60,14 @@ public class BusinessLogicService {
                                 partialRating.getModifiedBy()
                         );
                     } else {
-                        // Create a new BigCriterion with partialRating information
-                        return new BigCriterion(
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                partialRating.getPartialRatingId(),
-                                partialRating.getPoints(),
-                                partialRating.getJustification(),
-                                partialRating.getModified(),
-                                partialRating.getModifiedBy()
-                        );
+                        return null; // Return null for non-matching criteria
                     }
                 })
+                .filter(Objects::nonNull) // Filter out null entries for inner join
                 .toList();
 
         // Group by "area" and calculate the mean of "points"
-        Map<String, Double> averagePointsByArea = leftJoinCriteria.stream()
+        Map<String, Double> averagePointsByArea = innerJoinCriteria.stream()
                 .collect(Collectors.groupingBy(BigCriterion::getArea,
                         Collectors.averagingInt(BigCriterion::getPoints)));
 

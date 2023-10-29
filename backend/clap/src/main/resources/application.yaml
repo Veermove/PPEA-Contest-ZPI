@@ -1,7 +1,7 @@
 grpc:
   client:
     dataStore:
-      address: static://localhost:6565
+      address: static://localhost:8080
       negotiationType: plaintext
 server:
   port: 8000

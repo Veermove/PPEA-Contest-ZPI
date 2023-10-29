@@ -12,23 +12,6 @@ import java.util.Arrays;
 public class GrpcServerMock extends DataStoreGrpc.DataStoreImplBase {
 
     @Override
-    public void getUserClaims(UserRequest request, StreamObserver<UserClaims> responseObserver) {
-        log.info("Email received: {}", request.getEmail());
-        UserClaims userClaims = UserClaims.newBuilder()
-                .setFirstName("John")
-                .setLastName("Doe")
-                .setAssessorId(123)
-                .setPersonId(456)
-                .setAwardsRepresentativeId(789)
-                .setJuryMemberId(101)
-                .setIpmaExpertId(202)
-                .setApplicantId(303)
-                .build();
-        responseObserver.onNext(userClaims);
-        responseObserver.onCompleted();
-    }
-
-    @Override
     public void getSubmissions(SubmissionRequest request, StreamObserver<SubmissionsResponse> responseObserver) {
         SubmissionsResponse submissionResponse = SubmissionsResponse.newBuilder()
                 .addAllSubmissions(Arrays.asList(
