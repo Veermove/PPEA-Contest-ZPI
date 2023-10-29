@@ -19,18 +19,13 @@ export interface ApplicationReport {
     attachements?: string;
 }
 
-interface ContestDTO {
-    contestId: number;
-    year: number;
-}
-
 export interface SubmissionDTO {
     submissionId: number;
     name: string;
     durationDays: string;
     assessors: Assessor[];
     ratings: Rating[];
-    contest: ContestDTO;
+    year: number;
 }
 
 export interface SubmissionDetailsDTO {
