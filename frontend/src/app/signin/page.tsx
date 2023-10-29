@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from "@/app/i18n/client";
+import Spinner from "@/components/spinner";
 import { useAuthContext } from "@/context/authContext";
 import signIn from "@/services/firebase/auth/signin";
 import { useRouter } from 'next/navigation';
@@ -101,8 +102,7 @@ function Page() {
           </div>
           {loading ? (
             <div className="d-flex justify-content-center mt-3">
-              <div className="spinner-border text-purple" role="status">
-              </div>
+              <Spinner />
             </div>
           ) : (
             <button type="submit" className="btn btn-primary w-100 mt-3 text-white">

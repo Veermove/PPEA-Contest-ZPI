@@ -9,9 +9,8 @@ export interface Assessor {
 }
 
 export interface ApplicationReport {
-    applicationReportId: number;
     isDraft: boolean;
-    reportSubmissionDate?: Date;
+    reportSubmissionDate?: string;
     projectGoals?: string;
     organisationStructure?: string;
     divisionOfWork?: string;
@@ -31,7 +30,6 @@ export interface SubmissionDTO {
 export interface SubmissionDetailsDTO {
     submissionId: number;
     name: string;
-    durationDays: string;
     teamSize: number;
     finishDate: Date;
     budget: string;
