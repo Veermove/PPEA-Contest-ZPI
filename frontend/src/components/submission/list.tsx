@@ -1,12 +1,12 @@
 import { useTranslation } from "@/app/i18n/client";
-import { RatingType } from "@/services/clap/model/rating";
 import { SubmissionDTO } from "@/services/clap/model/submission";
 import { Container, Row } from "react-bootstrap";
 import SubmissionOverview from "./overview";
 
 function splitSubmissionList(submissionList: SubmissionDTO[]): { activeSubmissions: SubmissionDTO[], archiveSubmissions: SubmissionDTO[] } {
+  const currentYear = new Date().getFullYear();
   return submissionList.reduce((result: { activeSubmissions: SubmissionDTO[], archiveSubmissions: SubmissionDTO[] }, submission) => {
-    result[submission.ratings.filter(rating => rating.type === RatingType.FINAL && rating.draft === false).length > 0 ? 'archiveSubmissions' : 'activeSubmissions'].push(submission)
+    result[submission.year === currentYear  ? 'activeSubmissions' : 'archiveSubmissions'].push(submission)
     return result;
   }, { activeSubmissions: [], archiveSubmissions: [] })
 }

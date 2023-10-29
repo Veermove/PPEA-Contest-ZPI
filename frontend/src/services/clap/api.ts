@@ -27,7 +27,7 @@ export class ClapApi {
   }
 
   async getSubmissionRatings(submissionId: number): Promise<RatingsDTO> {
-    const response = await fetch(`${this.baseUrl}/submissions/${submissionId}/ratings`, {
+    const response = await fetch(`${this.baseUrl}/submissions/ratings/${submissionId}`, {
       headers: this.defaultHeaders
     });
     return await response.json();
