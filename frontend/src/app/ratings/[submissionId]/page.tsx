@@ -1,12 +1,14 @@
 'use client'
 
+import Error from "@/components/error";
 import Ratings from "@/components/ratings/ratings";
+import Spinner from "@/components/spinner";
 import { useAuthContext } from "@/context/authContext";
 import { ClapApi } from "@/services/clap/api";
 import { PEMCriterion } from "@/services/clap/model/criterion";
 import { RatingType, RatingsDTO } from "@/services/clap/model/rating";
 import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Accordion, AccordionHeader, AccordionItem } from "react-bootstrap";
 import AccordionBody from "react-bootstrap/esm/AccordionBody";
 import { useTranslation } from "react-i18next";
@@ -30,135 +32,44 @@ function RatingsForSubmission({ params }: { params: {submissionId: string} }) {
     return redirect('/');
   }
 
+  const id = parseInt(params.submissionId)
+  if (Number.isNaN(id)) {
+    return Error({ text: t('invalidSubmissionId') })
+  }
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [ratings, setRatings] = useState<RatingsDTO>();
+  const [sortedCriteria, setSortedCriteria] = useState<PEMCriterion[]>([]);
+
   useEffect(() => {
     (async () => {
-      clapApi = new ClapApi(await user.getIdToken())
-    })
-  })
-
-  // const { data: submissionRatings, error } = useSWR<RatingsDTO>(() => clapApi.getSubmissionRatings(submissionId))
-  // const { data: submissionRatings, error } = useSWR<SubmissionDetailsDTO>(() => clapApi.getSubmissionDetails(submissionId))
-
-  const submissionName = 'Test Submission Name'
-
-  const error = false
-  const submissionRatings: RatingsDTO = {
-    finalRating: {
-      firstName: 'Test',
-      lastName: 'Test',
-      partialRatings: [
-        {
-          criterionId: 1,
-          justification: 'Test',
-          points: 15,
-          partialRatingId: 1,
-          lastModified: new Date(),
-        }, {
-          criterionId: 2,
-          justification: 'Test',
-          points: 55,
-          partialRatingId: 2,
-          lastModified: new Date(),
-        }
-      ]
-    },
-    initialRating: {
-      firstName: 'Test',
-      lastName: 'Test',
-      partialRatings: [
-        {
-          criterionId: 1,
-          justification: `
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget iaculis justo. Praesent facilisis lorem a interdum sagittis. Nullam nunc libero, auctor vel facilisis et, dapibus et nunc. Fusce rhoncus posuere lorem, ut posuere ante vulputate vitae. Nulla non ultrices turpis, id hendrerit nisl. Integer quam sem, tempor blandit dictum auctor, iaculis sit amet justo. Curabitur at volutpat massa, non auctor quam. Curabitur vulputate risus non blandit congue. Vivamus non leo vel arcu condimentum pharetra ac ut magna. Sed egestas id ligula et posuere. Etiam fermentum nibh nisl, quis lobortis mi cursus non. Etiam eu imperdiet libero. Ut vel blandit.
-          `,
-          points: 35,
-          partialRatingId: 3,
-          lastModified: new Date(),
-        }, {
-          criterionId: 2,
-          justification: 'Test',
-          points: 55,
-          partialRatingId: 4,
-          lastModified: new Date(),
-        }
-      ]
-    },
-    individualRatings: [
-      {
-        firstName: 'Test',
-        lastName: 'Test',
-        partialRatings: [
-          {
-            criterionId: 1,
-            justification: 'Test',
-            points: 35,
-            partialRatingId: 5,
-            lastModified: new Date(),
-          }, {
-            criterionId: 2,
-            justification: 'Test',
-            points: 55,
-            partialRatingId: 6,
-            lastModified: new Date(),
-          }
-        ]
-      }, {
-        firstName: 'Another',
-        lastName: 'Another',
-        partialRatings: [
-          {
-            criterionId: 1,
-            justification: `
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget iaculis justo. Praesent facilisis lorem a interdum sagittis. Nullam nunc libero, auctor vel facilisis et, dapibus et nunc. Fusce rhoncus posuere lorem, ut posuere ante vulputate vitae. Nulla non ultrices turpis, id hendrerit nisl. Integer quam sem, tempor blandit dictum auctor, iaculis sit amet justo. Curabitur at volutpat massa, non auctor quam. Curabitur vulputate risus non blandit congue. Vivamus non leo vel arcu condimentum pharetra ac ut magna. Sed egestas id ligula et posuere. Etiam fermentum nibh nisl, quis lobortis mi cursus non. Etiam eu imperdiet libero. Ut vel blandit.
-            `,
-            points: 35,
-            partialRatingId: 7,
-            lastModified: new Date(),
-          }, {
-            criterionId: 2,
-            justification: 'Test',
-            points: 55,
-            partialRatingId: 8,
-            lastModified: new Date(),
-          }
-        ]
+      setLoading(true)
+      if (!clapApi) {
+        clapApi = new ClapApi(await user.getIdToken());
       }
-    ],
-    criteria: [
-      {
-        area: 'A',
-        criteria: '1',
-        pemCriterionId: 1,
-        name: 'Test',
-        description: 'Test',
-      }, {
-        area: 'B',
-        criteria: '1',
-        pemCriterionId: 2,
-        name: 'Test',
-        description: 'Test',
-      }
-    ]
+      clapApi.getSubmissionRatings(id).then((ratings) => {
+        setRatings(ratings);
+        setSortedCriteria(ratings.criteria.sort(sortCriteria))
+      })
+        .catch((error) => {
+          console.error(error);
+          setError(true);
+        })
+        .finally(() => {
+          setLoading(false);
+        })
+    })()
+  }, [])
+
+  if (loading) {
+    return <Spinner />
+  } else if (error || !ratings) {
+    return Error({ text: t('error') })
   }
-
-  if (error
-    || !submissionRatings
-    || (!submissionRatings.individualRatings.length
-      && !submissionRatings.initialRating
-      && !submissionRatings.finalRating
-    )
-  ) {
-    // TODO error handling
-    console.error(error)
-  }
-
-  const { individualRatings, initialRating, finalRating, criteria } = submissionRatings!
-  const sortedCriteria = criteria.sort(sortCriteria)
-
   return (
     <div className="my-2 mx-3">
-      <h3 className="my-3 text-purple">{submissionName}</h3>
-      {!!finalRating && (
+      {!!ratings.finalRating && (
         <Accordion className="my-2">
           <AccordionItem eventKey="final">
             <AccordionHeader>
@@ -166,7 +77,7 @@ function RatingsForSubmission({ params }: { params: {submissionId: string} }) {
             </AccordionHeader>
             <AccordionBody>
               <Ratings
-                ratings={[finalRating!]}
+                ratings={[ratings.finalRating!]}
                 criteria={sortedCriteria}
                 type={RatingType.FINAL}
               />
@@ -174,7 +85,7 @@ function RatingsForSubmission({ params }: { params: {submissionId: string} }) {
           </AccordionItem>
         </Accordion>
       )}
-      {!!initialRating && (
+      {!!ratings.initialRating && (
         <Accordion className="my-2">
           <AccordionItem eventKey="initial">
             <AccordionHeader>
@@ -182,7 +93,7 @@ function RatingsForSubmission({ params }: { params: {submissionId: string} }) {
             </AccordionHeader>
             <AccordionBody>
               <Ratings
-                ratings={[initialRating!]}
+                ratings={[ratings.initialRating!]}
                 criteria={sortedCriteria}
                 type={RatingType.INITIAL}
               />
@@ -190,7 +101,7 @@ function RatingsForSubmission({ params }: { params: {submissionId: string} }) {
           </AccordionItem>
         </Accordion>
       )}
-      {!!individualRatings.length && (
+      {!!ratings.individualRatings.length && (
         <Accordion className="my-2">
           <AccordionItem eventKey="individual">
             <AccordionHeader>
@@ -198,7 +109,7 @@ function RatingsForSubmission({ params }: { params: {submissionId: string} }) {
             </AccordionHeader>
             <AccordionBody>
               <Ratings
-                ratings={individualRatings}
+                ratings={ratings.individualRatings}
                 criteria={sortedCriteria}
                 type={RatingType.INDIVIDUAL}
               />
