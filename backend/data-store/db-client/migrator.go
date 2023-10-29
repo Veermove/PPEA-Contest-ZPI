@@ -28,7 +28,7 @@ func RunMigrations(log *zap.Logger) error {
 
 	var migs *migrate.Migrate
 	if migs, err = migrate.NewWithSourceInstance("iofs", dir, connStr); err != nil {
-		return fmt.Errorf("running migration - new with source instance: %w", err)
+		return fmt.Errorf("running migration - new with source instance, conn str: %s : %w", connStr, err)
 	}
 
 	if err = migs.Up(); err == migrate.ErrNoChange {

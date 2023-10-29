@@ -4,7 +4,7 @@ create table person.base (
     "person_id"  int generated always as identity primary key,
     "first_name" text not null,
     "last_name"  text not null,
-    "email"      text not null
+    "email"      text not null unique
 );
 
 -- przedstawiciel_biura_nagrody
@@ -45,7 +45,7 @@ create table person.applicant (
 
 -- asesor
 create table person.assessor (
-    "assessor_id" int generated always as identity primary key,
+    "assessor_id"      int generated always as identity primary key,
     "ipma_expert_id"   int unique not null,
 
     constraint assessor_person_fk

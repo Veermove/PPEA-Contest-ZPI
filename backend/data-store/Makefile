@@ -16,35 +16,42 @@ GOGET := $(GOCMD) get
 all: build
 
 build:
-	@echo "Building $(BINARY_NAME)"
+	@echo "[INFO] Building $(BINARY_NAME)"
 	$(GOBUILD) -o $(BINARY_NAME) -ldflags "-X main.BuildDate=`date +%Y%m%d-%H%M%S`" $(LOCATED)
 
 generate:
-	@echo "Generating $(BINARY_NAME)"
-	@echo "Running generator"
+	@echo "[INFO] Generating $(BINARY_NAME)"
+	@echo "[INFO] Running generator"
 	protoc --go_out=./pb --go_opt=paths=source_relative --go-grpc_out=./pb --go-grpc_opt=paths=source_relative --proto_path=../clap/proto/ $(PROTO_FILES)
+	@echo "[INFO] Running sqlc"
+	sqlc generate
 
 
 clean:
-	@echo "Cleaning up..."
+	@echo "[INFO] Cleaning up..."
 	$(GOCLEAN)
 	rm -f $(BINARY_NAME)
 	rm -f $(DEBUG_EXEC)
 
 run:
-	@echo "Building and running $(DEBUG_EXEC)"
+	@echo "[INFO] Building and running $(DEBUG_EXEC)"
 	$(GOBUILD) -o $(DEBUG_EXEC) -ldflags "-X main.BuildDate=`date +%Y%m%d-%H%M%S`" $(LOCATED)
 	$(DEBUG_EXEC) -debug
 
+run-dict:
+	@echo "[INFO] Building and running $(DEBUG_EXEC)"
+	$(GOBUILD) -o $(DEBUG_EXEC) -ldflags "-X main.BuildDate=`date +%Y%m%d-%H%M%S`" $(LOCATED)
+	$(DEBUG_EXEC) -debug -initdict
+
 install:
-	@echo "Installing dependencies..."
+	@echo "[INFO] Installing dependencies..."
 	$(GOGET)
 
 .PHONY: help
 help:
-	@echo "Available targets:"
-	@echo "  - build: Compile the project."
-	@echo "  - generate: Generate features and protobuf files."
-	@echo "  - clean: Clean up build artifacts."
-	@echo "  - run: Build and run the project."
-	@echo "  - install: Install project dependencies."
+	@echo "[INFO] Available targets:"
+	@echo "[INFO]   - build: Compile the project."
+	@echo "[INFO]   - generate: Generate features and protobuf files."
+	@echo "[INFO]   - clean: Clean up build artifacts."
+	@echo "[INFO]   - run: Build and run the project."
+	@echo "[INFO]   - install: Install project dependencies."

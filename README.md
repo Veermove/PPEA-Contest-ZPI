@@ -1,26 +1,43 @@
 # ZPI Project
-## Polish Project Excellence Award
-Implementation of basic functions.
 
-## Instruction for database
+## Run with docker compose
+* Make sure that you have docker and docker compose installed.
+* Make sure that you created .env file in the root directory of the project, which contains all the environment variables. Follow the .env.example file.
+* Set up following environemnt variables:
+     * POSTGRES_USER= value same as in .env file
+     * POSTGRES_PASSWORD= value same as in .env file
+     * POSTGRES_DB= value same as in .env file
 
-### Prerequisites
-- docker
-- docker-compose
-- create `.env` file with akin to `.env.schema`
-### Datastore
-Start postgresql database using docker compose plugin
+This is due to fact when `db service` is starting it is creating database with name from `POSTGRES_DB` variable and user with name from `POSTGRES_USER` variable and password from `POSTGRES_PASSWORD` variable. And it does not read it from .env file.
+
+Run the following command in the root directory of the project:
 ```bash
-$ docker compose up
+$ docker compose up -d
 ```
-or using docker-compose
+
+If you need to modify specific dockerfiles remember to rebuild the images:
 ```bash
-$ docker-compose up
+$ docker compose up -d --build
+```
+or:
+```bash
+$ docker compose build
+$ docker compose up -d
+```
+
+To stop the containers use:
+```bash
+$ docker compose down
+```
+
+If you need to completely remove the containers and reset database use:
+```bash
+$ docker compose down --volumes
 ```
 
 ### Connect to database
 ```bash
-docker exec -ti pgstore /usr/local/bin/psql -d datastore -U postgres
+docker exec -ti pgstore psql -d datastore -U postgres
 ```
 Remember to use the user and password from .env file.
 

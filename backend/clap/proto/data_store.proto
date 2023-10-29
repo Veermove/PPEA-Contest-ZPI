@@ -7,128 +7,113 @@ option java_outer_classname = "DataStoreProto";
 option go_package = "github.com/Veermove/zpi/data-store";
 
 enum ProjectState {
-  DRAFT = 0;
-  SUBMITTED = 1;
-  ACCEPTED = 2;
-  REJECTED = 3;
+    DRAFT = 0;
+    SUBMITTED = 1;
+    ACCEPTED = 2;
+    REJECTED = 3;
 }
 
 enum RatingType {
-  INDIVIDUAL = 0;
-  INITIAL = 1;
-  FINAL = 2;
+    INDIVIDUAL = 0;
+    INITIAL = 1;
+    FINAL = 2;
 }
 
 message SubmissionRequest {
-  int32 assessor_id = 1;
+    string assessor_email = 1;
 }
 
 message DetailsSubmissionRequest {
-  int32 submission_id = 1;
+    int32 submission_id = 1;
 }
 
 message RatingsSubmissionRequest {
-  int32 submission_id = 1;
-}
-
-message UserRequest {
-  string email = 1;
+    int32 submission_id = 1;
 }
 
 message SubmissionsResponse {
-  repeated Submission submissions = 1;
-}
-
-message UserClaims {
-  string first_name = 1;
-  string last_name = 2;
-  int32  assessor_id = 3;
-  int32  person_id = 4;
-  int32  awards_representative_id = 5;
-  int32  jury_member_id = 6;
-  int32  ipma_expert_id = 7;
-  int32  applicant_id = 8;
+    repeated Submission submissions = 1;
 }
 
 message Submission {
-  int32  submission_id = 1;
-  int32  year = 2;
-  string name = 3;
-  int32  duration_days = 4;
+    int32  submission_id = 1;
+    int32  year          = 2;
+    string name          = 3;
+    int32  duration_days = 4;
 
-  repeated Assessor assessors = 5;
-  repeated Rating   ratings = 6;
+    repeated Assessor assessors = 5;
+    repeated Rating   ratings   = 6;
 }
 
 message Assessor {
-  string first_name = 1;
-  string last_name = 2;
-  int32  assessor_id = 3;
+    string first_name  = 1;
+    string last_name   = 2;
+    int32  assessor_id = 3;
 }
 
 message Rating {
-  int32      rating_id = 1;
-  bool       is_draft = 2;
-  int32      assessor_id = 3;
-  RatingType type = 4;
+    int32      rating_id   = 1;
+    bool       is_draft    = 2;
+    int32      assessor_id = 3;
+    RatingType type        = 4;
 }
 
 message DetailsSubmissionResponse {
-  int32        team_size = 1;
-  string       finish_date = 2;
-  ProjectState status = 3;
-  string       budget = 4;
-  string       description = 5;
-  AppReport    report = 6;
+    int32        team_size   = 1;
+    string       finish_date = 2;
+    ProjectState status      = 3;
+    string       budget      = 4;
+    string       description = 5;
+    AppReport    report      = 6;
 }
 
 message AppReport {
-  bool is_draft = 1;
-  string report_submission_date = 2;
-  string project_goals = 3;
-  string organisation_structure = 4;
-  string division_of_work = 5;
-  string project_schedule = 6;
-  string attatchments = 7;
+    bool is_draft                 = 1;
+    string report_submission_date = 2;
+    string project_goals          = 3;
+    string organisation_structure = 4;
+    string division_of_work       = 5;
+    string project_schedule       = 6;
+    string attatchments           = 7;
 }
 
 message Criterion {
-  int32 criterion_id = 1;
-  string name = 2;
-  string description = 3;
-  string area = 4;
-  string criteria = 5;
-  string subcriteria = 6;
+    int32 criterion_id = 1;
+    string name        = 2;
+    string description = 3;
+    string area        = 4;
+    string criteria    = 5;
+    string subcriteria = 6;
 }
 
 message PartialRating {
-  int32  partial_rating_id = 1;
-  int32  criterion_id = 2;
-  int32  points = 3;
-  string justification = 4;
+    int32  partial_rating_id = 1;
+    int32  criterion_id      = 2;
+    int32  points            = 3;
+    string justification     = 4;
 
-  string modified = 5;
-  int32  modified_by = 6;
+    string modified          = 5;
+    int32  modified_by       = 6;
 }
 
 message AssessorRatings {
-  int32 assessor_id = 1;
-  string first_name = 2;
-  string last_name = 3;
-  repeated PartialRating partial_ratings = 4;
+    int32 assessor_id = 1;
+    string first_name = 2;
+    string last_name  = 3;
+    repeated PartialRating partial_ratings = 4;
 }
 
 message RatingsSubmissionResponse {
-  repeated Criterion criteria = 1;
+    repeated Criterion criteria = 1;
 
-  repeated AssessorRatings individual = 2;
-  AssessorRatings initial = 3;
-  AssessorRatings final = 4;
+    repeated AssessorRatings individual = 2;
+    AssessorRatings initial    = 3;
+    AssessorRatings final      = 4;
 }
 
 service DataStore {
-  rpc GetUserClaims       (UserRequest)              returns (UserClaims)                {}
-  rpc GetSubmissions      (SubmissionRequest)        returns (SubmissionsResponse)       {}
-  rpc GetSubmissionDetails(DetailsSubmissionRequest) returns (DetailsSubmissionResponse) {}
-  rpc GetSubmissionRatings(RatingsSubmissionRequest) returns (RatingsSubmissionResponse) {}
+    rpc GetSubmissions      (SubmissionRequest)        returns (SubmissionsResponse)       {}
+    rpc GetSubmissionDetails(DetailsSubmissionRequest) returns (DetailsSubmissionResponse) {}
+    rpc GetSubmissionRatings(RatingsSubmissionRequest) returns (RatingsSubmissionResponse) {}
 }
+
