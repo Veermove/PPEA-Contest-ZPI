@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
+import zpi.ppea.clap.dtos.RatingsSubmissionResponseDto;
 import zpi.ppea.clap.dtos.SubmissionDto;
 import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.exceptions.UserNotAuthorizedException;
@@ -28,6 +29,11 @@ public class SubmissionController {
     @GetMapping("/{submissionId}")
     public ResponseEntity<DetailsSubmissionResponseDto> getDetailedSubmission(@PathVariable Integer submissionId) {
         return ResponseEntity.ok(submissionService.getDetailedSubmission(submissionId));
+    }
+
+    @GetMapping("/ratings/{submissionId}")
+    public ResponseEntity<RatingsSubmissionResponseDto> getSubmissionRatings(@PathVariable Integer submissionId) {
+        return ResponseEntity.ok(submissionService.getSubmissionRatings(submissionId));
     }
 
     @ExceptionHandler(UserNotAuthorizedException.class)

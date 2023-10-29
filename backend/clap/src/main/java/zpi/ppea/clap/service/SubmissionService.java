@@ -19,6 +19,7 @@ import zpi.ppea.clap.mappers.SubmissionMapper;
 import zpi.ppea.clap.security.TokenDecoder;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -80,14 +81,12 @@ public class SubmissionService {
         }
 
         return RatingsSubmissionResponseDto.builder()
-            .criteria(resp.getCriteriaList() == null
-                ? List.of()
-                : resp.getCriteriaList()
-                    .stream()
-                    .map(s -> DtoMapper.INSTANCE.criterionToDto(s) )
-                    .collect(Collectors.toList())
-            )
-            .individual(DtoMapper.INSTANCE.assessorRatingsListToDtos(resp.getIndividualList()))
+            .criteria(DtoMapper.INSTANCE.criterionListToDto(
+                Optional.ofNullable(resp.getCriteriaList()).orElse(List.of())
+            ))
+            .individual(DtoMapper.INSTANCE.assessorRatingsListToDtos(
+                Optional.ofNullable(resp.getIndividualList()).orElse(List.of())
+            ))
             .initial(DtoMapper.INSTANCE.assessorRatingsToDtos(resp.getInitial()))
             .finalRating(DtoMapper.INSTANCE.assessorRatingsToDtos(resp.getInitial()))
             .build();
