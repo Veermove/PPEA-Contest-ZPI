@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
-
   db:
+    env_file: .env
     image: postgres:13-alpine
-    container_name: pgstore
+    container_name: pgstoree
     hostname: pgstore
     restart: always
     environment:
@@ -12,33 +10,40 @@ services:
       - POSTGRES_PASSWORD=${PG_STORE_PASSWORD}
       - POSTGRES_DB=${PG_STORE_DATABASE}
     ports:
-      - '5432:5432'
+      - '5431:5432'
     volumes:
       - db:/var/lib/postgresql/data
-  
-  frontend:
-    container_name: frontend
-    build: ./frontend
-    restart: on-failure
-    ports:
-      - 3000:3000
-    networks:
-        - full-stack-app
-  
+
+  # dstor:
+  #   env_file: .env
+  #   container_name: dstor
+  #   build:
+  #     context: ./backend/data-store
+  #     dockerfile: Dockerfile
+  #   restart: on-failure
+  #   ports:
+  #     - 8080:8080
+
+  ## THIS DOES NOT WORK, TO BE FIXED:
+  # frontend:
+  #   container_name: frontend
+  #   build: ./frontend
+  #   restart: on-failure
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #       - full-stack-app
+
+  # THIS DOES NOT WORK, TO BE FIXED:
   clap:
     container_name: clap
-    build: ./backend/clap
+    build:
+      context: ./backend/clap
+      dockerfile: Dockerfile
     restart: on-failure
     ports:
       - 8000:8000
-    environment:
-      FRONTEND.ADDRESS: http://frontend:3000
-    networks:
-      - full-stack-app
 
 volumes:
   db:
     driver: local
-
-networks:
-  full-stack-app:
