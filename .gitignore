@@ -75,4 +75,3 @@ next-env.d.ts
 **/.gradle
 **/build
 **/.iml
-**/main/proto

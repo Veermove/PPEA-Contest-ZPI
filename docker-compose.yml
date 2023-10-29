@@ -1,8 +1,7 @@
 version: '3.8'
-
 services:
-
   db:
+    env_file: .env
     image: postgres:13-alpine
     container_name: pgstore
     hostname: pgstore
@@ -15,30 +14,16 @@ services:
       - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
-  
-  frontend:
-    container_name: frontend
-    build: ./frontend
-    restart: on-failure
-    ports:
-      - 3000:3000
-    networks:
-        - full-stack-app
-  
+
   clap:
     container_name: clap
-    build: ./backend/clap
+    build:
+      context: ./backend/clap
+      dockerfile: Dockerfile
     restart: on-failure
     ports:
       - 8000:8000
-    environment:
-      FRONTEND.ADDRESS: http://frontend:3000
-    networks:
-      - full-stack-app
 
 volumes:
   db:
     driver: local
-
-networks:
-  full-stack-app:

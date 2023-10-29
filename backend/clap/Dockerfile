@@ -10,13 +10,13 @@ COPY gradlew.bat /app/
 COPY gradle /app/gradle
 
 # Copy the Gradle build files (build.gradle and settings.gradle)
-COPY build.gradle.kts settings.gradle.kts /app/
+COPY build.gradle settings.gradle /app/
 
 # Copy the entire source code
 COPY src /app/src
 
 # Copy proto files
-COPY proto /app/src/main/proto
+COPY proto proto
 
 # Build the project with Gradle
 RUN ./gradlew build
@@ -25,4 +25,4 @@ RUN ./gradlew build
 EXPOSE 8000
 
 # Define the command to run the Spring Boot application
-CMD ["java", "-jar", "build/libs/clap-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "build/libs/clap.jar"]
