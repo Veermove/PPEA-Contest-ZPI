@@ -74,5 +74,4 @@ next-env.d.ts
 # Gradle files
 **/.gradle
 **/build
-**/gradle
 **/.iml

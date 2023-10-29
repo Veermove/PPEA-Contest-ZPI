@@ -6,7 +6,7 @@ import signIn from "@/services/firebase/auth/signin";
 import { useRouter } from 'next/navigation';
 import React from "react";
 
-const EMAIL_REGEX = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
+const EMAIL_REGEX = /^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[A-Za-z]+$/
 
 function Page() {
   const router = useRouter()
