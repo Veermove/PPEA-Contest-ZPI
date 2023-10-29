@@ -1,7 +1,7 @@
 grpc:
   client:
-    myService:
-      address: static://localhost:6565
+    dataStore:
+      address: static://localhost:8080
       negotiationType: plaintext
 server:
   port: 8000
@@ -11,5 +11,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://zpi-ist-fcbee.firebaseapp.com
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+          jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken%40system.gserviceaccount.com
+
+frontend:
+  address: http://localhost:3000
+
+firebase:
+  issuer: https://securetoken.google.com/zpi-ist-fcbee
+  audience: zpi-ist-fcbee

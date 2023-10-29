@@ -1,12 +1,12 @@
 version: '3.8'
-
 services:
-
   db:
+    env_file: .env
     image: postgres:13-alpine
     container_name: pgstore
     hostname: pgstore
     restart: always
+    # paste here real data or set in system environment
     environment:
       - POSTGRES_USER=${PG_STORE_USER}
       - POSTGRES_PASSWORD=${PG_STORE_PASSWORD}
@@ -15,30 +15,50 @@ services:
       - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
-  
-  frontend:
-    container_name: frontend
-    build: ./frontend
+    networks:
+      - zpi-app
+
+  dstor:
+    env_file: .env
+    container_name: dstor
+    build:
+      context: ./backend/data-store
+      dockerfile: Dockerfile
     restart: on-failure
     ports:
-      - 3000:3000
+      - '8080:8080'
     networks:
-        - full-stack-app
-  
+      - zpi-app
+
   clap:
     container_name: clap
     build:
-      context: ./backend
-      dockerfile: dockerfile-java
+      context: ./backend/clap
+      dockerfile: Dockerfile
     restart: on-failure
     ports:
-      - 8000:8000
+      - '8000:8000'
+    environment:
+      FRONTEND.ADDRESS: http://frontend:3000
+      GRPC.CLIENT.DATASTORE.ADDRESS: static://dstor:8080
     networks:
-      - full-stack-app
+      - zpi-app
+
+  # Correct if you need
+  frontend:
+    container_name: frontend
+    depends_on:
+      - clap
+    build: ./frontend
+    restart: on-failure
+    ports:
+      - '3000:3000'
+    networks:
+      - zpi-app
 
 volumes:
   db:
     driver: local
 
 networks:
-  full-stack-app:
+  zpi-app:

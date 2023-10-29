@@ -1,0 +1,59 @@
+plugins {
+    id("org.springframework.boot") version "3.1.4" // Use the appropriate Spring Boot version
+    id 'com.google.protobuf' version '0.8.17' // Use the appropriate protobuf-gradle-plugin version
+
+    id("io.spring.dependency-management") version "1.1.3"
+    id("io.github.lognet.grpc-spring-boot") version "5.1.5"
+}
+
+apply plugin: 'java'
+
+repositories {
+    google()
+    mavenCentral()
+}
+
+
+dependencies {
+    implementation (
+        "org.springframework.boot:spring-boot-starter",
+        "net.devh:grpc-client-spring-boot-starter:2.15.0.RELEASE",
+        "org.springframework.security:spring-security-oauth2-resource-server",
+        "org.springframework.security:spring-security-oauth2-jose",
+        "org.springframework.security:spring-security-oauth2-client",
+        "org.springframework.boot:spring-boot-starter-security",
+        "org.springframework.boot:spring-boot-starter-web",
+        "org.projectlombok:lombok",
+        "org.bitbucket.b_c:jose4j:0.9.3"
+    )
+    annotationProcessor (
+        "org.projectlombok:lombok"
+    )
+    developmentOnly(
+        "org.springframework.boot:spring-boot-devtools"
+    )
+    testImplementation (
+        "org.springframework.boot:spring-boot-starter-test"
+    )
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.18.0' // Use the appropriate Protobuf compiler version
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {}
+            }
+        }
+    }
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDirs 'proto' // Replace with the actual path to your .proto files
+        }
+    }
+}
