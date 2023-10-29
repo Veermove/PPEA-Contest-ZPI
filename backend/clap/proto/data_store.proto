@@ -20,7 +20,7 @@ enum RatingType {
 }
 
 message SubmissionRequest {
-    int32 assessor_id = 1;
+    string assessor_email = 1;
 }
 
 message DetailsSubmissionRequest {
@@ -64,6 +64,17 @@ message DetailsSubmissionResponse {
     ProjectState status      = 3;
     string       budget      = 4;
     string       description = 5;
+    AppReport    report      = 6;
+}
+
+message AppReport {
+    bool is_draft                 = 1;
+    string report_submission_date = 2;
+    string project_goals          = 3;
+    string organisation_structure = 4;
+    string division_of_work       = 5;
+    string project_schedule       = 6;
+    string attatchments           = 7;
 }
 
 message Criterion {
@@ -76,12 +87,13 @@ message Criterion {
 }
 
 message PartialRating {
-    int32  criterion_id  = 1;
-    int32  points        = 2;
-    string justification = 3;
+    int32  partial_rating_id = 1;
+    int32  criterion_id      = 2;
+    int32  points            = 3;
+    string justification     = 4;
 
-    string modified    = 4;
-    string modified_by = 5;
+    string modified          = 5;
+    int32  modified_by       = 6;
 }
 
 message AssessorRatings {
@@ -94,7 +106,7 @@ message AssessorRatings {
 message RatingsSubmissionResponse {
     repeated Criterion criteria = 1;
 
-    AssessorRatings individual = 2;
+    repeated AssessorRatings individual = 2;
     AssessorRatings initial    = 3;
     AssessorRatings final      = 4;
 }

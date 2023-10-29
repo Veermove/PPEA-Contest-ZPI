@@ -19,8 +19,12 @@ import (
 )
 
 func main() {
-	var debug bool
+	var (
+		debug                bool
+		init_dictionary_data bool
+	)
 	flag.BoolVar(&debug, "debug", false, "debug mode")
+	flag.BoolVar(&init_dictionary_data, "initdict", false, "initialize dictionary data")
 	flag.Parse()
 
 	var (
@@ -32,7 +36,7 @@ func main() {
 
 	l.Debug("debug mode enabled")
 
-	sdb, err := dbclient.Open(ctx, l)
+	sdb, err := dbclient.Open(ctx, l, init_dictionary_data)
 	if err != nil {
 		l.Fatal("opening db", zap.Error(err))
 	}
@@ -42,7 +46,10 @@ func main() {
 		l.Fatal("pinging db", zap.Error(err))
 	}
 
-	store.RegisterDataStoreServer(server, &DataStore{})
+	store.RegisterDataStoreServer(server, &DataStore{
+		Log: l,
+		Db:  sdb,
+	})
 
 	lis, err := net.Listen("tcp4", ":8080")
 
