@@ -3,7 +3,7 @@ select
     submission.team_size,
     submission.finish_date,
     submission.status,
-    submission.budget,
+    submission.budget::text,
     submission.description,
     report.is_draft,
     report.report_submission_date,

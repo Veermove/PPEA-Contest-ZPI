@@ -24,8 +24,9 @@ var (
 )
 
 func (s *DataStore) GetSubmissions(ctx context.Context, req *ds.SubmissionRequest) (*ds.SubmissionsResponse, error) {
+	s.Log.Debug("GetSubmissions", zap.String("assessor_email", req.GetAssessorEmail()))
 	if !emailRegex.MatchString(req.GetAssessorEmail()) {
-		return nil, fmt.Errorf("assessor id is required")
+		return nil, fmt.Errorf("assessor email is required")
 	}
 	return s.Db.GetSubmissionsByAssessor(ctx, req.GetAssessorEmail())
 }
