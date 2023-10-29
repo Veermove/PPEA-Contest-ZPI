@@ -9,6 +9,8 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
   const { t } = useTranslation('submission/overview');
   const router = useRouter();
 
+  console.log(submission);
+
   function buildIndividualRatings(ratings: Rating[], assessors: Assessor[]) {
     return (
       <Row className="mt-2 text-black">
@@ -18,7 +20,7 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
           return (
             <Row>
               <Col xs={3} className="font-bold">{assessor?.firstName} {assessor?.lastName}:</Col>
-              <Col xs={9}>{rating.isDraft ? t('draftVersion') : t('finalVersion')}</Col>
+              <Col xs={9}>{rating.draft ? t('draftVersion') : t('finalVersion')}</Col>
             </Row>
           )
         })}
@@ -33,15 +35,15 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
     return (
       <Container>
         {
-          (finalRatings.length ? SingleRating({
+          (!!finalRatings.length ? SingleRating({
             rating: finalRatings[0],
             assessor: submission.assessors.find(assessor => assessor.assessorId === finalRatings[0].assessorId)
           }) :
-            initialRatings.length ? SingleRating({
+            !!initialRatings.length ? SingleRating({
               rating: initialRatings[0],
               assessor: submission.assessors.find(assessor => assessor.assessorId === initialRatings[0].assessorId)
             }) :
-              individualRatings.length && buildIndividualRatings(individualRatings, submission.assessors))
+              !!individualRatings.length && buildIndividualRatings(individualRatings, submission.assessors))
         }
         <Row className="mt-2 text-black">
           <Col xs={4}>{t('assessors')}:</Col>
@@ -61,7 +63,7 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
         <Accordion.Header>
           <Container>
             <Row>
-              <Col xs={9}><h5 className="text-purple">{t('contest')} {submission.contest.year}</h5></Col>
+              <Col xs={9}><h5 className="text-purple">{t('contest')} {submission.year}</h5></Col>
               <Col xs={3}><h5 className="text-purple">{submission.name.substring(0, 20)}{submission.name.length > 20 && '...'}</h5></Col>
             </Row>
           </Container>

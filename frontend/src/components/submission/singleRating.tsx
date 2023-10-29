@@ -8,7 +8,7 @@ function SingleRating({ rating, assessor }: { rating: Rating, assessor?: Assesso
   const { t } = useTranslation('submission/overview');
 
   const buildDisplayedText = () => {
-    return t(rating.type) + (!!assessor ? ` ${t('givenBy')} ${assessor?.firstName} ${assessor?.lastName} ` : '') + (!!rating.isDraft ? `(${t('draftVersion')})` : `(${t('finalVersion')})`);
+    return t(rating.type.toLocaleLowerCase()) + (!!assessor ? ` ${t('givenBy')} ${assessor?.firstName} ${assessor?.lastName} ` : '') + (!!rating.draft ? `(${t('draftVersion')})` : `(${t('finalVersion')})`);
   }
 
   return (
