@@ -1,5 +1,5 @@
 export interface PEMCriterion {
-    pemCriterionId: number;
+    criterionId: number;
     name: string;
     description: string;
     area: string;

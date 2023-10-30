@@ -7,9 +7,9 @@ import { useAuthContext } from "@/context/authContext";
 import { ClapApi } from "@/services/clap/api";
 import { PEMCriterion } from "@/services/clap/model/criterion";
 import { RatingType, RatingsDTO } from "@/services/clap/model/rating";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Accordion, AccordionHeader, AccordionItem } from "react-bootstrap";
+import { Accordion, AccordionHeader, AccordionItem, Button } from "react-bootstrap";
 import AccordionBody from "react-bootstrap/esm/AccordionBody";
 import { useTranslation } from "react-i18next";
 
@@ -22,8 +22,9 @@ function sortCriteria(a: PEMCriterion, b: PEMCriterion) {
   return a.subcriteria.localeCompare(b.subcriteria)
 }
 
-function RatingsForSubmission({ params }: { params: {submissionId: string} }) {
+function RatingsForSubmission({ params }: { params: { submissionId: string } }) {
   const { user } = useAuthContext()
+  const router = useRouter()
   const { t } = useTranslation('ratings/ratingsForSubmission')
 
   let clapApi: ClapApi;
@@ -69,6 +70,7 @@ function RatingsForSubmission({ params }: { params: {submissionId: string} }) {
   }
   return (
     <div className="my-2 mx-3">
+      <Button className="btn btn-secondary m-2 px-2 text-white" onClick={() => router.push(`/assessor/submissions/${id}`)}>{t('back')}</Button>
       {!!ratings.finalRating && (
         <Accordion className="my-2">
           <AccordionItem eventKey="final">

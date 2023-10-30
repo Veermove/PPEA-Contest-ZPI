@@ -9,8 +9,6 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
   const { t } = useTranslation('submission/overview');
   const router = useRouter();
 
-  console.log(submission);
-
   function buildIndividualRatings(ratings: Rating[], assessors: Assessor[]) {
     return (
       <Row className="mt-2 text-black">

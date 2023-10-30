@@ -9,7 +9,6 @@ export class ClapApi {
 
   constructor(idToken: string) {
     this.defaultHeaders = buildDefaultHeaders(idToken);
-    console.log('baseUrl', this.baseUrl)
   }
 
   async getSubmissions(): Promise<SubmissionDTO[]> {
