@@ -29,10 +29,6 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
 
   let clapApi: ClapApi;
 
-  if (!user) {
-    return redirect('/');
-  }
-
   const id = parseInt(params.submissionId)
   if (Number.isNaN(id)) {
     return Error({ text: t('invalidSubmissionId') })
@@ -44,6 +40,9 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
   const [sortedCriteria, setSortedCriteria] = useState<PEMCriterion[]>([]);
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
     (async () => {
       setLoading(true)
       if (!clapApi) {
@@ -61,9 +60,11 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
           setLoading(false);
         })
     })()
-  }, [])
+  }, [user])
 
-  if (loading) {
+  if (!user) {
+    return redirect('/');
+  } else if (loading) {
     return <Spinner />
   } else if (error || !ratings) {
     return Error({ text: t('error') })

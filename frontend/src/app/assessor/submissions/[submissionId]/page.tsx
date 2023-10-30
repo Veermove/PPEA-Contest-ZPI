@@ -15,10 +15,6 @@ function Submission({ params }: { params: { submissionId: string } }) {
   const { user } = useAuthContext()
   let clapApi: ClapApi;
 
-  if (!user) {
-    return redirect('/');
-  }
-
   const id = parseInt(params.submissionId)
   if (Number.isNaN(id)) {
     return redirect('/assessor/submissions');
@@ -34,7 +30,12 @@ function Submission({ params }: { params: { submissionId: string } }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  const { t } = useTranslation('submission/details')
+
   useEffect(() => {
+    if (!user) {
+      return
+    }
     (async () => {
       setLoading(true)
       if (!clapApi) {
@@ -52,11 +53,11 @@ function Submission({ params }: { params: { submissionId: string } }) {
           setLoading(false);
         })
     })()
-  }, [])
+  }, [user])
 
-  const { t } = useTranslation('submission/details')
-
-  if (loading) {
+  if (!user) {
+    return redirect('/');
+  } else if (loading) {
     return (
       <Spinner />
     )

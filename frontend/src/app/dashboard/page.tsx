@@ -13,12 +13,12 @@ function Dashboard() {
   const { user } = useAuthContext();
   const router = useRouter()
 
-  if (!user) {
-    return router.push('/signin')
-  }
-
   const handleItemClick = (path: string) => {
     return router.push(`${path}`)
+  }
+
+  if (!user) {
+    return router.push('/signin')
   }
 
   return (

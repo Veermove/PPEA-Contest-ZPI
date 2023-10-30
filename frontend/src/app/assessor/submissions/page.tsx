@@ -16,16 +16,15 @@ function Submissions() {
   const { t } = useTranslation('submission/list')
   let clapApi: ClapApi;
 
-  if (!user) {
-    return redirect('/');
-  }
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [_, setSubmissionsLocalStorage] = useLocalStorage<SubmissionDTO[]>("submissions", []);
   const [submissionList, setSubmissionList] = useState<SubmissionDTO[]>([]);
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
     (async () => {
       setLoading(true);
       if (!clapApi) {
@@ -43,9 +42,11 @@ function Submissions() {
           setLoading(false);
         })
     })()
-  }, [])
+  }, [user])
 
-  if (loading) {
+  if (!user) {
+    return redirect('/');
+  } else if (loading) {
     return <Spinner />
   } else if (error || !submissionList.length) {
     return Error({ text: t('noSubmissions') })

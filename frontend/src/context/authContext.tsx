@@ -1,4 +1,5 @@
 'use client'
+import Spinner from '@/components/spinner';
 import firebase_app from '@/services/firebase/config';
 import {
   User,
@@ -33,7 +34,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
-      {loading ? <div>Loading...</div> : children}
+      {loading ? <Spinner /> : children}
     </AuthContext.Provider>
   )
 };

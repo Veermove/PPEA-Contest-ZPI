@@ -13,7 +13,7 @@ function SingleRating({ partialRating, type, firstName, lastName}: {partialRatin
         <Col xs={3} className="text-purple font-bold">{partialRating.points}</Col>
       </Row>
       <Row>
-        <p>{partialRating.justification}</p>
+        {partialRating.justification}
       </Row>
     </Container>
   )

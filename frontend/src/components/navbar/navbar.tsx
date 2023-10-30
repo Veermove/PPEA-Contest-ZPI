@@ -16,18 +16,18 @@ function AppNavbar() {
     changeLanguage(newLocale);
   }
 
+  const { t } = useTranslation('navbar')
+
   const handleLogout = async () => {
     try {
       await logout()
+      router.push("/signin")
+      return null;
     } catch (error) {
       const err = error as Error
       console.error('Unable to logout:' + err.message)
     }
-
-    return router.push("/signin")
   }
-
-  const { t } = useTranslation('navbar')
 
   return (
     <Navbar bg="light" expand="lg" className="px-4 py-3">
@@ -66,7 +66,7 @@ function AppNavbar() {
                     {user?.providerData[0].email}
                   </Nav.Link>
                 ) : <></>}
-                <Nav.Link className="text-purple" onClick={handleLogout}>
+                <Nav.Link className="text-purple" onClick={async() => await handleLogout()}>
                   {t('logout')}
                 </Nav.Link>
               </>

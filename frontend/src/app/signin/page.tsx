@@ -19,10 +19,6 @@ function Page() {
 
   const { t } = useTranslation('signin')
 
-  if (!!user) {
-    router.push("/")
-  }
-
   const translateSigninError = (error: Error) => {
     if (error.message.includes('invalid-login-credentials')) {
       return t('invalidCredentialsError')
@@ -57,6 +53,10 @@ function Page() {
       .finally(() => setLoading(false))
   }
 
+  if (!!user) {
+    return router.push("/")
+  }
+
   return (
     <div className="d-flex justify-content-center align-items-center h-100 mt-3">
       <div className="form-wrapper p-5">
@@ -72,7 +72,7 @@ function Page() {
 
         <h1 className="text-center mb-4 text-purple">{t('signIn')}</h1>
         {error && <div className="alert alert-danger">{error}</div>}
-        <form onSubmit={handleForm} className="form">
+        <form onSubmit={(e) => handleForm(e)} className="form">
           <div className="form-group">
             <label htmlFor="email" className="text-purple">{t('email')}</label>
             <input
