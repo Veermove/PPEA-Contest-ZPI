@@ -35,7 +35,7 @@ services:
     ports:
       - '8000:8000'
     environment:
-      FRONTEND.ADDRESS: http://frontend:3000
+      FRONTEND.ADDRESS: http://localhost:3000
       GRPC.CLIENT.DATASTORE.ADDRESS: static://dstor:8080
 
   # Correct if you need
