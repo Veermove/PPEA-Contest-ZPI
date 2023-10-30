@@ -35,6 +35,7 @@ export interface SubmissionDetailsDTO {
     budget: string;
     description: string;
     report?: ApplicationReport;
+    points: number;
 }
 
 export interface AssessorsRatings {

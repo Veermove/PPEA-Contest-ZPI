@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 
 function Submissions() {
   const { user } = useAuthContext()
-  const { t } = useTranslation('submissions/list')
+  const { t } = useTranslation('submission/list')
   let clapApi: ClapApi;
 
   if (!user) {

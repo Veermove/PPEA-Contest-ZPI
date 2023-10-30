@@ -3,5 +3,6 @@
     "teamSize": "Liczba osób w zespole",
     "budget": "Budżet projektu",
     "reportSubmissionDate": "Data złożenia raportu",
-    "finishDate": "Data ukończenia projektu"
+    "finishDate": "Data ukończenia projektu",
+    "currentRating": "Aktualna ocena"
 }

@@ -28,6 +28,7 @@ function SubmissionDetails({ submission, submissionDetails }: { submission: Subm
       </Row>
       <Row className="mt-2 justify-content-between divide-x max-w-full">
         <Col xs={6} className="max-w-full">
+          <SubmissionDetail value={Math.round(submissionDetails.points).toString()} name="currentRating" valueAlignment="center" />
           <SubmissionDetail value={submissionDetails.teamSize.toString()} name="teamSize" valueAlignment="center" />
           <SubmissionDetail value={new Date(submissionDetails.finishDate).toDateString()} name="finishDate" valueAlignment="center" />
           <SubmissionDetail value={submissionDetails.budget} name="budget" valueAlignment="center" />
