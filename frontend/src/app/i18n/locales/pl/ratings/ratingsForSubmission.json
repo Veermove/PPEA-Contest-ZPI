@@ -1,0 +1,7 @@
+{
+    "finalRating": "Ocena Końcowa",
+    "initialRating": "Ocena Wstępna",
+    "individualRatings": "Oceny Indywidualne",
+    "error": "Nie udało się pobrać ocen",
+    "back": "Powrót do szczegółów zgłoszenia"
+}

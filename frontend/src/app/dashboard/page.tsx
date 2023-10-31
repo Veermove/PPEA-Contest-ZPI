@@ -13,12 +13,12 @@ function Dashboard() {
   const { user } = useAuthContext();
   const router = useRouter()
 
-  if (!user) {
-    return router.push('/signin')
+  const handleItemClick = (path: string) => {
+    return router.push(`${path}`)
   }
 
-  const handleItemClick = (path: string) => {
-    return router.push(`/${path}`)
+  if (!user) {
+    return router.push('/signin')
   }
 
   return (
@@ -27,7 +27,7 @@ function Dashboard() {
         firstTileProps={{
           text: t('projectSubmissions'),
           Icon: LuFolderEdit,
-          onClick: () => handleItemClick("/")
+          onClick: () => handleItemClick("/assessor/submissions")
         }}
         secondTileProps={{
           text: t('initialRatings'),

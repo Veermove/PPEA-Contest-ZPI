@@ -1,0 +1,7 @@
+{
+    "finalRating": "Final Rating",
+    "initialRating": "Initial Rating",
+    "individualRatings": "Individual Ratings",
+    "error": "Could not retrieve ratings",
+    "back": "Back to submissions details"
+}

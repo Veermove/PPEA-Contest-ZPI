@@ -1,11 +1,12 @@
 'use client'
-import React from 'react';
-import {
-  onAuthStateChanged,
-  getAuth,
-  User,
-} from 'firebase/auth';
+import Spinner from '@/components/spinner';
 import firebase_app from '@/services/firebase/config';
+import {
+  User,
+  getAuth,
+  onAuthStateChanged,
+} from 'firebase/auth';
+import React from 'react';
 
 export const auth = getAuth(firebase_app);
 
@@ -24,12 +25,8 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(undefined);
-      }
-      setLoading(false);
+      setUser(!!user ? user : undefined)
+      setLoading(false)
     });
 
     return () => unsubscribe();
@@ -37,7 +34,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
-      {loading ? <div>Loading...</div> : children}
+      {loading ? <Spinner /> : children}
     </AuthContext.Provider>
   )
 };

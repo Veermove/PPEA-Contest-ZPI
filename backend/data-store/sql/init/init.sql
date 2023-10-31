@@ -103,8 +103,8 @@ insert into person.assessor (ipma_expert_id) values (1), (2), (3), (4), (5), (6)
 insert into edition.contest ("year", "master_jury_id", "est_time_individual_assessment", "est_time_preliminary_assessment", "est_time_final_assessment", "est_time_jury_questions", "min_project_duration_days", "min_participant_team_size", "min_subcontractors", "max_project_completion_months", "url_code_of_conduct", "url_schedule", "url_flyer", "url_finalists", "url_results")
 values
     (2023, 1, '2023-11-01', '2023-11-15', '2023-11-30', '2023-12-15', 30, 2, 3, 6, 'http://example.com/code_of_conduct', 'http://example.com/schedule', 'http://example.com/flyer', 'http://example.com/finalists', 'http://example.com/results'),
-    (2024, 2, '2024-10-01', '2024-10-15', '2024-10-30', '2024-11-15', 45, 3, 4, 7, 'http://example.com/code_of_conduct_2024', 'http://example.com/schedule_2024', 'http://example.com/flyer_2024', 'http://example.com/finalists_2024', 'http://example.com/results_2024'),
-    (2025, 3, '2025-09-01', '2025-09-15', '2025-09-30', '2025-10-15', 60, 4, 5, 8, 'http://example.com/code_of_conduct_2025', 'http://example.com/schedule_2025', 'http://example.com/flyer_2025', 'http://example.com/finalists_2025', 'http://example.com/results_2025');
+    (2022, 2, '2022-10-01', '2022-10-15', '2022-10-30', '2022-11-15', 45, 3, 4, 7, 'http://example.com/code_of_conduct_2022', 'http://example.com/schedule_2022', 'http://example.com/flyer_2022', 'http://example.com/finalists_2022', 'http://example.com/results_2022'),
+    (2021, 3, '2021-09-01', '2021-09-15', '2021-09-30', '2021-10-15', 60, 4, 5, 8, 'http://example.com/code_of_conduct_2021', 'http://example.com/schedule_2021', 'http://example.com/flyer_2021', 'http://example.com/finalists_2021', 'http://example.com/results_2021');
 
 insert into edition.jury_member_contest ("contest_id", "jury_member_id")
 values
@@ -199,13 +199,13 @@ insert into project.submission (
 ) values
     (1, 'EcoGlobe', 45, 5, '2023-12-31', 'submitted', 50000.00, 'Rewolucyjny projekt mający na celu stworzenie zrównoważonego świata poprzez innowacyjne technologie i praktyki.'),
     (1, 'AquaBotics', 60, 3, '2023-11-15', 'submitted', 35000.00, 'Podwodna przygoda odkrywająca tajemnice głębokich mórz za pomocą nowoczesnych technologii robotycznych.'),
-    (1, 'SolarScape', 30, 4, '2024-02-28', 'submitted', 75000.00, 'Podróż ku jaśniejszej przyszłości dzięki rozwiązaniom związanym z energią słoneczną.'),
+    (1, 'SolarScape', 30, 4, '2022-02-28', 'submitted', 75000.00, 'Podróż ku jaśniejszej przyszłości dzięki rozwiązaniom związanym z energią słoneczną.'),
     (2, 'UrbanHarmony', 55, 2, '2023-12-31', 'submitted', 40000.00, 'Tworzenie harmonijnych przestrzeni miejskich dla lepszej jakości życia.'),
     (2, 'BioWonders', 40, 6, '2023-11-15', 'submitted', 60000.00, 'Odkrywanie cudów natury poprzez biotechnologię i ochronę środowiska.'),
-    (2, 'SpaceVoyage', 25, 8, '2024-02-28', 'submitted', 90000.00, 'Wyruszenie w podróż, aby odkryć tajemnice kosmosu zewnętrznego.'),
+    (2, 'SpaceVoyage', 25, 8, '2022-02-28', 'submitted', 90000.00, 'Wyruszenie w podróż, aby odkryć tajemnice kosmosu zewnętrznego.'),
     (3, 'FutureFarms', 35, 4, '2023-12-31', 'submitted', 55000.00, 'Pionierskie praktyki zrównoważonej uprawy dla bardziej zielonej przyszłości.'),
     (3, 'TechNest', 50, 3, '2023-11-15', 'submitted', 45000.00, 'Budowa wysokotechnologicznego gniazda dla innowacji i kreatywności.'),
-    (3, 'ArtisanCraft', 65, 7, '2024-02-28', 'submitted', 80000.00, 'Odrodzenie sztuki rzemiosła dla współczesnego świata.');
+    (3, 'ArtisanCraft', 65, 7, '2022-02-28', 'submitted', 80000.00, 'Odrodzenie sztuki rzemiosła dla współczesnego świata.');
 
 insert into project.application_report (
     "submission_id",
