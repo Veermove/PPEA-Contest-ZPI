@@ -41,15 +41,7 @@ var (
 type (
 	Store struct {
 		Pool *pgxpool.Pool
-	}
-
-	Promise[T any] struct {
-		Result chan *Result[T]
-	}
-
-	Result[T any] struct {
-		Err error
-		Val T
+		Log  *zap.Logger
 	}
 )
 
@@ -88,7 +80,7 @@ func Open(ctx context.Context, log *zap.Logger, init_dict bool) (*Store, error) 
 	config.MinConns = MinPgConn
 	config.MaxConnLifetime = 2 * time.Minute
 
-	store := &Store{}
+	store := &Store{Log: log.Named("db-client")}
 	store.Pool, err = pgxpool.ConnectConfig(ctx, config)
 	if err != nil {
 		return nil, err
@@ -155,6 +147,8 @@ func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId int32) (
 func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorEmail string) (*pb.SubmissionsResponse, error) {
 	returnVal := &pb.SubmissionsResponse{Submissions: []*pb.Submission{}}
 
+	st.Log.Debug("GetSubmissionsByAssessor", zap.String("assessor_email", assessorEmail))
+
 	subs, err := queries.New(st.Pool).GetSubmissionsByAssessorEmail(ctx, assessorEmail)
 
 	if err == pgx.ErrNoRows {
@@ -188,6 +182,8 @@ func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorEmail str
 		submission.Ratings = MapRatingsFromSql(ratings)
 		return submission, nil
 	})
+
+	st.Log.Debug("GetSubmissionsByAssessor", zap.Int("submissions", len(submissions)))
 
 	if err != nil {
 		return nil, err
