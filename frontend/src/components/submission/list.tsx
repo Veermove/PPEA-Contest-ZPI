@@ -30,7 +30,7 @@ function SubmissionList({ submissionList }: { submissionList: SubmissionDTO[] })
         {!!archiveSubmissions.length && (
           <>
             <h3>{t('archiveSubmissions')}</h3>
-            {archiveSubmissions.map(submission => <SubmissionOverview submission={submission} isActive={false} />)}
+            {archiveSubmissions.map(submission => <SubmissionOverview submission={submission} isActive={false} key={submission.submissionId} />)}
           </>
         )}
       </Row>

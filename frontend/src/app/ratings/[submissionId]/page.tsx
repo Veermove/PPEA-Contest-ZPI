@@ -8,7 +8,7 @@ import { ClapApi } from "@/services/clap/api";
 import { PEMCriterion } from "@/services/clap/model/criterion";
 import { RatingType, RatingsDTO } from "@/services/clap/model/rating";
 import { redirect, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Accordion, AccordionHeader, AccordionItem, Button } from "react-bootstrap";
 import AccordionBody from "react-bootstrap/esm/AccordionBody";
 import { useTranslation } from "react-i18next";
@@ -27,17 +27,17 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
   const router = useRouter()
   const { t } = useTranslation('ratings/ratingsForSubmission')
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<ReactElement>();
+  const [ratings, setRatings] = useState<RatingsDTO>();
+  const [sortedCriteria, setSortedCriteria] = useState<PEMCriterion[]>([]);
+
   let clapApi: ClapApi;
 
   const id = parseInt(params.submissionId)
   if (Number.isNaN(id)) {
-    return Error({ text: t('invalidSubmissionId') })
+    setError(Error({ text: t('invalidSubmissionId') }))
   }
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [ratings, setRatings] = useState<RatingsDTO>();
-  const [sortedCriteria, setSortedCriteria] = useState<PEMCriterion[]>([]);
 
   useEffect(() => {
     if (!user) {
@@ -45,22 +45,20 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
     }
     (async () => {
       setLoading(true)
-      if (!clapApi) {
-        clapApi = new ClapApi(await user.getIdToken());
-      }
+      const clapApi = new ClapApi(await user.getIdToken());
       clapApi.getSubmissionRatings(id).then((ratings) => {
         setRatings(ratings);
         setSortedCriteria(ratings.criteria.sort(sortCriteria))
       })
         .catch((error) => {
           console.error(error);
-          setError(true);
+          setError(Error({ text: t('error') }));
         })
         .finally(() => {
           setLoading(false);
         })
     })()
-  }, [user])
+  }, [user, id, t])
 
   if (!user) {
     return redirect('/');

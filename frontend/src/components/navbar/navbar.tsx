@@ -4,6 +4,7 @@ import { changeLanguage, useTranslation } from "@/app/i18n/client";
 import { locales } from "@/app/i18n/settings";
 import { useAuthContext } from "@/context/authContext";
 import { logout } from "@/services/firebase/auth/logout";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Dropdown, Nav, Navbar } from "react-bootstrap";
 import './navbar.css';
@@ -32,7 +33,7 @@ function AppNavbar() {
   return (
     <Navbar bg="light" expand="lg" className="px-4 py-3">
       <Navbar.Brand href="/" className="d-flex align-items-center">
-        <img
+        <Image
           src="/img/ppea-logo.png"
           height="60"
           width="120"

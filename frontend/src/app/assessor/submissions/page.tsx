@@ -14,7 +14,6 @@ import { useEffect, useState } from "react";
 function Submissions() {
   const { user } = useAuthContext()
   const { t } = useTranslation('submission/list')
-  let clapApi: ClapApi;
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -27,9 +26,7 @@ function Submissions() {
     }
     (async () => {
       setLoading(true);
-      if (!clapApi) {
-        clapApi = new ClapApi(await user.getIdToken());
-      }
+      const clapApi = new ClapApi(await user.getIdToken());
       clapApi.getSubmissions().then((submissions) => {
         setSubmissionList(submissions);
         setSubmissionsLocalStorage(submissions);
@@ -42,7 +39,7 @@ function Submissions() {
           setLoading(false);
         })
     })()
-  }, [user])
+  }, [user, setSubmissionsLocalStorage])
 
   if (!user) {
     return redirect('/');

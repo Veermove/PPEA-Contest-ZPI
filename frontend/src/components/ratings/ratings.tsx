@@ -13,6 +13,7 @@ function Ratings({ ratings, criteria, type }: { ratings: AssessorsRatings[], cri
       {criteria.map(criterion => {
         return (
           <SingleCriterion
+            key={criterion.criterionId}
             assessorsRatings={ratings}
             criterionName={criterion.name}
             type={type}

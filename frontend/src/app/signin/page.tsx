@@ -4,6 +4,7 @@ import { useTranslation } from "@/app/i18n/client";
 import Spinner from "@/components/spinner";
 import { useAuthContext } from "@/context/authContext";
 import signIn from "@/services/firebase/auth/signin";
+import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import React from "react";
 import isEmail from 'validator/es/lib/isEmail';
@@ -61,7 +62,7 @@ function Page() {
     <div className="d-flex justify-content-center align-items-center h-100 mt-3">
       <div className="form-wrapper p-5">
         <div className="d-flex justify-content-center">
-          <img
+          <Image
             src="/img/ppea-logo.png"
             height="75"
             width="150"

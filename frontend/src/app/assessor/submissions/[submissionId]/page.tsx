@@ -13,18 +13,21 @@ import { useTranslation } from "react-i18next";
 
 function Submission({ params }: { params: { submissionId: string } }) {
   const { user } = useAuthContext()
-  let clapApi: ClapApi;
 
   const id = parseInt(params.submissionId)
-  if (Number.isNaN(id)) {
-    return redirect('/assessor/submissions');
-  }
+  useEffect(() => {
+    if (Number.isNaN(id)) {
+      redirect('/assessor/submissions');
+    }
+  })
 
   const [submissions] = useLocalStorage<SubmissionDTO[]>("submissions", []);
   const submission = submissions?.find(submission => submission.submissionId === id)
-  if (!submission) {
-    return redirect('/assessor/submissions');
-  }
+  useEffect(() => {
+    if (!submission) {
+      return redirect('/assessor/submissions');
+    }
+  })
 
   const [submissionDetails, setSubmissionDetails] = useState<SubmissionDetailsDTO | undefined>(undefined);
   const [loading, setLoading] = useState(true);
@@ -38,9 +41,7 @@ function Submission({ params }: { params: { submissionId: string } }) {
     }
     (async () => {
       setLoading(true)
-      if (!clapApi) {
-        clapApi = new ClapApi(await user.getIdToken());
-      }
+      const clapApi = new ClapApi(await user.getIdToken());
       clapApi.getSubmissionDetails(id).then((submissionDetails) => {
         console.log(submissionDetails);
         setSubmissionDetails(submissionDetails);
@@ -53,7 +54,7 @@ function Submission({ params }: { params: { submissionId: string } }) {
           setLoading(false);
         })
     })()
-  }, [user])
+  }, [user, id])
 
   if (!user) {
     return redirect('/');

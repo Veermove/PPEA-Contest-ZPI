@@ -16,7 +16,7 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
         {ratings.map(rating => {
           const assessor = assessors.find(assessor => assessor.assessorId === rating.assessorId)
           return (
-            <Row>
+            <Row key={rating.ratingId}>
               <Col xs={3} className="font-bold">{assessor?.firstName} {assessor?.lastName}:</Col>
               <Col xs={9}>{rating.draft ? t('draftVersion') : t('finalVersion')}</Col>
             </Row>
