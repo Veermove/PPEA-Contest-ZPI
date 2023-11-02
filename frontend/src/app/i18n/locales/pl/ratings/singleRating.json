@@ -1,6 +1,6 @@
 {
     "assessor": "Asesor",
-    "individual": "Ocena indywidualna",
-    "initial": "Ocena wstępna",
-    "final": "Ocena końcowa"
+    "INDIVIDUAL": "Ocena indywidualna",
+    "INITIAL": "Ocena wstępna",
+    "FINAL": "Ocena końcowa"
 }

@@ -6,10 +6,10 @@ function SingleRating({ partialRating, type, firstName, lastName}: {partialRatin
   const {t} = useTranslation('ratings/singleRating')
   
   return (
-    <Container>
+    <Container className="text-left my-4 mx-0">
       <Row>
-        <Col xs={6} className="text-purple"><h5>{t('assessor')} {firstName} {lastName}</h5></Col>
-        <Col xs={3}>{t(type)}</Col>
+        <Col xs={6} className="text-purple p-0"><h5>{t('assessor')} {firstName} {lastName}</h5></Col>
+        <Col xs={3} >{t(type)}</Col>
         <Col xs={3} className="text-purple font-bold">{partialRating.points}</Col>
       </Row>
       <Row>
