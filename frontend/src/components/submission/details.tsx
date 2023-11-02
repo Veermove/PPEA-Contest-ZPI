@@ -32,15 +32,15 @@ function SubmissionDetails({ submission, submissionDetails }: { submission: Subm
           <SubmissionDetail value={submissionDetails.teamSize.toString()} name="teamSize" valueAlignment="center" />
           <SubmissionDetail value={new Date(submissionDetails.finishDate).toDateString()} name="finishDate" valueAlignment="center" />
           <SubmissionDetail value={submissionDetails.budget} name="budget" valueAlignment="center" />
-          {!!submissionDetails.report?.reportSubmissionDate && <SubmissionDetail value={new Date(submissionDetails.report!.reportSubmissionDate!).toDateString()} name="reportSubmissionDate" valueAlignment="center" />}
+          {!!submissionDetails.appReportDto?.reportSubmissionDate && <SubmissionDetail value={new Date(submissionDetails.appReportDto!.reportSubmissionDate!).toDateString()} name="reportSubmissionDate" valueAlignment="center" />}
           <SubmissionDescription title="description" description={submissionDetails.description} />
         </Col>
         <Col xs={6} className="border-l-2 border-lightgray mr-0 max-w-full">
-          {!!submissionDetails.report?.projectGoals && <SubmissionAttachment url={submissionDetails.report.projectGoals} name={"projectGoals"} />}
-          {!!submissionDetails.report?.organisationStructure && <SubmissionAttachment url={submissionDetails.report.organisationStructure} name={"organisationStructure"} />}
-          {!!submissionDetails.report?.divisionOfWork && <SubmissionAttachment url={submissionDetails.report?.divisionOfWork!} name="divisionOfWork" />}
-          {!!submissionDetails.report?.projectSchedule && <SubmissionAttachment url={submissionDetails.report?.projectSchedule!} name="projectSchedule" />}
-          {!!submissionDetails.report?.attachements && <SubmissionAttachment url={submissionDetails.report?.attachements!} name="attachments" />}
+          {!!submissionDetails.appReportDto?.projectGoals && <SubmissionAttachment url={submissionDetails.appReportDto.projectGoals} name={"projectGoals"} />}
+          {!!submissionDetails.appReportDto?.organisationStructure && <SubmissionAttachment url={submissionDetails.appReportDto.organisationStructure} name={"organisationStructure"} />}
+          {!!submissionDetails.appReportDto?.divisionOfWork && <SubmissionAttachment url={submissionDetails.appReportDto?.divisionOfWork!} name="divisionOfWork" />}
+          {!!submissionDetails.appReportDto?.projectSchedule && <SubmissionAttachment url={submissionDetails.appReportDto?.projectSchedule!} name="projectSchedule" />}
+          {!!submissionDetails.appReportDto?.attachements && <SubmissionAttachment url={submissionDetails.appReportDto?.attachements!} name="attachments" />}
         </Col>
       </Row>
     </Container>

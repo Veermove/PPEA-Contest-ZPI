@@ -43,7 +43,6 @@ function Submission({ params }: { params: { submissionId: string } }) {
       setLoading(true)
       const clapApi = new ClapApi(await user.getIdToken());
       clapApi.getSubmissionDetails(id).then((submissionDetails) => {
-        console.log(submissionDetails);
         setSubmissionDetails(submissionDetails);
       })
         .catch((error) => {

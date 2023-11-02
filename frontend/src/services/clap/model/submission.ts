@@ -34,7 +34,7 @@ export interface SubmissionDetailsDTO {
     finishDate: Date;
     budget: string;
     description: string;
-    report?: ApplicationReport;
+    appReportDto?: ApplicationReport;
     points: number;
 }
 
