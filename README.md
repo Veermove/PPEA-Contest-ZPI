@@ -10,6 +10,8 @@
 
 This is due to fact when `db service` is starting it is creating database with name from `POSTGRES_DB` variable and user with name from `POSTGRES_USER` variable and password from `POSTGRES_PASSWORD` variable. And it does not read it from .env file.
 
+* Make sure that `frontend` will be resolved to your localhost address by the operating system
+
 Run the following command in the root directory of the project:
 ```bash
 $ docker compose up -d
