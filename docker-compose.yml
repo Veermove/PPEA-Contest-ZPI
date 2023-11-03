@@ -44,7 +44,6 @@ services:
 
   # Correct if you need
   frontend:
-    env_file: .env
     container_name: frontend
     depends_on:
       - clap
