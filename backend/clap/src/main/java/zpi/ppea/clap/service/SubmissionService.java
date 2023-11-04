@@ -16,7 +16,6 @@ import zpi.ppea.clap.logic.BusinessLogicService;
 import zpi.ppea.clap.mappers.DetailedSubmissionMapper;
 import zpi.ppea.clap.mappers.DtoMapper;
 import zpi.ppea.clap.mappers.SubmissionMapper;
-import zpi.ppea.clap.security.TokenDecoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,12 +28,12 @@ public class SubmissionService {
     DataStoreGrpc.DataStoreFutureStub dataStoreFutureStub;
 
     private final BusinessLogicService businessLogicService;
-    private final TokenDecoder tokenDecoder;
+//    private final TokenDecoder tokenDecoder;
 
     public List<SubmissionDto> getSubmissions() {
         var allSubmissionsGrpc = dataStoreFutureStub.getSubmissions(
             SubmissionRequest.newBuilder()
-                .setAssessorEmail(tokenDecoder.getEmail())
+//                .setAssessorEmail(tokenDecoder.getEmail())
                 .build()
         );
 
@@ -80,12 +79,8 @@ public class SubmissionService {
         }
 
         return RatingsSubmissionResponseDto.builder()
-            .criteria(DtoMapper.INSTANCE.criterionListToDto(
-                Optional.ofNullable(resp.getCriteriaList()).orElse(List.of())
-            ))
-            .individualRatings(DtoMapper.INSTANCE.assessorRatingsListToDtos(
-                Optional.ofNullable(resp.getIndividualList()).orElse(List.of())
-            ))
+            .criteria(DtoMapper.INSTANCE.criterionListToDto(resp.getCriteriaList()))
+            .individualRatings(DtoMapper.INSTANCE.assessorRatingsListToDtos(resp.getIndividualList()))
             .initialRating(DtoMapper.INSTANCE.assessorRatingsToDtos(resp.getInitial()))
             .finalRating(DtoMapper.INSTANCE.assessorRatingsToDtos(resp.getInitial()))
             .build();
@@ -94,7 +89,7 @@ public class SubmissionService {
 
     private void checkAccessToResource(Integer submissionId) {
         var allAssessorsSubmissions = dataStoreFutureStub.getSubmissions(
-                SubmissionRequest.newBuilder().setAssessorEmail(tokenDecoder.getEmail()).build()
+                SubmissionRequest.newBuilder().setAssessorEmail("tokenDecoder.getEmail()").build()
         );
         try {
             if (allAssessorsSubmissions.get().getSubmissionsList().stream()

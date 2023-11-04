@@ -10,7 +10,7 @@ COPY gradlew.bat /app/
 COPY gradle /app/gradle
 
 # Copy the Gradle build files (build.gradle and settings.gradle)
-COPY build.gradle settings.gradle /app/
+COPY build.gradle settings.gradle log4j2.xml /app/
 
 # Copy the entire source code
 COPY src /app/src
