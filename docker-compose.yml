@@ -58,3 +58,6 @@ services:
 volumes:
   db:
     driver: local
+
+networks:
+  full-stack-app:
