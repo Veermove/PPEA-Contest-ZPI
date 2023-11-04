@@ -103,8 +103,8 @@ insert into person.assessor (ipma_expert_id) values (1), (2), (3), (4), (5), (6)
 insert into edition.contest ("year", "master_jury_id", "est_time_individual_assessment", "est_time_preliminary_assessment", "est_time_final_assessment", "est_time_jury_questions", "min_project_duration_days", "min_participant_team_size", "min_subcontractors", "max_project_completion_months", "url_code_of_conduct", "url_schedule", "url_flyer", "url_finalists", "url_results")
 values
     (2023, 1, '2023-11-01', '2023-11-15', '2023-11-30', '2023-12-15', 30, 2, 3, 6, 'http://example.com/code_of_conduct', 'http://example.com/schedule', 'http://example.com/flyer', 'http://example.com/finalists', 'http://example.com/results'),
-    (2024, 2, '2024-10-01', '2024-10-15', '2024-10-30', '2024-11-15', 45, 3, 4, 7, 'http://example.com/code_of_conduct_2024', 'http://example.com/schedule_2024', 'http://example.com/flyer_2024', 'http://example.com/finalists_2024', 'http://example.com/results_2024'),
-    (2025, 3, '2025-09-01', '2025-09-15', '2025-09-30', '2025-10-15', 60, 4, 5, 8, 'http://example.com/code_of_conduct_2025', 'http://example.com/schedule_2025', 'http://example.com/flyer_2025', 'http://example.com/finalists_2025', 'http://example.com/results_2025');
+    (2022, 2, '2022-10-01', '2022-10-15', '2022-10-30', '2022-11-15', 45, 3, 4, 7, 'http://example.com/code_of_conduct_2022', 'http://example.com/schedule_2022', 'http://example.com/flyer_2022', 'http://example.com/finalists_2022', 'http://example.com/results_2022'),
+    (2021, 3, '2021-09-01', '2021-09-15', '2021-09-30', '2021-10-15', 60, 4, 5, 8, 'http://example.com/code_of_conduct_2021', 'http://example.com/schedule_2021', 'http://example.com/flyer_2021', 'http://example.com/finalists_2021', 'http://example.com/results_2021');
 
 insert into edition.jury_member_contest ("contest_id", "jury_member_id")
 values
@@ -199,28 +199,33 @@ insert into project.submission (
 ) values
     (1, 'EcoGlobe', 45, 5, '2023-12-31', 'submitted', 50000.00, 'Rewolucyjny projekt mający na celu stworzenie zrównoważonego świata poprzez innowacyjne technologie i praktyki.'),
     (1, 'AquaBotics', 60, 3, '2023-11-15', 'submitted', 35000.00, 'Podwodna przygoda odkrywająca tajemnice głębokich mórz za pomocą nowoczesnych technologii robotycznych.'),
-    (1, 'SolarScape', 30, 4, '2024-02-28', 'submitted', 75000.00, 'Podróż ku jaśniejszej przyszłości dzięki rozwiązaniom związanym z energią słoneczną.'),
+    (1, 'SolarScape', 30, 4, '2022-02-28', 'submitted', 75000.00, 'Podróż ku jaśniejszej przyszłości dzięki rozwiązaniom związanym z energią słoneczną.'),
     (2, 'UrbanHarmony', 55, 2, '2023-12-31', 'submitted', 40000.00, 'Tworzenie harmonijnych przestrzeni miejskich dla lepszej jakości życia.'),
     (2, 'BioWonders', 40, 6, '2023-11-15', 'submitted', 60000.00, 'Odkrywanie cudów natury poprzez biotechnologię i ochronę środowiska.'),
-    (2, 'SpaceVoyage', 25, 8, '2024-02-28', 'submitted', 90000.00, 'Wyruszenie w podróż, aby odkryć tajemnice kosmosu zewnętrznego.'),
+    (2, 'SpaceVoyage', 25, 8, '2022-02-28', 'submitted', 90000.00, 'Wyruszenie w podróż, aby odkryć tajemnice kosmosu zewnętrznego.'),
     (3, 'FutureFarms', 35, 4, '2023-12-31', 'submitted', 55000.00, 'Pionierskie praktyki zrównoważonej uprawy dla bardziej zielonej przyszłości.'),
     (3, 'TechNest', 50, 3, '2023-11-15', 'submitted', 45000.00, 'Budowa wysokotechnologicznego gniazda dla innowacji i kreatywności.'),
-    (3, 'ArtisanCraft', 65, 7, '2024-02-28', 'submitted', 80000.00, 'Odrodzenie sztuki rzemiosła dla współczesnego świata.');
+    (3, 'ArtisanCraft', 65, 7, '2022-02-28', 'submitted', 80000.00, 'Odrodzenie sztuki rzemiosła dla współczesnego świata.');
 
 insert into project.application_report (
     "submission_id",
     "is_draft",
-    "report_submission_date"
+    "report_submission_date",
+    "project_goals",
+    "organisation_structure",
+    "division_of_work",
+    "project_schedule",
+    "attatchments"
 ) values
-    (1, false, '2023-10-15'),
-    (2, false, '2023-10-20'),
-    (3, false, '2023-10-25'),
-    (4, false, '2023-10-15'),
-    (5, false, '2023-10-20'),
-    (6, false, '2023-10-25'),
-    (7, false, '2023-10-15'),
-    (8, false, '2023-10-20'),
-    (9, false, '2023-10-25');
+    (1, false, '2023-10-15', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso'),
+    (2, false, '2023-10-20', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso'),
+    (3, false, '2023-10-25', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso'),
+    (4, false, '2023-10-15', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso'),
+    (5, false, '2023-10-20', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso'),
+    (6, false, '2023-10-25', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso'),
+    (7, false, '2023-10-15', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso'),
+    (8, false, '2023-10-20', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso'),
+    (9, false, '2023-10-25', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso', 'https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-installer-amd64.iso');
 
 insert into project.assessor_submission (
     "assessor_id",
@@ -311,42 +316,42 @@ insert into project.partial_rating (
     "justification",
     "modified_by_id"
 ) values
-    (1, 1, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (2, 2, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (3, 3, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (4, 4, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (5, 5, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (6, 6, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (7, 7, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (8, 8, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (9, 9, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (10,10, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (11,11, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (12,1, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (13,2, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (14,19, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (15,19, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (16,19, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (17,19, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (18,19, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (19,19, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (20,1, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (21,20, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (22,20, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (23,20, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (24,20, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (25,20, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (26,1, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (27,1, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (28,4, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (29,4, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (30,4, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (31,4, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (32,3, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (33,3, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (34,3, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (35,3, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (36,3, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1);
+    (1,  1,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (2,  4,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (3,  7,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (4,  10, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (5,  13, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (6,  16, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (7,  19, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (8,  22, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (9,  25, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
+    (10, 28, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
+    (11, 31, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
+    (12, 34, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
+    (13, 2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
+    (14, 5,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (15, 8,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (16, 11, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (17, 14, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (18, 17, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (19, 20, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (20, 23, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (21, 26, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (22, 29, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
+    (23, 32, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (24, 35, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (25, 3,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (26, 6,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (27, 9,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (28, 12, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (29, 15, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (30, 18, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (31, 21, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (32, 24, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (33, 27, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (34, 30, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (35, 33, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
+    (36, 36, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1);
 
 insert into project.ipma_expert_submission (
     "ipma_expert_id",
