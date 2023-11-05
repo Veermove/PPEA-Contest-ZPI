@@ -19,6 +19,8 @@ function SingleCriterion({ assessorsRatings, criterionName, type, id }: { assess
         type={type}
         firstName={assessorRating.firstName}
         lastName={assessorRating.lastName}
+        // TODO isEditable condition
+        isEditable={true}
       />
     }
     return <h6 className="text-purple my-4" key={`criterion-${id}-${type}`}>{t('noRatingsFrom')} {assessorRating.firstName} {assessorRating.lastName}</h6 >
