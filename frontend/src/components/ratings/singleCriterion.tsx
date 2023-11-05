@@ -21,7 +21,7 @@ function SingleCriterion({ assessorsRatings, criterionName, type, id }: { assess
         lastName={assessorRating.lastName}
       />
     }
-    return <h6 className="text-purple my-4" key={`criterion-${id}`}>{t('noRatingsFrom')} {assessorRating.firstName} {assessorRating.lastName}</h6 >
+    return <h6 className="text-purple my-4" key={`criterion-${id}-${type}`}>{t('noRatingsFrom')} {assessorRating.firstName} {assessorRating.lastName}</h6 >
   });
 
 

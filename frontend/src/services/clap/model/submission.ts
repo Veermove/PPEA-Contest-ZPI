@@ -41,6 +41,7 @@ export interface SubmissionDetailsDTO {
 export interface AssessorsRatings {
     firstName: string;
     lastName: string;
+    draft: boolean;
     partialRatings: PartialRating[];
 }
 

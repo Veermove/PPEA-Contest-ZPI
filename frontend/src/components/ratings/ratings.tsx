@@ -3,10 +3,6 @@ import { RatingType } from "@/services/clap/model/rating";
 import { AssessorsRatings } from "@/services/clap/model/submission";
 import SingleCriterion from "./singleCriterion";
 
-function buildCriteriaTranslationKey(criteria: PEMCriterion) {
-  return `criteria.${criteria.area}.${criteria.criteria}${!!criteria.subcriteria ? `.${criteria.subcriteria}` : ''}`
-}
-
 function Ratings({ ratings, criteria, type }: { ratings: AssessorsRatings[], criteria: PEMCriterion[], type: RatingType }) {
   return (
     <>
