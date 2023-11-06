@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package data_store;
 
-import "google/protobuf/Empty.proto";
-
 option java_multiple_files = true;
 option java_outer_classname = "DataStoreProto";
 option go_package = "github.com/Veermove/zpi/data-store";
@@ -126,11 +124,15 @@ message PartialRatingRequest {
     int32 points            = 5;
 }
 
+message UpdateRatingDraft {
+    int32 rating_id = 1;
+}
+
 service DataStore {
     rpc GetSubmissions          (SubmissionRequest)           returns (SubmissionsResponse)       {}
     rpc GetSubmissionDetails    (DetailsSubmissionRequest)    returns (DetailsSubmissionResponse) {}
     rpc GetSubmissionRatings    (RatingsSubmissionRequest)    returns (RatingsSubmissionResponse) {}
     rpc PostNewSubmissionRating (NewSubmissionRatingRequest)  returns (Rating)                    {}
     rpc PostPartialRating       (PartialRatingRequest)        returns (PartialRating)             {}
-    rpc PostSubmitRating        (google.protobuf.Empty)       returns (PartialRating)             {}
+    rpc PostSubmitRating        (UpdateRatingDraft)           returns (PartialRating)             {}
 }
