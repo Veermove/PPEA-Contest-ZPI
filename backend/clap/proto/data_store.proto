@@ -113,7 +113,9 @@ message RatingsSubmissionResponse {
 }
 
 message NewSubmissionRatingRequest {
-    RatingType type = 1;
+    int32 assessor_id   = 1;
+    int32 submission_id = 2;
+    RatingType type     = 3;
 }
 
 message PartialRatingRequest {
@@ -124,7 +126,7 @@ message PartialRatingRequest {
     int32 points            = 5;
 }
 
-message UpdateRatingDraft {
+message SubmitRatingDraft {
     int32 rating_id = 1;
 }
 
@@ -134,5 +136,5 @@ service DataStore {
     rpc GetSubmissionRatings    (RatingsSubmissionRequest)    returns (RatingsSubmissionResponse) {}
     rpc PostNewSubmissionRating (NewSubmissionRatingRequest)  returns (Rating)                    {}
     rpc PostPartialRating       (PartialRatingRequest)        returns (PartialRating)             {}
-    rpc PostSubmitRating        (UpdateRatingDraft)           returns (PartialRating)             {}
+    rpc PostSubmitRating        (SubmitRatingDraft)           returns (PartialRating)             {}
 }
