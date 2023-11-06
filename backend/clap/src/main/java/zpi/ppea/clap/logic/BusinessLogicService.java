@@ -6,6 +6,7 @@ import data_store.PartialRating;
 import data_store.RatingsSubmissionRequest;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,6 +24,7 @@ public class BusinessLogicService {
     @GrpcClient("dataStore")
     DataStoreGrpc.DataStoreBlockingStub dataStoreBlockingStub;
 
+    @Cacheable("calculateTotalRating")
     public Double calculateSubmissionRating(Integer submissionId) {
         var ratings = dataStoreBlockingStub.getSubmissionRatings(RatingsSubmissionRequest.newBuilder()
                 .setSubmissionId(submissionId).build());
