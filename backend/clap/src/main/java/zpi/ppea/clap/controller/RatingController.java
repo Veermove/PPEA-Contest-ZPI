@@ -1,5 +1,6 @@
 package zpi.ppea.clap.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,8 @@ public class RatingController {
     }
 
     @PostMapping("/{submissionId}")
-    public ResponseEntity<RatingDto> createNewRatingForSubmission(@PathVariable Integer submissionId, @RequestBody NewRatingDto newRatingDto) {
+    public ResponseEntity<RatingDto> createNewRatingForSubmission(@PathVariable Integer submissionId,
+                                                                  @Valid @RequestBody NewRatingDto newRatingDto) {
         return ResponseEntity.ok(ratingService.createNewRating(submissionId, newRatingDto));
     }
 

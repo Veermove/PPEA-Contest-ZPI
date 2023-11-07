@@ -25,7 +25,8 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-web",
             "org.springframework.boot:spring-boot-starter-cache",
             "org.projectlombok:lombok",
-            'org.mapstruct:mapstruct:1.5.5.Final',
+            "org.mapstruct:mapstruct:1.5.5.Final",
+            "org.springframework.boot:spring-boot-starter-validation",
             "org.bitbucket.b_c:jose4j:0.9.3"
     )
     annotationProcessor(

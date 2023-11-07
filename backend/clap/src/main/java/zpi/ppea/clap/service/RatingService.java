@@ -40,7 +40,7 @@ public class RatingService {
     public RatingDto createNewRating(Integer submissionId, NewRatingDto newRatingDto) {
         // TODO: Get assessorId from the token
         var rating = ratingsRepository.createNewRating(submissionId, null,
-                RatingType.valueOf(newRatingDto.getType().name()));
+                RatingType.valueOf(newRatingDto.getRatingType().name()));
         return RatingMapper.ratingToDto(rating);
     }
 }
