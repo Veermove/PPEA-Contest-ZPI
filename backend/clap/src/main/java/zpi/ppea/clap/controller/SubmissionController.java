@@ -31,8 +31,11 @@ public class SubmissionController {
         @RequestHeader(name = "Authorization") String bearerToken
     ) {
 
-        var claims = agent.authenticate(bearerToken);
-        return ResponseEntity.ok(dataStoreClient.getSubmissions(claims.getAssessorId()));
+        var auth = agent.authenticate(bearerToken);
+        var claims = auth.x();
+        return ResponseEntity.ok()
+            .header("refresh", auth.y() ? "yes" : "")
+            .body(dataStoreClient.getSubmissions(claims.getAssessorId()));
     }
 
     @GetMapping("/{submissionId}")
@@ -40,13 +43,17 @@ public class SubmissionController {
         @RequestHeader(name = "Authorization") String bearerToken,
         @PathVariable Integer submissionId
     ) {
-        var claims = agent.authenticate(bearerToken);
+
+        var auth = agent.authenticate(bearerToken);
+        var claims = auth.x();
         if (claims.getAssessorId() == 0) {
             throw new NoAccessToResource(String.format("user %s %s has no access to this resource",
                 claims.getLastName(), claims.getFirstName()));
         }
 
-        return ResponseEntity.ok(dataStoreClient.getDetailedSubmission(submissionId, claims.getAssessorId()));
+        return ResponseEntity.ok()
+            .header("refresh", auth.y() ? "yes" : "")
+            .body(dataStoreClient.getDetailedSubmission(submissionId, claims.getAssessorId()));
     }
 
     @GetMapping("/ratings/{submissionId}")
@@ -54,14 +61,18 @@ public class SubmissionController {
         @RequestHeader(name = "Authorization") String bearerToken,
         @PathVariable Integer submissionId
     ) {
-        var claims = agent.authenticate(bearerToken);
+
+        var auth = agent.authenticate(bearerToken);
+        var claims = auth.x();
         if (claims.getAssessorId() == 0) {
             throw new NoAccessToResource(String.format("user %s %s has no access to this resource",
                 claims.getLastName(), claims.getFirstName()));
         }
 
 
-        return ResponseEntity.ok(dataStoreClient.getSubmissionRatings(submissionId, claims.getAssessorId()));
+        return ResponseEntity.ok()
+            .header("refresh", auth.y() ? "yes" : "")
+            .body(dataStoreClient.getSubmissionRatings(submissionId, claims.getAssessorId()));
     }
 
     @ExceptionHandler(UserNotAuthorizedException.class)

@@ -1,6 +1,7 @@
 package zpi.ppea.clap.security;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.Tuple;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,7 +51,7 @@ public class FirebaseAgent {
         log.info("Successfully initialized firebase app");
     }
 
-    public UserClaimsResponse authenticate(String bearerToken)  {
+    public Tuple<UserClaimsResponse, Boolean> authenticate(String bearerToken)  {
         if (!bearerToken.startsWith("Bearer ")) {
             throw new UserNotAuthorizedException("Only bearer token authorization is recognized");
         }
@@ -70,10 +71,10 @@ public class FirebaseAgent {
 
         if (authDone == null || !Objects.equals(authDone, Boolean.TRUE)) {
 
-            log.debug(String.format("user %s was not authenticated. Querying for permissions", decodedToken.getEmail()));
+            log.info(String.format("user %s was not authenticated. Querying for permissions", decodedToken.getEmail()));
 
             var userIds = client.getUserClaims(decodedToken.getEmail());
-            claims = new HashMap<String, Object>(claims);
+            claims = new HashMap<String, Object>();
             claims.put("authdone", true);
             claims.put("first_name", userIds.getFirstName());
             claims.put("last_name", userIds.getLastName());
@@ -91,10 +92,10 @@ public class FirebaseAgent {
                 throw new UserNotAuthorizedException(e.getMessage());
             }
 
-            return userIds;
+            return Tuple.of(userIds, true);
         }
 
-        return UserClaimsResponse.newBuilder()
+        return Tuple.of(UserClaimsResponse.newBuilder()
             .setFirstName((String) claims.get("first_name"))
             .setLastName((String) claims.get("last_name"))
             .setPersonId((Integer) claims.get("person_id"))
@@ -103,6 +104,6 @@ public class FirebaseAgent {
             .setJuryMemberId((Integer) claims.get("jury_member_id"))
             .setIpmaExpertId((Integer) claims.get("ipma_expert_id"))
             .setApplicantId((Integer) claims.get("applicant_id"))
-            .build();
+            .build(), false);
     }
 }
