@@ -22,9 +22,8 @@ import java.util.List;
 @ControllerAdvice
 public class SubmissionController {
 
-    private final DataStoreService dataStoreClient;
+    private final DataStoreService dataStoreService;
     private final FirebaseAgent agent;
-    private final Logger log = LogManager.getLogger("submissions-controller");
 
     @GetMapping
     public ResponseEntity<List<SubmissionDto>> getSubmissions(
@@ -34,7 +33,7 @@ public class SubmissionController {
         var auth = agent.authenticate(bearerToken);
         return ResponseEntity.ok()
             .header("refresh", auth.getRefresh())
-            .body(dataStoreClient.getSubmissions(auth.getClaims().getAssessorId()));
+            .body(dataStoreService.getSubmissions(auth.getClaims().getAssessorId()));
     }
 
     @GetMapping("/{submissionId}")
@@ -46,7 +45,7 @@ public class SubmissionController {
         var auth = agent.authenticate(bearerToken);
         return ResponseEntity.ok()
             .header("refresh", auth.getRefresh())
-            .body(dataStoreClient.getDetailedSubmission(submissionId, auth.getClaims().getAssessorId()));
+            .body(dataStoreService.getDetailedSubmission(submissionId, auth.getClaims().getAssessorId()));
     }
 
     @GetMapping("/ratings/{submissionId}")
@@ -59,7 +58,7 @@ public class SubmissionController {
 
         return ResponseEntity.ok()
             .header("refresh", auth.getRefresh())
-            .body(dataStoreClient.getSubmissionRatings(submissionId, auth.getClaims().getAssessorId()));
+            .body(dataStoreService.getSubmissionRatings(submissionId, auth.getClaims().getAssessorId()));
     }
 
     @ExceptionHandler(UserNotAuthorizedException.class)

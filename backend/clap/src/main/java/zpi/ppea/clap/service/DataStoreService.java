@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
 import zpi.ppea.clap.dtos.RatingsSubmissionResponseDto;
 import zpi.ppea.clap.dtos.SubmissionDto;
+import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.logic.BusinessLogicService;
 import zpi.ppea.clap.mappers.DtoMapper;
 
@@ -20,15 +21,17 @@ public class DataStoreService {
     @GrpcClient("dataStore")
     DataStoreGrpc.DataStoreFutureStub dataStoreFutureStub;
 
-    private final BusinessLogicService businessLogicService;
-
     @SneakyThrows
     public UserClaimsResponse getUserClaims(String email) {
-        return dataStoreFutureStub.getUserClaims(
-            UserRequest.newBuilder()
-                .setEmail(email)
-                .build()
-        ).get();
+        try {
+            return dataStoreFutureStub.getUserClaims(
+                UserRequest.newBuilder()
+                    .setEmail(email)
+                    .build()
+            ).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new NoAccessToResource(e.getMessage());
+        }
     }
 
 
@@ -42,7 +45,7 @@ public class DataStoreService {
         try {
             return DtoMapper.INSTANCE.submissionListToDtos(allSubmissionsGrpc.get().getSubmissionsList());
         } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+            throw new NoAccessToResource(e.getMessage());
         }
     }
 
@@ -58,16 +61,27 @@ public class DataStoreService {
             response = detailsSubmissionResponse.get();
 
         } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+            throw new NoAccessToResource(e.getMessage());
         }
 
         var dto = DtoMapper.INSTANCE.detailsSubmissionToDto(response);
-        dto.setPoints(businessLogicService.calculateSubmissionRating(submissionId));
+        var ratings = getSubmissionRatingsBase(submissionId, assessorId);
+        dto.setPoints(BusinessLogicService.calculateSubmissionRating(ratings, submissionId, assessorId));
         return dto;
     }
 
 
     public RatingsSubmissionResponseDto getSubmissionRatings(Integer submissionId, Integer assessorId) {
+        var resp = getSubmissionRatingsBase(submissionId, assessorId);
+        return RatingsSubmissionResponseDto.builder()
+            .criteria(DtoMapper.INSTANCE.criterionListToDto(resp.getCriteriaList()))
+            .individualRatings(DtoMapper.INSTANCE.assessorRatingsListToDtos(resp.getIndividualList()))
+            .initialRating(DtoMapper.INSTANCE.assessorRatingsToDtos(resp.getInitial()))
+            .finalRating(DtoMapper.INSTANCE.assessorRatingsToDtos(resp.getInitial()))
+            .build();
+    }
+
+    public RatingsSubmissionResponse getSubmissionRatingsBase(Integer submissionId, Integer assessorId) {
         var ft = dataStoreFutureStub.getSubmissionRatings(RatingsSubmissionRequest.newBuilder()
             .setAssessorId(assessorId)
             .setSubmissionId(submissionId)
@@ -79,15 +93,10 @@ public class DataStoreService {
         try {
             resp = ft.get();
         } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+            throw new NoAccessToResource(e.getMessage());
         }
 
-        return RatingsSubmissionResponseDto.builder()
-            .criteria(DtoMapper.INSTANCE.criterionListToDto(resp.getCriteriaList()))
-            .individualRatings(DtoMapper.INSTANCE.assessorRatingsListToDtos(resp.getIndividualList()))
-            .initialRating(DtoMapper.INSTANCE.assessorRatingsToDtos(resp.getInitial()))
-            .finalRating(DtoMapper.INSTANCE.assessorRatingsToDtos(resp.getInitial()))
-            .build();
+        return resp;
     }
 
 }

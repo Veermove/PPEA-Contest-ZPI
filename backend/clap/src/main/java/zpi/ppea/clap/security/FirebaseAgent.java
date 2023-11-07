@@ -21,6 +21,7 @@ import zpi.ppea.clap.service.DataStoreService;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -114,6 +115,11 @@ public class FirebaseAgent {
 
 
     public Boolean isUserAuthorized(Map<String, Object> claims) {
-        return claims.containsKey("authdone");
+        return claims.containsKey("authdone")
+            && Optional.ofNullable(claims.get("authdone"))
+                .map(o -> (
+                    o instanceof String && "true".equals(((String) o))
+                    || o instanceof Boolean && (Boolean) o
+                )).orElse(false);
     }
 }
