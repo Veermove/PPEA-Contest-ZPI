@@ -1,10 +1,14 @@
 package zpi.ppea.clap.service;
 
+import data_store.RatingType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import zpi.ppea.clap.dtos.NewRatingDto;
+import zpi.ppea.clap.dtos.RatingDto;
 import zpi.ppea.clap.dtos.RatingsSubmissionResponseDto;
 import zpi.ppea.clap.mappers.DtoMapper;
+import zpi.ppea.clap.mappers.RatingMapper;
 import zpi.ppea.clap.repository.RatingsRepository;
 
 import java.util.List;
@@ -33,4 +37,10 @@ public class RatingService {
                 .build();
     }
 
+    public RatingDto createNewRating(Integer submissionId, NewRatingDto newRatingDto) {
+        // TODO: Get assessorId from the token
+        var rating = ratingsRepository.createNewRating(submissionId, null,
+                RatingType.valueOf(newRatingDto.getType().name()));
+        return RatingMapper.ratingToDto(rating);
+    }
 }

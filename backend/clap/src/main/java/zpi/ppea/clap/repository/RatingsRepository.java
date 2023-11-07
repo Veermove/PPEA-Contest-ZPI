@@ -1,8 +1,6 @@
 package zpi.ppea.clap.repository;
 
-import data_store.DataStoreGrpc;
-import data_store.RatingsSubmissionRequest;
-import data_store.RatingsSubmissionResponse;
+import data_store.*;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Repository;
@@ -23,6 +21,18 @@ public class RatingsRepository {
                     RatingsSubmissionRequest.newBuilder()
                             .setSubmissionId(submissionId)
                             .build()
+            ).get();
+        } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
+            throw new GrpcConcurrentException("Error while receiving data from datastore");
+        }
+    }
+
+    public Rating createNewRating(Integer submissionId, Integer assessorId, RatingType newType) {
+        try {
+            return dataStoreFutureStub.postNewSubmissionRating(
+                    NewSubmissionRatingRequest.newBuilder()
+                            .setSubmissionId(submissionId).setAssessorId(assessorId).setType(newType).build()
             ).get();
         } catch (InterruptedException | ExecutionException e) {
             Thread.currentThread().interrupt();
