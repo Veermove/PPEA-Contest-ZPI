@@ -44,7 +44,7 @@ dependencies {
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.18.0' // Use the appropriate Protobuf compiler version
+        artifact = 'com.google.protobuf:protoc:3.21.7' // Use the appropriate Protobuf compiler version
     }
     generateProtoTasks {
         all().each { task ->
