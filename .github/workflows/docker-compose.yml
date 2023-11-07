@@ -9,6 +9,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        
+      - name: Copy .env.template to .env
+        run: |
+          cp .env.template .env
+      - name: Set Postgres env variables 
+        run: |
+          sed -i 's/POSTGRES_USER=postgres/POSTGRES_USER=postgres/g' .env
+          sed -i 's/POSTGRES_PASSWORD=postgres/POSTGRES_PASSWORD=postgres/g' .env
+          sed -i 's/POSTGRES_DB=postgres/POSTGRES_DB=postgres/g' .env
 
       - name: Build Docker Compose images
         run: |
