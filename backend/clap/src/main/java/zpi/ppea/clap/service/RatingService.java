@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import zpi.ppea.clap.dtos.NewRatingDto;
+import zpi.ppea.clap.dtos.PartialRatingDto;
 import zpi.ppea.clap.dtos.RatingDto;
 import zpi.ppea.clap.dtos.RatingsSubmissionResponseDto;
 import zpi.ppea.clap.mappers.DtoMapper;
+import zpi.ppea.clap.mappers.PartialRatingMapper;
 import zpi.ppea.clap.mappers.RatingMapper;
 import zpi.ppea.clap.repository.RatingsRepository;
 
@@ -42,5 +44,10 @@ public class RatingService {
         var rating = ratingsRepository.createNewRating(submissionId, null,
                 RatingType.valueOf(newRatingDto.getRatingType().name()));
         return RatingMapper.ratingToDto(rating);
+    }
+
+    public PartialRatingDto submitRatingDraft(Integer ratingId) {
+        var updatedPartialRating = ratingsRepository.submitRatingDraft(ratingId);
+        return PartialRatingMapper.partialRatingToDto(updatedPartialRating);
     }
 }

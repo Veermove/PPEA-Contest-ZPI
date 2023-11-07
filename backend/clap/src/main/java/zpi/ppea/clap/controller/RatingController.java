@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zpi.ppea.clap.dtos.NewRatingDto;
+import zpi.ppea.clap.dtos.PartialRatingDto;
 import zpi.ppea.clap.dtos.RatingDto;
 import zpi.ppea.clap.dtos.RatingsSubmissionResponseDto;
 import zpi.ppea.clap.service.RatingService;
@@ -25,6 +26,11 @@ public class RatingController {
     public ResponseEntity<RatingDto> createNewRatingForSubmission(@PathVariable Integer submissionId,
                                                                   @Valid @RequestBody NewRatingDto newRatingDto) {
         return ResponseEntity.ok(ratingService.createNewRating(submissionId, newRatingDto));
+    }
+
+    @PutMapping("/{ratingId}")
+    public ResponseEntity<PartialRatingDto> submitRatingDraft(@PathVariable Integer ratingId) {
+        return ResponseEntity.ok(ratingService.submitRatingDraft(ratingId));
     }
 
 }

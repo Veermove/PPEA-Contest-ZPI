@@ -40,4 +40,13 @@ public class RatingsRepository {
         }
     }
 
+    public PartialRating submitRatingDraft(Integer ratingId) {
+        try {
+            return dataStoreFutureStub.postSubmitRating(SubmitRatingDraft.newBuilder()
+                    .setRatingId(ratingId).build()).get();
+        } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
+            throw new GrpcConcurrentException("Error while receiving data from datastore");
+        }
+    }
 }
