@@ -98,12 +98,12 @@ public class FirebaseAgent {
         return Tuple.of(UserClaimsResponse.newBuilder()
             .setFirstName((String) claims.get("first_name"))
             .setLastName((String) claims.get("last_name"))
-            .setPersonId((Integer) claims.get("person_id"))
-            .setAssessorId((Integer) claims.get("assessor_id"))
-            .setAwardsRepresentativeId((Integer) claims.get("awards_representative_id"))
-            .setJuryMemberId((Integer) claims.get("jury_member_id"))
-            .setIpmaExpertId((Integer) claims.get("ipma_expert_id"))
-            .setApplicantId((Integer) claims.get("applicant_id"))
+            .setPersonId(((Number) claims.get("person_id")).intValue())
+            .setAssessorId(((Number) claims.get("assessor_id")).intValue())
+            .setAwardsRepresentativeId(((Number) claims.get("awards_representative_id")).intValue())
+            .setJuryMemberId(((Number) claims.get("jury_member_id")).intValue())
+            .setIpmaExpertId(((Number) claims.get("ipma_expert_id")).intValue())
+            .setApplicantId(((Number) claims.get("applicant_id")).intValue())
             .build(), false);
     }
 }
