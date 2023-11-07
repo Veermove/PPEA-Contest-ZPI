@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
-public class DataStoreClient {
+public class DataStoreService {
     @GrpcClient("dataStore")
     DataStoreGrpc.DataStoreFutureStub dataStoreFutureStub;
 

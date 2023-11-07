@@ -7,10 +7,10 @@ option java_outer_classname = "DataStoreProto";
 option go_package = "github.com/Veermove/zpi/data-store";
 
 enum ProjectState {
-  DRAFT     = 0;
-  SUBMITTED = 1;
-  ACCEPTED  = 2;
-  REJECTED  = 3;
+    DRAFT     = 0;
+    SUBMITTED = 1;
+    ACCEPTED  = 2;
+    REJECTED  = 3;
 }
 
 enum RatingType {

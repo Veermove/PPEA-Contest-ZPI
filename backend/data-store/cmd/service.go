@@ -25,7 +25,7 @@ var (
 
 func (s *DataStore) GetSubmissions(ctx context.Context, req *ds.SubmissionRequest) (*ds.SubmissionsResponse, error) {
 	if req.GetAssessorId() == 0 {
-		return nil, fmt.Errorf("assessor email is required")
+		return nil, fmt.Errorf("assessor id is required")
 	}
 	return s.Db.GetSubmissionsByAssessor(ctx, req.GetAssessorId())
 }

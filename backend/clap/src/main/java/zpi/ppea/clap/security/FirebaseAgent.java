@@ -1,7 +1,6 @@
 package zpi.ppea.clap.security;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.Tuple;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -9,6 +8,8 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import data_store.UserClaimsResponse;
 import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
@@ -16,17 +17,17 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.exceptions.UserNotAuthorizedException;
-import zpi.ppea.clap.service.DataStoreClient;
+import zpi.ppea.clap.service.DataStoreService;
 
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class FirebaseAgent {
 
     private final Logger log = LogManager.getLogger("firebase-app");
-    private final DataStoreClient client;
+    private final DataStoreService client;
 
     @SneakyThrows
     @PostConstruct
@@ -51,7 +52,14 @@ public class FirebaseAgent {
         log.info("Successfully initialized firebase app");
     }
 
-    public Tuple<UserClaimsResponse, Boolean> authenticate(String bearerToken)  {
+    @Data
+    @AllArgsConstructor
+    public static class UserAuthData {
+        private UserClaimsResponse claims ;
+        private String refresh;
+    }
+
+    public UserAuthData authenticate(String bearerToken) {
         if (!bearerToken.startsWith("Bearer ")) {
             throw new UserNotAuthorizedException("Only bearer token authorization is recognized");
         }
@@ -59,17 +67,15 @@ public class FirebaseAgent {
         FirebaseToken decodedToken;
         try {
             decodedToken = FirebaseAuth.getInstance().verifyIdToken(
-                bearerToken.replaceFirst("Bearer ", "")
-            );
+                    bearerToken.replaceFirst("Bearer ", ""));
 
         } catch (FirebaseAuthException e) {
             throw new UserNotAuthorizedException(e.getMessage());
         }
 
         var claims = decodedToken.getClaims();
-        var authDone = claims.get("authdone");
 
-        if (authDone == null || !Objects.equals(authDone, Boolean.TRUE)) {
+        if (claims == null || !isUserAuthorized(claims)) {
 
             log.info(String.format("user %s was not authenticated. Querying for permissions", decodedToken.getEmail()));
 
@@ -85,17 +91,16 @@ public class FirebaseAgent {
             claims.put("ipma_expert_id", userIds.getIpmaExpertId());
             claims.put("applicant_id", userIds.getApplicantId());
 
-
             try {
                 FirebaseAuth.getInstance().setCustomUserClaims(decodedToken.getUid(), claims);
             } catch (FirebaseAuthException e) {
                 throw new UserNotAuthorizedException(e.getMessage());
             }
 
-            return Tuple.of(userIds, true);
+            return new UserAuthData(userIds, "true");
         }
 
-        return Tuple.of(UserClaimsResponse.newBuilder()
+        return new UserAuthData(UserClaimsResponse.newBuilder()
             .setFirstName((String) claims.get("first_name"))
             .setLastName((String) claims.get("last_name"))
             .setPersonId(((Number) claims.get("person_id")).intValue())
@@ -104,6 +109,11 @@ public class FirebaseAgent {
             .setJuryMemberId(((Number) claims.get("jury_member_id")).intValue())
             .setIpmaExpertId(((Number) claims.get("ipma_expert_id")).intValue())
             .setApplicantId(((Number) claims.get("applicant_id")).intValue())
-            .build(), false);
+            .build(), "");
+    }
+
+
+    public Boolean isUserAuthorized(Map<String, Object> claims) {
+        return claims.containsKey("authdone");
     }
 }
