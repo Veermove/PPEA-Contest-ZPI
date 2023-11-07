@@ -104,10 +104,11 @@ message PartialRating {
 }
 
 message AssessorRatings {
-    int32  assessor_id                     = 1;
-    string first_name                      = 2;
-    string last_name                       = 3;
-    repeated PartialRating partial_ratings = 4;
+    int32 assessor_id = 1;
+    string first_name = 2;
+    string last_name  = 3;
+    bool is_draft     = 4;
+    repeated PartialRating partial_ratings = 5;
 }
 
 message RatingsSubmissionResponse {
@@ -129,9 +130,30 @@ message UserClaimsResponse {
     int32  applicant_id             = 8;
 }
 
+message NewSubmissionRatingRequest {
+    int32 assessor_id   = 1;
+    int32 submission_id = 2;
+    RatingType type     = 3;
+}
+
+message PartialRatingRequest {
+    int32 criterion_id      = 1;
+    int32 rating_id         = 2;
+    int32 partial_rating_id = 3;
+    string justification    = 4;
+    int32 points            = 5;
+}
+
+message SubmitRatingDraft {
+    int32 rating_id = 1;
+}
+
 service DataStore {
-  rpc GetUserClaims       (UserRequest)              returns (UserClaimsResponse)        {}
-  rpc GetSubmissions      (SubmissionRequest)        returns (SubmissionsResponse)       {}
-  rpc GetSubmissionDetails(DetailsSubmissionRequest) returns (DetailsSubmissionResponse) {}
-  rpc GetSubmissionRatings(RatingsSubmissionRequest) returns (RatingsSubmissionResponse) {}
+    rpc GetUserClaims           (UserRequest)                 returns (UserClaimsResponse)        {}
+    rpc GetSubmissions          (SubmissionRequest)           returns (SubmissionsResponse)       {}
+    rpc GetSubmissionDetails    (DetailsSubmissionRequest)    returns (DetailsSubmissionResponse) {}
+    rpc GetSubmissionRatings    (RatingsSubmissionRequest)    returns (RatingsSubmissionResponse) {}
+    rpc PostNewSubmissionRating (NewSubmissionRatingRequest)  returns (Rating)                    {}
+    rpc PostPartialRating       (PartialRatingRequest)        returns (PartialRating)             {}
+    rpc PostSubmitRating        (SubmitRatingDraft)           returns (PartialRating)             {}
 }
