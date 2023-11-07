@@ -42,8 +42,6 @@ services:
     environment:
       FRONTEND.ADDRESS: http://frontend:3000
       GRPC.CLIENT.DATASTORE.ADDRESS: static://dstor:8080
-    depends_on:
-      - dstor
 
   # Correct if you need
   frontend:
@@ -58,6 +56,3 @@ services:
 volumes:
   db:
     driver: local
-
-networks:
-  full-stack-app:

@@ -1,29 +1,31 @@
 package zpi.ppea.clap.security;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import org.apache.logging.log4j.LogManager;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
+import data_store.UserClaimsResponse;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.exceptions.UserNotAuthorizedException;
+import zpi.ppea.clap.service.DataStoreClient;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class FirebaseAgent {
 
     private final Logger log = LogManager.getLogger("firebase-app");
-
-    public static class Claims {}
+    private final DataStoreClient client;
 
     @SneakyThrows
     @PostConstruct
@@ -48,7 +50,7 @@ public class FirebaseAgent {
         log.info("Successfully initialized firebase app");
     }
 
-    public Claims authenticate(String bearerToken)  {
+    public UserClaimsResponse authenticate(String bearerToken)  {
         if (!bearerToken.startsWith("Bearer ")) {
             throw new UserNotAuthorizedException("Only bearer token authorization is recognized");
         }
@@ -64,18 +66,43 @@ public class FirebaseAgent {
         }
 
         var claims = decodedToken.getClaims();
-//        Map<String, Object> claims = new HashMap<>();
+        var authDone = claims.get("authdone");
 
-        Optional.ofNullable(claims.get("auth")).orElseGet(() -> {
-            // Means that "auth" was not present in claims,
-            // meaning we need to get user claims from database
+        if (authDone == null || !Objects.equals(authDone, Boolean.TRUE)) {
+
+            log.debug(String.format("user %s was not authenticated. Querying for permissions", decodedToken.getEmail()));
+
+            var userIds = client.getUserClaims(decodedToken.getEmail());
+            claims = new HashMap<String, Object>(claims);
+            claims.put("authdone", true);
+            claims.put("first_name", userIds.getFirstName());
+            claims.put("last_name", userIds.getLastName());
+            claims.put("person_id", userIds.getPersonId());
+            claims.put("assessor_id", userIds.getAssessorId());
+            claims.put("awards_representative_id", userIds.getAwardsRepresentativeId());
+            claims.put("jury_member_id", userIds.getJuryMemberId());
+            claims.put("ipma_expert_id", userIds.getIpmaExpertId());
+            claims.put("applicant_id", userIds.getApplicantId());
 
 
-            return true;
-        })
-        FirebaseAuth.getInstance().setCustomUserClaims(uid, claims);
+            try {
+                FirebaseAuth.getInstance().setCustomUserClaims(decodedToken.getUid(), claims);
+            } catch (FirebaseAuthException e) {
+                throw new UserNotAuthorizedException(e.getMessage());
+            }
 
+            return userIds;
+        }
 
-        return null;
+        return UserClaimsResponse.newBuilder()
+            .setFirstName((String) claims.get("first_name"))
+            .setLastName((String) claims.get("last_name"))
+            .setPersonId((Integer) claims.get("person_id"))
+            .setAssessorId((Integer) claims.get("assessor_id"))
+            .setAwardsRepresentativeId((Integer) claims.get("awards_representative_id"))
+            .setJuryMemberId((Integer) claims.get("jury_member_id"))
+            .setIpmaExpertId((Integer) claims.get("ipma_expert_id"))
+            .setApplicantId((Integer) claims.get("applicant_id"))
+            .build();
     }
 }

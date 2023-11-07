@@ -2,16 +2,13 @@ package zpi.ppea.clap.mappers;
 
 import java.util.List;
 
+import data_store.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
-import data_store.AssessorRatings;
-import data_store.Criterion;
-import data_store.PartialRating;
-import zpi.ppea.clap.dtos.AssessorRatingsDto;
-import zpi.ppea.clap.dtos.CriterionDto;
-import zpi.ppea.clap.dtos.PartialRatingDto;
+import zpi.ppea.clap.dtos.*;
 
 @Mapper
 public interface DtoMapper {
@@ -27,5 +24,17 @@ public interface DtoMapper {
 
     PartialRatingDto partialRatingToDtos(PartialRating partialRatings);
     List<PartialRatingDto> partialRatingListToDtos(List<PartialRating> partialRatings);
+
+    @Mapping(target = "appReportDto", source = "report")
+    DetailsSubmissionResponseDto detailsSubmissionToDto(DetailsSubmissionResponse response);
+
+    AppReportDto appReportToDto(AppReport report);
+
+    List<SubmissionDto> submissionListToDtos(List<Submission> submissions);
+
+    @Mapping(target = "assessors", source = "assessorsList")
+    @Mapping(target = "ratings", source = "ratingsList")
+    SubmissionDto submissionToDto(Submission submission);
+
 
 }

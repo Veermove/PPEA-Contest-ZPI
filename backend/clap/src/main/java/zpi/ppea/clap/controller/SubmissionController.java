@@ -12,7 +12,7 @@ import zpi.ppea.clap.dtos.SubmissionDto;
 import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.exceptions.UserNotAuthorizedException;
 import zpi.ppea.clap.security.FirebaseAgent;
-import zpi.ppea.clap.service.SubmissionService;
+import zpi.ppea.clap.service.DataStoreClient;
 
 import java.util.List;
 
@@ -22,13 +22,17 @@ import java.util.List;
 @ControllerAdvice
 public class SubmissionController {
 
-    private final SubmissionService submissionService;
+    private final DataStoreClient dataStoreClient;
     private final FirebaseAgent agent;
     private final Logger log = LogManager.getLogger("submissions-controller");
 
     @GetMapping
-    public ResponseEntity<List<SubmissionDto>> getSubmissions(@RequestHeader(name = "Authorization") String bearerToken) {
-        return ResponseEntity.ok(submissionService.getSubmissions());
+    public ResponseEntity<List<SubmissionDto>> getSubmissions(
+        @RequestHeader(name = "Authorization") String bearerToken
+    ) {
+
+        var claims = agent.authenticate(bearerToken);
+        return ResponseEntity.ok(dataStoreClient.getSubmissions(claims.getAssessorId()));
     }
 
     @GetMapping("/{submissionId}")
@@ -36,7 +40,13 @@ public class SubmissionController {
         @RequestHeader(name = "Authorization") String bearerToken,
         @PathVariable Integer submissionId
     ) {
-        return ResponseEntity.ok(submissionService.getDetailedSubmission(submissionId));
+        var claims = agent.authenticate(bearerToken);
+        if (claims.getAssessorId() == 0) {
+            throw new NoAccessToResource(String.format("user %s %s has no access to this resource",
+                claims.getLastName(), claims.getFirstName()));
+        }
+
+        return ResponseEntity.ok(dataStoreClient.getDetailedSubmission(submissionId, claims.getAssessorId()));
     }
 
     @GetMapping("/ratings/{submissionId}")
@@ -44,7 +54,14 @@ public class SubmissionController {
         @RequestHeader(name = "Authorization") String bearerToken,
         @PathVariable Integer submissionId
     ) {
-        return ResponseEntity.ok(submissionService.getSubmissionRatings(submissionId));
+        var claims = agent.authenticate(bearerToken);
+        if (claims.getAssessorId() == 0) {
+            throw new NoAccessToResource(String.format("user %s %s has no access to this resource",
+                claims.getLastName(), claims.getFirstName()));
+        }
+
+
+        return ResponseEntity.ok(dataStoreClient.getSubmissionRatings(submissionId, claims.getAssessorId()));
     }
 
     @ExceptionHandler(UserNotAuthorizedException.class)
