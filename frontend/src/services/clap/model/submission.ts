@@ -39,6 +39,7 @@ export interface SubmissionDetailsDTO {
 }
 
 export interface AssessorsRatings {
+    assessorId: number;
     firstName: string;
     lastName: string;
     draft: boolean;

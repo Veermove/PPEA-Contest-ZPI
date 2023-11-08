@@ -5,11 +5,17 @@ import { Accordion, AccordionHeader, AccordionItem } from "react-bootstrap";
 import AccordionBody from "react-bootstrap/esm/AccordionBody";
 import SingleRating from "./singleRating";
 
-function SingleCriterion({ assessorsRatings, criterionName, type, id }: { assessorsRatings: AssessorsRatings[], criterionName: string, type: RatingType, id: number }) {
+function SingleCriterion({ assessorsRatings, criterionName, type, id, currentAssessorId }: { assessorsRatings: AssessorsRatings[], criterionName: string, type: RatingType, id: number, currentAssessorId: number }) {
+  
+  function isEditable(assessorsRating: AssessorsRatings) {
+    return !assessorsRating.draft && (type === RatingType.INDIVIDUAL ? assessorsRating.assessorId === currentAssessorId : true)
+  }
+
   const { t } = useTranslation('ratings/singleCriterion')
 
   let isRated = false;
   const ratings = assessorsRatings.map((assessorRating) => {
+    const isEditableRating = isEditable(assessorRating)
     const partialRating = assessorRating.partialRatings.find((partialRating) => partialRating.criterionId === id)
     if (partialRating) {
       isRated = true;
@@ -19,8 +25,7 @@ function SingleCriterion({ assessorsRatings, criterionName, type, id }: { assess
         type={type}
         firstName={assessorRating.firstName}
         lastName={assessorRating.lastName}
-        // TODO isEditable condition
-        isEditable={true}
+        isEditable={isEditableRating}
       />
     }
     return <h6 className="text-purple my-4" key={`criterion-${id}-${type}`}>{t('noRatingsFrom')} {assessorRating.firstName} {assessorRating.lastName}</h6 >
