@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import zpi.ppea.clap.config.ValueConfig;
 import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.exceptions.UserNotAuthorizedException;
 import zpi.ppea.clap.service.DataStoreService;
@@ -28,7 +29,7 @@ import java.util.Optional;
 public class FirebaseAgent {
 
     private final DataStoreService client;
-    private static final String AUTH_DONE_CLAIM = "authdone";
+    private final ValueConfig valueConfig;
     public static final String REFRESH_TOKEN_NAME = "refresh";
 
     @SneakyThrows
@@ -41,7 +42,7 @@ public class FirebaseAgent {
         }
 
         if (options == null)
-            throw new NoAccessToResource(new Exception("failed to initialize firebase app"), "");
+            throw new NoAccessToResource(new Exception("Failed to initialize firebase app"), "");
 
         FirebaseApp.initializeApp(options);
         log.info("Successfully initialized firebase app");
@@ -74,15 +75,15 @@ public class FirebaseAgent {
 
             var userIds = client.getUserClaims(authData, decodedToken.getEmail());
             claims = new HashMap<>();
-            claims.put(AUTH_DONE_CLAIM, true);
-            claims.put("first_name", userIds.getFirstName());
-            claims.put("last_name", userIds.getLastName());
-            claims.put("person_id", userIds.getPersonId());
-            claims.put("assessor_id", userIds.getAssessorId());
-            claims.put("awards_representative_id", userIds.getAwardsRepresentativeId());
-            claims.put("jury_member_id", userIds.getJuryMemberId());
-            claims.put("ipma_expert_id", userIds.getIpmaExpertId());
-            claims.put("applicant_id", userIds.getApplicantId());
+            claims.put(valueConfig.getAuthDone(), true);
+            claims.put(valueConfig.getFirstName(), userIds.getFirstName());
+            claims.put(valueConfig.getLastName(), userIds.getLastName());
+            claims.put(valueConfig.getPersonId(), userIds.getPersonId());
+            claims.put(valueConfig.getAssessorId(), userIds.getAssessorId());
+            claims.put(valueConfig.getAwardsRepresentativeId(), userIds.getAwardsRepresentativeId());
+            claims.put(valueConfig.getJuryMemberId(), userIds.getJuryMemberId());
+            claims.put(valueConfig.getIpmaExpertId(), userIds.getIpmaExpertId());
+            claims.put(valueConfig.getApplicantId(), userIds.getApplicantId());
 
             try {
                 FirebaseAuth.getInstance().setCustomUserClaims(decodedToken.getUid(), claims);
@@ -95,14 +96,14 @@ public class FirebaseAgent {
 
         authData.setRefresh("");
         authData.setClaims(UserClaimsResponse.newBuilder()
-                .setFirstName((String) claims.get("first_name"))
-                .setLastName((String) claims.get("last_name"))
-                .setPersonId(((Number) claims.get("person_id")).intValue())
-                .setAssessorId(((Number) claims.get("assessor_id")).intValue())
-                .setAwardsRepresentativeId(((Number) claims.get("awards_representative_id")).intValue())
-                .setJuryMemberId(((Number) claims.get("jury_member_id")).intValue())
-                .setIpmaExpertId(((Number) claims.get("ipma_expert_id")).intValue())
-                .setApplicantId(((Number) claims.get("applicant_id")).intValue())
+                .setFirstName((String) claims.get(valueConfig.getFirstName()))
+                .setLastName((String) claims.get(valueConfig.getLastName()))
+                .setPersonId(((Number) claims.get(valueConfig.getPersonId())).intValue())
+                .setAssessorId(((Number) claims.get(valueConfig.getAssessorId())).intValue())
+                .setAwardsRepresentativeId(((Number) claims.get(valueConfig.getAwardsRepresentativeId())).intValue())
+                .setJuryMemberId(((Number) claims.get(valueConfig.getJuryMemberId())).intValue())
+                .setIpmaExpertId(((Number) claims.get(valueConfig.getIpmaExpertId())).intValue())
+                .setApplicantId(((Number) claims.get(valueConfig.getApplicantId())).intValue())
                 .build());
 
         return authData;
@@ -110,7 +111,7 @@ public class FirebaseAgent {
 
 
     public Boolean isUserAuthorized(Map<String, Object> claims) {
-        return claims.containsKey(AUTH_DONE_CLAIM) && Optional.ofNullable(claims.get(AUTH_DONE_CLAIM))
+        return claims.containsKey(valueConfig.getAuthDone()) && Optional.ofNullable(claims.get(valueConfig.getAuthDone()))
                 .map(o -> ("true".equals(o) || o instanceof Boolean b && b)).orElse(false);
     }
 }

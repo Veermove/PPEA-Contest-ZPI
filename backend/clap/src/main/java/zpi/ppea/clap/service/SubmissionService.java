@@ -30,7 +30,8 @@ public class SubmissionService {
     public DetailsSubmissionResponseDto getDetailedSubmission(Integer submissionId, FirebaseAgent.UserAuthData authentication) {
         var detailsSubmissionResponseDto = DetailedSubmissionMapper.mapToDto(
                 submissionRepository.getDetailedSubmission(submissionId, authentication));
-        detailsSubmissionResponseDto.setPoints(businessLogicService.calculateSubmissionRating(submissionId));
+        detailsSubmissionResponseDto.setPoints(businessLogicService.calculateSubmissionRating(
+                submissionId, authentication.getClaims().getAssessorId()));
         return detailsSubmissionResponseDto;
     }
 

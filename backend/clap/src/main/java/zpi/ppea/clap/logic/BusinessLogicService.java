@@ -25,9 +25,9 @@ public class BusinessLogicService {
     DataStoreGrpc.DataStoreBlockingStub dataStoreBlockingStub;
 
     @Cacheable("calculateTotalRating")
-    public Double calculateSubmissionRating(Integer submissionId) {
+    public Double calculateSubmissionRating(Integer submissionId, int assessorId) {
         var ratings = dataStoreBlockingStub.getSubmissionRatings(RatingsSubmissionRequest.newBuilder()
-                .setSubmissionId(submissionId).build());
+                .setSubmissionId(submissionId).setAssessorId(assessorId).build());
 
         // Take criterias (distinct by id) and partial ratings
         var criterias = ratings.getCriteriaList().stream()
