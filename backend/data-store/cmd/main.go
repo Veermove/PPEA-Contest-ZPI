@@ -18,6 +18,8 @@ import (
 	"google.golang.org/grpc"
 )
 
+var BuildDate string
+
 func main() {
 	var (
 		debug                bool
@@ -35,6 +37,7 @@ func main() {
 	)
 
 	l.Debug("debug mode enabled")
+	l.Info("Hello", zap.String("built on", BuildDate))
 
 	sdb, err := dbclient.Open(ctx, l, init_dictionary_data)
 	if err != nil {

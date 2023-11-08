@@ -4,4 +4,5 @@ public enum RatingType {
     INDIVIDUAL,
     INITIAL,
     FINAL,
+    UNRECOGNIZED,
 }

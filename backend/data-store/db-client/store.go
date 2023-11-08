@@ -43,6 +43,7 @@ type (
 		Pool *pgxpool.Pool
 		Log  *zap.Logger
 	}
+	AccessParams = queries.DoesAssessorHaveAccessParams
 )
 
 func GetConnectionString() string {
@@ -110,7 +111,15 @@ func Open(ctx context.Context, log *zap.Logger, init_dict bool) (*Store, error) 
 	return store, nil
 }
 
-func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId int32) (*pb.DetailsSubmissionResponse, error) {
+func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId, assessorId int32) (*pb.DetailsSubmissionResponse, error) {
+	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccess(ctx, AccessParams{AssessorID: assessorId, SubmissionID: submissionId})
+	if err != nil {
+		return nil, fmt.Errorf("checking access: %w", err)
+	}
+	if !hasAccess {
+		return nil, fmt.Errorf("User does not have access to resource")
+	}
+
 	details, err := queries.New(st.Pool).GetSubmissionDetails(ctx, submissionId)
 	if err == pgx.ErrNoRows {
 		return nil, nil
@@ -139,17 +148,15 @@ func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId int32) (
 			OrganisationStructure: Denullify(details.OrganisationStructure),
 			DivisionOfWork:        Denullify(details.DivisionOfWork),
 			ProjectSchedule:       Denullify(details.ProjectSchedule),
-			Attatchments:          Denullify(details.Attatchments),
+			Attachments:           Denullify(details.Attatchments),
 		},
 	}, nil
 }
 
-func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorEmail string) (*pb.SubmissionsResponse, error) {
+func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorId int32) (*pb.SubmissionsResponse, error) {
 	returnVal := &pb.SubmissionsResponse{Submissions: []*pb.Submission{}}
 
-	st.Log.Debug("GetSubmissionsByAssessor", zap.String("assessor_email", assessorEmail))
-
-	subs, err := queries.New(st.Pool).GetSubmissionsByAssessorEmail(ctx, assessorEmail)
+	subs, err := queries.New(st.Pool).GetSubmissionsByAssessorId(ctx, assessorId)
 
 	if err == pgx.ErrNoRows {
 		return returnVal, nil
@@ -158,7 +165,7 @@ func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorEmail str
 		return nil, fmt.Errorf("getting submissions by assessor id: %w", err)
 	}
 
-	submissions, err := iter.MapErr(subs, func(subm *queries.GetSubmissionsByAssessorEmailRow) (*pb.Submission, error) {
+	submissions, err := iter.MapErr(subs, func(subm *queries.GetSubmissionsByAssessorIdRow) (*pb.Submission, error) {
 		submission := &pb.Submission{
 			SubmissionId: subm.SubmissionID,
 			Year:         subm.Year,
@@ -191,7 +198,15 @@ func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorEmail str
 	return &pb.SubmissionsResponse{Submissions: submissions}, nil
 }
 
-func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId int32) (*pb.RatingsSubmissionResponse, error) {
+func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId, assessorId int32) (*pb.RatingsSubmissionResponse, error) {
+
+	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccess(ctx, AccessParams{AssessorID: assessorId, SubmissionID: submissionId})
+	if err != nil {
+		return nil, fmt.Errorf("checking access: %w", err)
+	}
+	if !hasAccess {
+		return nil, fmt.Errorf("User does not have access to resource")
+	}
 
 	// Run query to get slice of
 	// * AssessorID
@@ -342,6 +357,27 @@ func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId int32) (
 	}
 
 	return returnVal, nil
+}
+
+func (st *Store) GetUserClaims(ctx context.Context, email string) (*pb.UserClaimsResponse, error) {
+	usr, err := queries.New(st.Pool).GetUserClaims(ctx, email)
+	if err == pgx.ErrNoRows {
+		return nil, fmt.Errorf("User not found")
+	} else if err != nil {
+		return nil, fmt.Errorf("getting user claims: %w", err)
+	}
+
+	return &pb.UserClaimsResponse{
+		FirstName:              usr.FirstName,
+		LastName:               usr.LastName,
+		PersonId:               usr.PersonID,
+		AssessorId:             DenullifyInt32(usr.AssessorID),
+		AwardsRepresentativeId: DenullifyInt32(usr.AwardsRepresentativeID),
+		JuryMemberId:           DenullifyInt32(usr.JuryMemberID),
+		IpmaExpertId:           DenullifyInt32(usr.IpmaExpertID),
+		ApplicantId:            DenullifyInt32(usr.ApplicantID),
+	}, nil
+
 }
 
 // CreateAssessorRatings creates a new AssessorRatings object with the given rating ID, assessor ID, first name, and last name.
