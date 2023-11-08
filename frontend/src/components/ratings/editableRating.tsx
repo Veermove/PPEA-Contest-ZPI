@@ -1,11 +1,9 @@
 import { useTranslation } from "@/app/i18n/client";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
-function EditableRating({ currentDescription, setCurrentDescription, currentRating, setCurrentRating, onSubmit, onCancel }: {
-  currentDescription: string,
-  setCurrentDescription: (description: string) => void,
-  currentRating: number
-  setCurrentRating: (rating: number) => void,
+function EditableRating({ initialJustification, initialPoints, onSubmit, onCancel }: {
+  initialJustification: string,
+  initialPoints: number
   onSubmit: (description: string, rating: number) => void,
   onCancel: () => void
 }) {
@@ -13,8 +11,10 @@ function EditableRating({ currentDescription, setCurrentDescription, currentRati
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(currentDescription, currentRating);
-    onSubmit(currentDescription, currentRating);
+    const formData = new FormData(event.currentTarget)
+    const points = parseInt(formData.get('points')?.toString() || '') || initialPoints
+    const description = formData.get('justification')?.toString() || initialJustification
+    onSubmit(description, points)
   }
 
   const handleCancel = () => {
@@ -27,14 +27,14 @@ function EditableRating({ currentDescription, setCurrentDescription, currentRati
         <Row>
           <Col>
             <Form.Group controlId="ratingDescription">
-              <Form.Label>{t('description')}:</Form.Label>
-              <Form.Control as="textarea" rows={5} value={currentDescription} onChange={e => setCurrentDescription(e.target.value)} />
+              <Form.Label htmlFor="justification">{t('description')}:</Form.Label>
+              <Form.Control name="justification" as="textarea" rows={5} value={initialJustification} />
             </Form.Group>
           </Col>
           <Col>
             <Form.Group controlId="ratingPoints">
-              <Form.Label>{t('rating')}</Form.Label>
-              <Form.Control type="number" value={currentRating} step={1} min={0} max={100} onChange={e => setCurrentRating(parseInt(e.target.value))} />
+              <Form.Label htmlFor="points">{t('rating')}</Form.Label>
+              <Form.Control type="number" name="points" value={initialPoints} step={1} min={0} max={100} />
             </Form.Group>
             <Form.Group controlId="ratingButtons">
               <Button className="text-white" variant="primary" type="submit">

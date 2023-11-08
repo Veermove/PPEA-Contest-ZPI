@@ -9,7 +9,7 @@ function SingleRating({ partialRating, type, firstName, lastName, isEditable }: 
   const [isEditing, setIsEditing] = useState(false);
   const [currentRating, setCurrentRating] = useState(partialRating)
 
-  function propagateChanges(description: string, rating: number) {
+  async function updateRating(description: string, rating: number) {
     setCurrentRating({ ...currentRating, justification: description, points: rating })
     setIsEditing(false);
   }
@@ -32,11 +32,9 @@ function SingleRating({ partialRating, type, firstName, lastName, isEditable }: 
       <Row>
         {isEditing ? (
           <EditableRating
-            currentDescription={currentRating.justification}
-            setCurrentDescription={(description) => setCurrentRating({ ...currentRating, justification: description })}
-            currentRating={currentRating.points}
-            setCurrentRating={(rating) => setCurrentRating({ ...currentRating, points: rating })}
-            onSubmit={propagateChanges}
+            initialJustification={currentRating.justification}
+            initialPoints={currentRating.points}
+            onSubmit={updateRating}
             onCancel={() => setIsEditing(false)}
           />
         ) : (

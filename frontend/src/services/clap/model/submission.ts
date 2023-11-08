@@ -1,4 +1,4 @@
-import { PartialRating, Rating } from "./rating";
+import { PartialRating, Rating, RatingType } from "./rating";
 
 export interface Assessor {
     assessorId: number;
@@ -45,3 +45,14 @@ export interface AssessorsRatings {
     partialRatings: PartialRating[];
 }
 
+export interface UpdateSubmissionBody {
+    description: string;
+    points: string;
+}
+
+export interface AddRatingBody {
+    criterionId: number;
+    ratingType: RatingType;
+    justification: string;
+    points: number;
+}
