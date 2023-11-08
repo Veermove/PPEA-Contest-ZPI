@@ -31,8 +31,9 @@ public class PartialRatingMapper {
                 .build();
     }
 
-    public static PartialRatingRequest dtoToPartialRatingRequest(UpdatePartialRatingDto dto) {
+    public static PartialRatingRequest dtoToPartialRatingRequest(UpdatePartialRatingDto dto, Integer assessorId) {
         return PartialRatingRequest.newBuilder()
+                .setAssessorId(assessorId)
                 .setPartialRatingId(dto.getPartialRatingId())
                 .setCriterionId(dto.getCriterionId())
                 .setPoints(dto.getPoints())

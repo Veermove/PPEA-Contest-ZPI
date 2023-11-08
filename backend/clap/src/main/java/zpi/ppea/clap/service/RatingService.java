@@ -12,6 +12,7 @@ import zpi.ppea.clap.mappers.DtoMapper;
 import zpi.ppea.clap.mappers.PartialRatingMapper;
 import zpi.ppea.clap.mappers.RatingMapper;
 import zpi.ppea.clap.repository.RatingsRepository;
+import zpi.ppea.clap.security.FirebaseAgent;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,13 +21,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RatingService {
 
-    private final AuthenticationService authenticationService;
     private final RatingsRepository ratingsRepository;
 
     @Cacheable("submissionRatings")
-    public RatingsSubmissionResponseDto getSubmissionRatings(Integer submissionId) {
-        authenticationService.checkAccessToResource(submissionId);
-        var ratings = ratingsRepository.submissionRatings(submissionId);
+    public RatingsSubmissionResponseDto getSubmissionRatings(Integer submissionId, FirebaseAgent.UserAuthData authentication) {
+        var ratings = ratingsRepository.submissionRatings(submissionId, authentication);
         return RatingsSubmissionResponseDto.builder()
                 .criteria(DtoMapper.INSTANCE.criterionListToDto(
                         Optional.of(ratings.getCriteriaList()).orElse(List.of())
@@ -39,15 +38,14 @@ public class RatingService {
                 .build();
     }
 
-    public RatingDto createNewRating(Integer submissionId, NewRatingDto newRatingDto) {
-        // TODO: Get assessorId from the token
-        var rating = ratingsRepository.createNewRating(submissionId, null,
-                RatingType.valueOf(newRatingDto.getRatingType().name()));
+    public RatingDto createNewRating(Integer submissionId, NewRatingDto newRatingDto, FirebaseAgent.UserAuthData authentication) {
+        var rating = ratingsRepository.createNewRating(submissionId,
+                authentication, RatingType.valueOf(newRatingDto.getRatingType().name()));
         return RatingMapper.ratingToDto(rating);
     }
 
-    public PartialRatingDto submitRatingDraft(Integer ratingId) {
-        var updatedPartialRating = ratingsRepository.submitRatingDraft(ratingId);
+    public PartialRatingDto submitRatingDraft(Integer ratingId, FirebaseAgent.UserAuthData authentication) {
+        var updatedPartialRating = ratingsRepository.submitRatingDraft(ratingId, authentication);
         return PartialRatingMapper.partialRatingToDto(updatedPartialRating);
     }
 }

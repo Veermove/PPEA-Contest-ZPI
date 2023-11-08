@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Repository;
 import zpi.ppea.clap.exceptions.GrpcConcurrentException;
-import zpi.ppea.clap.security.TokenDecoder;
+import zpi.ppea.clap.security.FirebaseAgent;
 
 import java.util.concurrent.ExecutionException;
 
@@ -15,13 +15,12 @@ public class SubmissionRepository {
 
     @GrpcClient("dataStore")
     DataStoreGrpc.DataStoreFutureStub dataStoreFutureStub;
-    private final TokenDecoder tokenDecoder;
 
-    public SubmissionsResponse allSubmissions() {
+    public SubmissionsResponse allSubmissions(FirebaseAgent.UserAuthData authentication) {
         try {
             return dataStoreFutureStub.getSubmissions(
                     SubmissionRequest.newBuilder()
-                            .setAssessorEmail(tokenDecoder.getEmail())
+                            .setAssessorId(authentication.getClaims().getAssessorId())
                             .build()
             ).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -30,10 +29,11 @@ public class SubmissionRepository {
         }
     }
 
-    public DetailsSubmissionResponse getDetailedSubmission(Integer submissionId) {
+    public DetailsSubmissionResponse getDetailedSubmission(Integer submissionId, FirebaseAgent.UserAuthData authentication) {
         try {
             return dataStoreFutureStub.getSubmissionDetails(
-                    DetailsSubmissionRequest.newBuilder().setSubmissionId(submissionId).build()
+                    DetailsSubmissionRequest.newBuilder().setSubmissionId(submissionId)
+                            .setAssessorId(authentication.getClaims().getAssessorId()).build()
             ).get();
         } catch (InterruptedException | ExecutionException e) {
             Thread.currentThread().interrupt();

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Repository;
 import zpi.ppea.clap.exceptions.GrpcConcurrentException;
+import zpi.ppea.clap.security.FirebaseAgent;
 
 import java.util.concurrent.ExecutionException;
 
@@ -15,10 +16,11 @@ public class RatingsRepository {
     @GrpcClient("dataStore")
     DataStoreGrpc.DataStoreFutureStub dataStoreFutureStub;
 
-    public RatingsSubmissionResponse submissionRatings(Integer submissionId) {
+    public RatingsSubmissionResponse submissionRatings(Integer submissionId, FirebaseAgent.UserAuthData authentication) {
         try {
             return dataStoreFutureStub.getSubmissionRatings(
                     RatingsSubmissionRequest.newBuilder()
+                            .setAssessorId(authentication.getClaims().getAssessorId())
                             .setSubmissionId(submissionId)
                             .build()
             ).get();
@@ -28,11 +30,11 @@ public class RatingsRepository {
         }
     }
 
-    public Rating createNewRating(Integer submissionId, Integer assessorId, RatingType newType) {
+    public Rating createNewRating(Integer submissionId, FirebaseAgent.UserAuthData authentication, RatingType newType) {
         try {
             return dataStoreFutureStub.postNewSubmissionRating(
-                    NewSubmissionRatingRequest.newBuilder()
-                            .setSubmissionId(submissionId).setAssessorId(assessorId).setType(newType).build()
+                    NewSubmissionRatingRequest.newBuilder().setSubmissionId(submissionId)
+                            .setAssessorId(authentication.getClaims().getAssessorId()).setType(newType).build()
             ).get();
         } catch (InterruptedException | ExecutionException e) {
             Thread.currentThread().interrupt();
@@ -40,10 +42,10 @@ public class RatingsRepository {
         }
     }
 
-    public PartialRating submitRatingDraft(Integer ratingId) {
+    public PartialRating submitRatingDraft(Integer ratingId, FirebaseAgent.UserAuthData authentication) {
         try {
             return dataStoreFutureStub.postSubmitRating(SubmitRatingDraft.newBuilder()
-                    .setRatingId(ratingId).build()).get();
+                    .setRatingId(ratingId).setAssessorId(authentication.getClaims().getAssessorId()).build()).get();
         } catch (InterruptedException | ExecutionException e) {
             Thread.currentThread().interrupt();
             throw new GrpcConcurrentException("Error while receiving data from datastore");

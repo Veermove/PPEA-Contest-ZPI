@@ -8,6 +8,7 @@ import zpi.ppea.clap.dtos.NewRatingDto;
 import zpi.ppea.clap.dtos.PartialRatingDto;
 import zpi.ppea.clap.dtos.RatingDto;
 import zpi.ppea.clap.dtos.RatingsSubmissionResponseDto;
+import zpi.ppea.clap.security.FirebaseAgent;
 import zpi.ppea.clap.service.RatingService;
 
 @RestController
@@ -15,22 +16,38 @@ import zpi.ppea.clap.service.RatingService;
 @AllArgsConstructor
 public class RatingController {
 
+    private final FirebaseAgent firebaseAgent;
     private final RatingService ratingService;
 
     @GetMapping("/{submissionId}")
-    public ResponseEntity<RatingsSubmissionResponseDto> getSubmissionRatings(@PathVariable Integer submissionId) {
-        return ResponseEntity.ok(ratingService.getSubmissionRatings(submissionId));
+    public ResponseEntity<RatingsSubmissionResponseDto> getSubmissionRatings(
+            @RequestHeader(name = "Authorization") String bearerToken,
+            @PathVariable Integer submissionId) {
+        var authentication = firebaseAgent.authenticate(bearerToken);
+        return ResponseEntity.ok()
+                .header(FirebaseAgent.REFRESH_TOKEN_NAME, authentication.getRefresh())
+                .body(ratingService.getSubmissionRatings(submissionId, authentication));
     }
 
     @PostMapping("/{submissionId}")
-    public ResponseEntity<RatingDto> createNewRatingForSubmission(@PathVariable Integer submissionId,
-                                                                  @Valid @RequestBody NewRatingDto newRatingDto) {
-        return ResponseEntity.ok(ratingService.createNewRating(submissionId, newRatingDto));
+    public ResponseEntity<RatingDto> createNewRatingForSubmission(
+            @RequestHeader(name = "Authorization") String bearerToken,
+            @PathVariable Integer submissionId,
+            @Valid @RequestBody NewRatingDto newRatingDto) {
+        var authentication = firebaseAgent.authenticate(bearerToken);
+        return ResponseEntity.ok()
+                .header(FirebaseAgent.REFRESH_TOKEN_NAME, authentication.getRefresh())
+                .body(ratingService.createNewRating(submissionId, newRatingDto, authentication));
     }
 
     @PutMapping("/{ratingId}")
-    public ResponseEntity<PartialRatingDto> submitRatingDraft(@PathVariable Integer ratingId) {
-        return ResponseEntity.ok(ratingService.submitRatingDraft(ratingId));
+    public ResponseEntity<PartialRatingDto> submitRatingDraft(
+            @RequestHeader(name = "Authorization") String bearerToken,
+            @PathVariable Integer ratingId) {
+        var authentication = firebaseAgent.authenticate(bearerToken);
+        return ResponseEntity.ok()
+                .header(FirebaseAgent.REFRESH_TOKEN_NAME, authentication.getRefresh())
+                .body(ratingService.submitRatingDraft(ratingId, authentication));
     }
 
 }
