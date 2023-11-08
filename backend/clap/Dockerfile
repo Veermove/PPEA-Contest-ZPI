@@ -6,7 +6,7 @@ WORKDIR /app
 COPY gradlew /app/
 COPY gradlew.bat /app/
 COPY gradle /app/gradle
-COPY build.gradle settings.gradle log4j2.xml /app/
+COPY build.gradle settings.gradle /app/
 COPY src /app/src
 COPY proto proto
 

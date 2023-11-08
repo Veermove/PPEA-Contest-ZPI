@@ -1,11 +1,11 @@
 package zpi.ppea.clap.exceptions;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import zpi.ppea.clap.security.FirebaseAgent;
 
 import java.util.*;
 
@@ -14,17 +14,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotAuthorizedException.class)
     public ResponseEntity<String> handleUserNotAuthorizedException(UserNotAuthorizedException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .header(FirebaseAgent.REFRESH_TOKEN_NAME, ex.getRefresh()).body(ex.getMessage());
     }
 
-    @ExceptionHandler(NoAccessToResource.class)
-    public ResponseEntity<String> handleNoAccessToResourceException(NoAccessToResource ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(GrpcConcurrentException.class)
-    public ResponseEntity<String> handleNoAccessToResourceException(GrpcConcurrentException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler(GrpcDatastoreException.class)
+    public ResponseEntity<String> handleNoAccessToResourceException(GrpcDatastoreException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .header(FirebaseAgent.REFRESH_TOKEN_NAME, ex.getRefresh()).body(ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -32,7 +29,15 @@ public class GlobalExceptionHandler {
         List<String> errors = new ArrayList<>();
         for (var messages : Objects.requireNonNull(ex.getDetailMessageArguments()))
             errors.addAll((Collection<? extends String>) messages);
-        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .header(FirebaseAgent.REFRESH_TOKEN_NAME, "false")
+                .body(getErrorsMap(errors));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleUnexpectedException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .header(FirebaseAgent.REFRESH_TOKEN_NAME, "false").body(ex.getMessage());
     }
 
     private Map<String, List<String>> getErrorsMap(List<String> errors) {

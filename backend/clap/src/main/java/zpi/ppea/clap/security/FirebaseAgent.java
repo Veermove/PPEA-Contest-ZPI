@@ -15,7 +15,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import zpi.ppea.clap.config.ValueConfig;
-import zpi.ppea.clap.exceptions.NoAccessToResource;
+import zpi.ppea.clap.exceptions.GrpcDatastoreException;
 import zpi.ppea.clap.exceptions.UserNotAuthorizedException;
 import zpi.ppea.clap.service.DataStoreService;
 
@@ -42,7 +42,7 @@ public class FirebaseAgent {
         }
 
         if (options == null)
-            throw new NoAccessToResource(new Exception("Failed to initialize firebase app"), "");
+            throw new GrpcDatastoreException(new Exception("Failed to initialize firebase app"), "");
 
         FirebaseApp.initializeApp(options);
         log.info("Successfully initialized firebase app");
