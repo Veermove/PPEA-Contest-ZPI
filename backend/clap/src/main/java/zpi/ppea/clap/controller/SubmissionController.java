@@ -33,7 +33,7 @@ public class SubmissionController {
         var auth = agent.authenticate(bearerToken);
         return ResponseEntity.ok()
             .header("refresh", auth.getRefresh())
-            .body(dataStoreService.getSubmissions(auth.getClaims().getAssessorId()));
+            .body(dataStoreService.getSubmissions(auth));
     }
 
     @GetMapping("/{submissionId}")
@@ -45,7 +45,7 @@ public class SubmissionController {
         var auth = agent.authenticate(bearerToken);
         return ResponseEntity.ok()
             .header("refresh", auth.getRefresh())
-            .body(dataStoreService.getDetailedSubmission(submissionId, auth.getClaims().getAssessorId()));
+            .body(dataStoreService.getDetailedSubmission(auth,submissionId));
     }
 
     @GetMapping("/ratings/{submissionId}")
@@ -58,7 +58,7 @@ public class SubmissionController {
 
         return ResponseEntity.ok()
             .header("refresh", auth.getRefresh())
-            .body(dataStoreService.getSubmissionRatings(submissionId, auth.getClaims().getAssessorId()));
+            .body(dataStoreService.getSubmissionRatings(auth, submissionId));
     }
 
     @ExceptionHandler(UserNotAuthorizedException.class)

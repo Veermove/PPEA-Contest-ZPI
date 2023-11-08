@@ -45,7 +45,7 @@ public class FirebaseAgent {
         }
 
         if (options == null) {
-            throw new NoAccessToResource("failed to initialize firebase app");
+            throw new NoAccessToResource(new Exception("failed to initialize firebase app"), "");
         }
 
         FirebaseApp.initializeApp(options);
@@ -62,7 +62,7 @@ public class FirebaseAgent {
 
     public UserAuthData authenticate(String bearerToken) {
         if (!bearerToken.startsWith("Bearer ")) {
-            throw new UserNotAuthorizedException("Only bearer token authorization is recognized");
+            throw new UserNotAuthorizedException(new Exception("Only bearer token authorization is recognized"), "");
         }
 
         FirebaseToken decodedToken;
@@ -71,16 +71,17 @@ public class FirebaseAgent {
                     bearerToken.replaceFirst("Bearer ", ""));
 
         } catch (FirebaseAuthException e) {
-            throw new UserNotAuthorizedException(e.getMessage());
+            throw new UserNotAuthorizedException(e, "");
         }
 
         var claims = decodedToken.getClaims();
+        var authData = new UserAuthData(null, "");
 
         if (claims == null || !isUserAuthorized(claims)) {
 
             log.info(String.format("user %s was not authenticated. Querying for permissions", decodedToken.getEmail()));
 
-            var userIds = client.getUserClaims(decodedToken.getEmail());
+            var userIds = client.getUserClaims(authData, decodedToken.getEmail());
             claims = new HashMap<String, Object>();
             claims.put("authdone", true);
             claims.put("first_name", userIds.getFirstName());
@@ -95,13 +96,14 @@ public class FirebaseAgent {
             try {
                 FirebaseAuth.getInstance().setCustomUserClaims(decodedToken.getUid(), claims);
             } catch (FirebaseAuthException e) {
-                throw new UserNotAuthorizedException(e.getMessage());
+                throw new UserNotAuthorizedException(e, "");
             }
 
             return new UserAuthData(userIds, "true");
         }
 
-        return new UserAuthData(UserClaimsResponse.newBuilder()
+        authData.setRefresh("");
+        authData.setClaims(UserClaimsResponse.newBuilder()
             .setFirstName((String) claims.get("first_name"))
             .setLastName((String) claims.get("last_name"))
             .setPersonId(((Number) claims.get("person_id")).intValue())
@@ -110,7 +112,9 @@ public class FirebaseAgent {
             .setJuryMemberId(((Number) claims.get("jury_member_id")).intValue())
             .setIpmaExpertId(((Number) claims.get("ipma_expert_id")).intValue())
             .setApplicantId(((Number) claims.get("applicant_id")).intValue())
-            .build(), "");
+            .build());
+
+        return authData;
     }
 
 

@@ -11,6 +11,7 @@ import zpi.ppea.clap.dtos.SubmissionDto;
 import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.logic.BusinessLogicService;
 import zpi.ppea.clap.mappers.DtoMapper;
+import zpi.ppea.clap.security.FirebaseAgent;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -22,7 +23,7 @@ public class DataStoreService {
     DataStoreGrpc.DataStoreFutureStub dataStoreFutureStub;
 
     @SneakyThrows
-    public UserClaimsResponse getUserClaims(String email) {
+    public UserClaimsResponse getUserClaims(FirebaseAgent.UserAuthData data, String email) {
         try {
             return dataStoreFutureStub.getUserClaims(
                 UserRequest.newBuilder()
@@ -30,29 +31,29 @@ public class DataStoreService {
                     .build()
             ).get();
         } catch (InterruptedException | ExecutionException e) {
-            throw new NoAccessToResource(e.getMessage());
+            throw new NoAccessToResource(e, data.getRefresh());
         }
     }
 
 
-    public List<SubmissionDto> getSubmissions(Integer assessorId) {
+    public List<SubmissionDto> getSubmissions(FirebaseAgent.UserAuthData data) {
         var allSubmissionsGrpc = dataStoreFutureStub.getSubmissions(
             SubmissionRequest.newBuilder()
-                .setAssessorId(assessorId)
+                .setAssessorId(data.getClaims().getAssessorId())
                 .build()
         );
 
         try {
             return DtoMapper.INSTANCE.submissionListToDtos(allSubmissionsGrpc.get().getSubmissionsList());
         } catch (InterruptedException | ExecutionException e) {
-            throw new NoAccessToResource(e.getMessage());
+            throw new NoAccessToResource(e, data.getRefresh());
         }
     }
 
-    public DetailsSubmissionResponseDto getDetailedSubmission(Integer submissionId, Integer assessorId) {
+    public DetailsSubmissionResponseDto getDetailedSubmission(FirebaseAgent.UserAuthData data, Integer submissionId) {
         var detailsSubmissionResponse = dataStoreFutureStub.getSubmissionDetails(DetailsSubmissionRequest.newBuilder()
             .setSubmissionId(submissionId)
-            .setAssessorId(assessorId)
+            .setAssessorId(data.getClaims().getAssessorId())
             .build()
         );
 
@@ -61,18 +62,18 @@ public class DataStoreService {
             response = detailsSubmissionResponse.get();
 
         } catch (InterruptedException | ExecutionException e) {
-            throw new NoAccessToResource(e.getMessage());
+            throw new NoAccessToResource(e, data.getRefresh());
         }
 
         var dto = DtoMapper.INSTANCE.detailsSubmissionToDto(response);
-        var ratings = getSubmissionRatingsBase(submissionId, assessorId);
-        dto.setPoints(BusinessLogicService.calculateSubmissionRating(ratings, submissionId, assessorId));
+        var ratings = getSubmissionRatingsBase(data.getRefresh(), submissionId, data.getClaims().getAssessorId());
+        dto.setPoints(BusinessLogicService.calculateSubmissionRating(ratings, submissionId, data.getClaims().getAssessorId()));
         return dto;
     }
 
 
-    public RatingsSubmissionResponseDto getSubmissionRatings(Integer submissionId, Integer assessorId) {
-        var resp = getSubmissionRatingsBase(submissionId, assessorId);
+    public RatingsSubmissionResponseDto getSubmissionRatings(FirebaseAgent.UserAuthData data, Integer submissionId) {
+        var resp = getSubmissionRatingsBase(data.getRefresh(), submissionId, data.getClaims().getAssessorId());
         return RatingsSubmissionResponseDto.builder()
             .criteria(DtoMapper.INSTANCE.criterionListToDto(resp.getCriteriaList()))
             .individualRatings(DtoMapper.INSTANCE.assessorRatingsListToDtos(resp.getIndividualList()))
@@ -81,7 +82,7 @@ public class DataStoreService {
             .build();
     }
 
-    public RatingsSubmissionResponse getSubmissionRatingsBase(Integer submissionId, Integer assessorId) {
+    public RatingsSubmissionResponse getSubmissionRatingsBase(String refresh, Integer submissionId, Integer assessorId) {
         var ft = dataStoreFutureStub.getSubmissionRatings(RatingsSubmissionRequest.newBuilder()
             .setAssessorId(assessorId)
             .setSubmissionId(submissionId)
@@ -93,7 +94,7 @@ public class DataStoreService {
         try {
             resp = ft.get();
         } catch (InterruptedException | ExecutionException e) {
-            throw new NoAccessToResource(e.getMessage());
+            throw new NoAccessToResource(e, refresh);
         }
 
         return resp;
