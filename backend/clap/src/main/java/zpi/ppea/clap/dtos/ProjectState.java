@@ -5,4 +5,5 @@ public enum ProjectState {
     SUBMITTED,
     ACCEPTED,
     REJECTED,
+    UNRECOGNIZED,
 }

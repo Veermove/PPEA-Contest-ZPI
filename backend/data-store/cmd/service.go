@@ -24,23 +24,30 @@ var (
 )
 
 func (s *DataStore) GetSubmissions(ctx context.Context, req *ds.SubmissionRequest) (*ds.SubmissionsResponse, error) {
-	s.Log.Debug("GetSubmissions", zap.String("assessor_email", req.GetAssessorEmail()))
-	if !emailRegex.MatchString(req.GetAssessorEmail()) {
-		return nil, fmt.Errorf("assessor email is required")
+	if req.GetAssessorId() == 0 {
+		return nil, fmt.Errorf("assessor id is required")
 	}
-	return s.Db.GetSubmissionsByAssessor(ctx, req.GetAssessorEmail())
+	return s.Db.GetSubmissionsByAssessor(ctx, req.GetAssessorId())
 }
 
 func (s *DataStore) GetSubmissionDetails(ctx context.Context, req *ds.DetailsSubmissionRequest) (*ds.DetailsSubmissionResponse, error) {
 	if req.GetSubmissionId() == 0 {
 		return nil, fmt.Errorf("submission id is required")
 	}
-	return s.Db.GetSubmissionDetails(ctx, req.GetSubmissionId())
+	return s.Db.GetSubmissionDetails(ctx, req.GetSubmissionId(), req.GetAssessorId())
 }
 
 func (s *DataStore) GetSubmissionRatings(ctx context.Context, req *ds.RatingsSubmissionRequest) (*ds.RatingsSubmissionResponse, error) {
 	if req.GetSubmissionId() == 0 {
 		return nil, fmt.Errorf("submission id is required")
 	}
-	return s.Db.GetSubmissionRatings(ctx, req.GetSubmissionId())
+	return s.Db.GetSubmissionRatings(ctx, req.GetSubmissionId(), req.GetAssessorId())
+}
+
+func (s *DataStore) GetUserClaims(ctx context.Context, req *ds.UserRequest) (*ds.UserClaimsResponse, error) {
+	if !emailRegex.MatchString(req.GetEmail()) {
+		return nil, fmt.Errorf("invalid email address")
+	}
+	s.Log.Info("getting user claims", zap.String("email", req.GetEmail()))
+	return s.Db.GetUserClaims(ctx, req.GetEmail())
 }

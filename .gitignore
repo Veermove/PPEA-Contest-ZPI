@@ -78,3 +78,5 @@ next-env.d.ts
 
 **/bin
 **/.vscode
+
+**/service-account.json
