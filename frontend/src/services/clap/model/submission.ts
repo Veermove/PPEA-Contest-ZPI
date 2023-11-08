@@ -46,8 +46,8 @@ export interface AssessorsRatings {
 }
 
 export interface UpdateSubmissionBody {
-    description: string;
-    points: string;
+    justification: string;
+    points: number;
 }
 
 export interface AddRatingBody {

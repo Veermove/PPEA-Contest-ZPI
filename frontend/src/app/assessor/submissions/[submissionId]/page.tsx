@@ -4,7 +4,7 @@ import Error from "@/components/error";
 import Spinner from "@/components/spinner";
 import SubmissionDetails from "@/components/submission/details";
 import { useAuthContext } from "@/context/authContext";
-import { ClapApi } from "@/services/clap/api";
+import { useClapAPI } from "@/context/clapApiContext";
 import { SubmissionDTO, SubmissionDetailsDTO } from "@/services/clap/model/submission";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { redirect } from "next/navigation";
@@ -34,6 +34,7 @@ function Submission({ params }: { params: { submissionId: string } }) {
   const [error, setError] = useState(false);
 
   const { t } = useTranslation('submission/details')
+  const clapApi = useClapAPI();
 
   useEffect(() => {
     if (!user) {
@@ -41,8 +42,7 @@ function Submission({ params }: { params: { submissionId: string } }) {
     }
     (async () => {
       setLoading(true)
-      const clapApi = new ClapApi(await user.getIdToken());
-      clapApi.getSubmissionDetails(id).then((submissionDetails) => {
+      clapApi!.getSubmissionDetails(id).then((submissionDetails) => {
         setSubmissionDetails(submissionDetails);
       })
         .catch((error) => {
@@ -53,7 +53,7 @@ function Submission({ params }: { params: { submissionId: string } }) {
           setLoading(false);
         })
     })()
-  }, [user, id])
+  }, [clapApi, user, id])
 
   if (!user) {
     return redirect('/');

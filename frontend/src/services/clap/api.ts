@@ -1,6 +1,6 @@
 import { buildAuthorizationHeader as buildDefaultHeaders } from "../util";
 import { clapConfig } from "./config";
-import { RatingsDTO } from "./model/rating";
+import { PartialRating, RatingsDTO } from "./model/rating";
 import { AddRatingBody, SubmissionDTO, SubmissionDetailsDTO, UpdateSubmissionBody } from "./model/submission";
 
 export class ClapApi {
@@ -33,7 +33,7 @@ export class ClapApi {
   }
 
   // TODO to be aligned with actual CLAP contract
-  async updateRating(partialRatingId: number, updateSubmissionBody: UpdateSubmissionBody) {
+  async updateRating(partialRatingId: number, updateSubmissionBody: UpdateSubmissionBody): Promise<PartialRating> {
     const response = await fetch(`${this.baseUrl}/ratings/${partialRatingId}`, {
       method: "POST",
       headers: this.defaultHeaders,

@@ -4,7 +4,7 @@ import Error from "@/components/error";
 import Ratings from "@/components/ratings/ratings";
 import Spinner from "@/components/spinner";
 import { useAuthContext } from "@/context/authContext";
-import { ClapApi } from "@/services/clap/api";
+import { useClapAPI } from "@/context/clapApiContext";
 import { PEMCriterion } from "@/services/clap/model/criterion";
 import { RatingType, RatingsDTO } from "@/services/clap/model/rating";
 import { redirect, useRouter } from "next/navigation";
@@ -31,8 +31,8 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
   const [error, setError] = useState<ReactElement>();
   const [ratings, setRatings] = useState<RatingsDTO>();
   const [sortedCriteria, setSortedCriteria] = useState<PEMCriterion[]>([]);
+  const clapApi = useClapAPI();
 
-  let clapApi: ClapApi;
 
   const id = parseInt(params.submissionId)
   if (Number.isNaN(id)) {
@@ -45,8 +45,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
     }
     (async () => {
       setLoading(true)
-      const clapApi = new ClapApi(await user.getIdToken());
-      clapApi.getSubmissionRatings(id).then((ratings) => {
+      clapApi!.getSubmissionRatings(id).then((ratings) => {
         setRatings(ratings);
         setSortedCriteria(ratings.criteria.sort(sortCriteria))
       })
@@ -58,7 +57,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
           setLoading(false);
         })
     })()
-  }, [user, id, t])
+  }, [clapApi, user, id, t])
 
   if (!user) {
     return redirect('/');

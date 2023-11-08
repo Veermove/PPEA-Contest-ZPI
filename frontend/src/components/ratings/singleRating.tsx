@@ -1,6 +1,11 @@
+'use client'
+
 import { useTranslation } from "@/app/i18n/client";
+import { useAuthContext } from "@/context/authContext";
+import { useClapAPI } from "@/context/clapApiContext";
 import { PartialRating, RatingType } from "@/services/clap/model/rating";
-import { useState } from "react";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import EditableRating from "./editableRating";
 
@@ -8,11 +13,26 @@ function SingleRating({ partialRating, type, firstName, lastName, isEditable }: 
   const { t } = useTranslation('ratings/singleRating')
   const [isEditing, setIsEditing] = useState(false);
   const [currentRating, setCurrentRating] = useState(partialRating)
+  const { user } = useAuthContext();
+  const clapAPI = useClapAPI();
 
-  async function updateRating(description: string, rating: number) {
-    setCurrentRating({ ...currentRating, justification: description, points: rating })
-    setIsEditing(false);
-  }
+  useEffect(() => {
+    if (!user) {
+      redirect('/login');
+    }
+  });
+
+  const updateRating = async (justification: string, points: number) => {
+    if (!clapAPI) return;
+
+    try {
+      const response = await clapAPI.updateRating(partialRating.partialRatingId, { justification, points });
+      setCurrentRating({ ...currentRating, justification: response.justification, points: response.points });
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Unable to update rating:', error);
+    }
+  };
 
   return (
     <Container className="text-left my-4 mx-0">

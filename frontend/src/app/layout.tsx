@@ -1,4 +1,5 @@
 import { AuthContextProvider } from '@/context/authContext';
+import { ClapAPIProvider } from '@/context/clapApiContext';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Metadata } from 'next';
@@ -15,8 +16,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html>
       <body>
         <AuthContextProvider>
-          <AppNavbar />
-          {children}
+          <ClapAPIProvider>
+            <AppNavbar />
+            {children}
+          </ClapAPIProvider>
         </AuthContextProvider>
       </body>
     </html>
