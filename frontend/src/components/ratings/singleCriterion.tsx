@@ -1,4 +1,5 @@
 import { useTranslation } from "@/app/i18n/client";
+import { useClapAPI } from "@/context/clapApiContext";
 import { RatingType } from "@/services/clap/model/rating";
 import { AssessorsRatings } from "@/services/clap/model/submission";
 import { Accordion, AccordionHeader, AccordionItem } from "react-bootstrap";
@@ -13,6 +14,7 @@ function SingleCriterion({ assessorsRatings, criterionName, type, id, currentAss
   }
 
   const { t } = useTranslation('ratings/singleCriterion')
+  const clapApi = useClapAPI();
 
   let isRated = false;
   const ratings = assessorsRatings.map((assessorRating) => {
@@ -30,7 +32,20 @@ function SingleCriterion({ assessorsRatings, criterionName, type, id, currentAss
       />
     }
     else if (isEditableRating) {
-      return <NewPartialRating key={`criterion-${id}-${type}`} onCancel={() => {/* TODO */}} onSubmit={(justification, points) => {/* TODO */}} />
+      const onSubmit = async (justification: string, points: number) => {
+        try {
+          const partialRating = await clapApi!.upsertPartialRating({
+            justification,
+            points,
+            criterionId: id,
+            ratingId: assessorRating.ratingId
+          });
+          assessorRating.partialRatings.push(partialRating);
+        } catch (error) {
+          console.error(error)
+        }
+      }
+      return <NewPartialRating key={`criterion-${id}-${type}`} onCancel={() => {}} onSubmit={onSubmit} />
     }
     return <h6 className="text-purple my-4" key={`criterion-${id}-${type}`}>{t('noRatingsFrom')} {assessorRating.firstName} {assessorRating.lastName}</h6 >
   });

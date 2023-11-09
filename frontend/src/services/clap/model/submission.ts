@@ -40,6 +40,7 @@ export interface SubmissionDetailsDTO {
 
 export interface AssessorsRatings {
     assessorId: number;
+    ratingId: number;
     firstName: string;
     lastName: string;
     draft: boolean;
