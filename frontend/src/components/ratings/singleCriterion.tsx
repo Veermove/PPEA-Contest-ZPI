@@ -3,6 +3,7 @@ import { RatingType } from "@/services/clap/model/rating";
 import { AssessorsRatings } from "@/services/clap/model/submission";
 import { Accordion, AccordionHeader, AccordionItem } from "react-bootstrap";
 import AccordionBody from "react-bootstrap/esm/AccordionBody";
+import NewPartialRating from "./newPartialRating";
 import SingleRating from "./singleRating";
 
 function SingleCriterion({ assessorsRatings, criterionName, type, id, currentAssessorId }: { assessorsRatings: AssessorsRatings[], criterionName: string, type: RatingType, id: number, currentAssessorId: number }) {
@@ -27,6 +28,9 @@ function SingleCriterion({ assessorsRatings, criterionName, type, id, currentAss
         lastName={assessorRating.lastName}
         isEditable={isEditableRating}
       />
+    }
+    else if (isEditableRating) {
+      return <NewPartialRating key={`criterion-${id}-${type}`} onCancel={() => {/* TODO */}} onSubmit={(justification, points) => {/* TODO */}} />
     }
     return <h6 className="text-purple my-4" key={`criterion-${id}-${type}`}>{t('noRatingsFrom')} {assessorRating.firstName} {assessorRating.lastName}</h6 >
   });

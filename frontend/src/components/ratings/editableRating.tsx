@@ -1,20 +1,27 @@
 import { useTranslation } from "@/app/i18n/client";
+import { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import Error from "../error";
 
 function EditableRating({ initialJustification, initialPoints, onSubmit, onCancel }: {
   initialJustification: string,
   initialPoints: number
-  onSubmit: (description: string, rating: number) => void,
+  onSubmit: (justification: string, rating: number) => void,
   onCancel: () => void
 }) {
   const { t } = useTranslation('ratings/editableRating')
+  const [error, setError] = useState('');
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget)
+    const justification = formData.get('justification')?.toString() || initialJustification
+    if (!justification) {
+      setError(t('emptyJustification'))
+      return;
+    }
     const points = parseInt(formData.get('points')?.toString() || '') || initialPoints
-    const description = formData.get('justification')?.toString() || initialJustification
-    onSubmit(description, points)
+    onSubmit(justification, points)
   }
 
   const handleCancel = () => {
@@ -24,6 +31,13 @@ function EditableRating({ initialJustification, initialPoints, onSubmit, onCance
   return (
     <Form onSubmit={handleSubmit} onReset={handleCancel}>
       <Container>
+        {
+          !!error && (
+            <Row>
+              <Error text={error} />
+            </Row>
+          )
+        }
         <Row>
           <Col>
             <Form.Group controlId="ratingDescription">
