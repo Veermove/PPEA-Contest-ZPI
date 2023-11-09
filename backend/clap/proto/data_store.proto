@@ -109,6 +109,7 @@ message AssessorRatings {
     string last_name  = 3;
     bool is_draft     = 4;
     repeated PartialRating partial_ratings = 5;
+    int32 rating_id   = 6;
 }
 
 message RatingsSubmissionResponse {
