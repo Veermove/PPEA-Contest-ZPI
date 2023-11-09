@@ -37,7 +37,7 @@ function Submission({ params }: { params: { submissionId: string } }) {
   const clapApi = useClapAPI();
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !clapApi) {
       return
     }
     (async () => {

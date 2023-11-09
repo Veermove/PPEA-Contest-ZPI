@@ -63,7 +63,7 @@ function InitialRatings() {
   } else if (!user) {
     return redirect('/login')
   } else if (!ratings) {
-    return Error({text: t('noRatings')})
+    return <Error text={t('noRatings')} />
   } else {
     return <Ratings ratings={[ratings.initialRating!]} criteria={ratings.criteria} type={RatingType.INITIAL} />
   }

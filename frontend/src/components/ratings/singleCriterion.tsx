@@ -2,6 +2,7 @@ import { useTranslation } from "@/app/i18n/client";
 import { useClapAPI } from "@/context/clapApiContext";
 import { RatingType } from "@/services/clap/model/rating";
 import { AssessorsRatings } from "@/services/clap/model/submission";
+import { useState } from "react";
 import { Accordion, AccordionHeader, AccordionItem } from "react-bootstrap";
 import AccordionBody from "react-bootstrap/esm/AccordionBody";
 import NewPartialRating from "./newPartialRating";
@@ -12,6 +13,8 @@ function SingleCriterion({ assessorsRatings, criterionName, type, id, currentAss
   function isEditable(assessorsRating: AssessorsRatings) {
     return !assessorsRating.draft && (type === RatingType.INDIVIDUAL ? assessorsRating.assessorId === currentAssessorId : true)
   }
+
+  const [forceUpdate, setForceUpdate] = useState(0);
 
   const { t } = useTranslation('ratings/singleCriterion')
   const clapApi = useClapAPI();
@@ -41,6 +44,7 @@ function SingleCriterion({ assessorsRatings, criterionName, type, id, currentAss
             ratingId: assessorRating.ratingId
           });
           assessorRating.partialRatings.push(partialRating);
+          setForceUpdate(forceUpdate + 1)
         } catch (error) {
           console.error(error)
         }

@@ -63,7 +63,7 @@ function IndividualRatings() {
   } else if (!user) {
     return redirect('/login')
   } else if (!ratings) {
-    return Error({text: t('noRatings')})
+    return <Error text={t('noRatings')} />
   } else {
     return <Ratings ratings={ratings.individualRatings} criteria={ratings.criteria} type={RatingType.INDIVIDUAL} />
   }

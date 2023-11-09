@@ -22,7 +22,7 @@ function Submissions() {
   const clapApi = useClapAPI();
 
   useEffect(() => {
-    if (!user) {
+    if (!clapApi || !user) {
       return;
     }
     (async () => {

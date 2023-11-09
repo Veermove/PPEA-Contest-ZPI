@@ -40,7 +40,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
   }
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !clapApi) {
       return;
     }
     (async () => {
