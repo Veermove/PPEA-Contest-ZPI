@@ -18,7 +18,7 @@ function SubmissionOverview({ submission, isActive }: { submission: SubmissionDT
           return (
             <Row key={rating.ratingId}>
               <Col xs={3} className="font-bold">{assessor?.firstName} {assessor?.lastName}:</Col>
-              <Col xs={9}>{rating.draft ? t('draftVersion') : t('finalVersion')}</Col>
+              <Col xs={9}>{rating.isDraft ? t('draftVersion') : t('finalVersion')}</Col>
             </Row>
           )
         })}

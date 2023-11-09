@@ -52,8 +52,5 @@ export interface UpdateSubmissionBody {
 }
 
 export interface AddRatingBody {
-    criterionId: number;
     ratingType: RatingType;
-    justification: string;
-    points: number;
 }

@@ -32,7 +32,7 @@ function Dashboard() {
         secondTileProps={{
           text: t('initialRatings'),
           Icon: FaRegTimesCircle,
-          onClick: () => handleItemClick("/")
+          onClick: () => handleItemClick("assessor/ratings/initial")
         }}
       />
       <DoubleTile
@@ -51,7 +51,7 @@ function Dashboard() {
         firstTileProps={{
           text: t('individualRatings'),
           Icon: FaUserPlus,
-          onClick: () => handleItemClick("/")
+          onClick: () => handleItemClick("assessor/ratings/individual")
         }}
         secondTileProps={{
           text: t('studyVisits'),

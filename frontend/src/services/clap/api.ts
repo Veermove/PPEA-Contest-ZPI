@@ -1,6 +1,6 @@
 import { buildAuthorizationHeader as buildDefaultHeaders } from "../util";
 import { clapConfig } from "./config";
-import { PartialRating, RatingsDTO } from "./model/rating";
+import { PartialRating, Rating, RatingsDTO } from "./model/rating";
 import { AddRatingBody, SubmissionDTO, SubmissionDetailsDTO, UpdateSubmissionBody } from "./model/submission";
 
 export class ClapApi {
@@ -42,9 +42,9 @@ export class ClapApi {
     return await response.json();
   }
 
-  async addRating(submissionId: number, addRatingBody: AddRatingBody) {
-    const response = await fetch(`${this.baseUrl}/submissions/ratings/${submissionId}`, {
-      method: "PUT",
+  async addRating(submissionId: number, addRatingBody: AddRatingBody): Promise<Rating> {
+    const response = await fetch(`${this.baseUrl}/ratings/${submissionId}`, {
+      method: "POST",
       headers: this.defaultHeaders,
       body: JSON.stringify(addRatingBody)
     });
