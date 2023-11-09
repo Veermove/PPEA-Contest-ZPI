@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import zpi.ppea.clap.dtos.PartialRatingDto;
 import zpi.ppea.clap.dtos.UpdatePartialRatingDto;
-import zpi.ppea.clap.mappers.PartialRatingMapper;
+import zpi.ppea.clap.mappers.DtoMapper;
 import zpi.ppea.clap.repository.PartialRatingRepository;
 import zpi.ppea.clap.security.FirebaseAgent;
 
@@ -16,6 +16,6 @@ public class PartialRatingService {
 
     public PartialRatingDto upsertPartialRating(UpdatePartialRatingDto updatePartialRatingDto, FirebaseAgent.UserAuthData authentication) {
         var updatedRating = partialRatingRepository.upsertPartialRating(updatePartialRatingDto, authentication);
-        return PartialRatingMapper.partialRatingToDto(updatedRating);
+        return DtoMapper.INSTANCE.partialRatingToDtos(updatedRating);
     }
 }
