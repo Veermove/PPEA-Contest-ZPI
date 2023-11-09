@@ -34,14 +34,8 @@ public class GlobalExceptionHandler {
         for (var messages : Objects.requireNonNull(ex.getDetailMessageArguments()))
             errors.addAll((Collection<? extends String>) messages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .header(valueConfig.getRefreshTokenHeaderName(), "false")
+                .header(valueConfig.getRefreshTokenHeaderName(), "")
                 .body(getErrorsMap(errors));
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleUnexpectedException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .header(valueConfig.getRefreshTokenHeaderName(), "false").body(ex.getMessage());
     }
 
     private Map<String, List<String>> getErrorsMap(List<String> errors) {
