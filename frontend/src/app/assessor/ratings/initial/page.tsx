@@ -49,7 +49,7 @@ function InitialRatings() {
 
       const initialRating = submissionRatings.initialRating;
       if (!initialRating) {
-        await clapApi!.addRating(currentSubmission.submissionId, {ratingType: RatingType.INITIAL});
+        await clapApi!.createRating(currentSubmission.submissionId, {ratingType: RatingType.INITIAL});
         submissionRatings = await clapApi!.getSubmissionRatings(currentSubmission.submissionId)
       }
 

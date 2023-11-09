@@ -26,7 +26,11 @@ function SingleRating({ partialRating, type, firstName, lastName, isEditable }: 
     if (!clapAPI) return;
 
     try {
-      const response = await clapAPI.updateRating(partialRating.partialRatingId, { justification, points });
+      const response = await clapAPI.upsertPartialRating({
+        partialRatingId: currentRating.partialRatingId,
+        justification, 
+        points 
+      });
       setCurrentRating({ ...currentRating, justification: response.justification, points: response.points });
       setIsEditing(false);
     } catch (error) {

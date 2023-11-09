@@ -49,7 +49,7 @@ function IndividualRatings() {
 
       const assessorRatings = submissionRatings.individualRatings.find(rating => rating.assessorId === assessorId);
       if (!assessorRatings) {
-        await clapApi!.addRating(currentSubmission.submissionId, {ratingType: RatingType.INDIVIDUAL});
+        await clapApi!.createRating(currentSubmission.submissionId, {ratingType: RatingType.INDIVIDUAL});
         submissionRatings = await clapApi!.getSubmissionRatings(currentSubmission.submissionId)
       }
 

@@ -47,6 +47,9 @@ export interface AssessorsRatings {
 }
 
 export interface UpdateSubmissionBody {
+    criterionId?: number;
+    ratingId?: number;
+    partialRatingId?: number;
     justification: string;
     points: number;
 }

@@ -18,8 +18,9 @@ export interface PartialRating {
     partialRatingId: number;
     points: number;
     justification: string;
-    lastModified: Date;
     criterionId: number;
+    modified: string;
+    modifiedBy: number;
 }
 
 export interface RatingsDTO {

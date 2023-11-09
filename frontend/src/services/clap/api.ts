@@ -1,7 +1,7 @@
 import { buildAuthorizationHeader as buildDefaultHeaders } from "../util";
 import { clapConfig } from "./config";
 import { PartialRating, Rating, RatingsDTO } from "./model/rating";
-import { AddRatingBody, SubmissionDTO, SubmissionDetailsDTO, UpdateSubmissionBody } from "./model/submission";
+import { AddRatingBody as NewRatingBody, SubmissionDTO, SubmissionDetailsDTO, UpdateSubmissionBody } from "./model/submission";
 
 export class ClapApi {
   private readonly defaultHeaders: HeadersInit;
@@ -32,22 +32,30 @@ export class ClapApi {
     return await response.json();
   }
 
-  // TODO to be aligned with actual CLAP contract
-  async updateRating(partialRatingId: number, updateSubmissionBody: UpdateSubmissionBody): Promise<PartialRating> {
-    const response = await fetch(`${this.baseUrl}/ratings/${partialRatingId}`, {
+  async createRating(submissionId: number, newRatingBody: NewRatingBody): Promise<Rating> {
+    const response = await fetch(`${this.baseUrl}/ratings/${submissionId}`, {
+      method: "POST",
+      headers: this.defaultHeaders,
+      body: JSON.stringify(newRatingBody)
+    });
+    return await response.json();
+  }
+
+  async submitRatingDraft(ratingId: number): Promise<Rating> {
+    const response = await fetch(`${this.baseUrl}/ratings/${ratingId}`, {
+      method: "PUT",
+      headers: this.defaultHeaders
+    });
+    return await response.json();
+  }
+
+  async upsertPartialRating(updateSubmissionBody: UpdateSubmissionBody): Promise<PartialRating> {
+    const response = await fetch(`${this.baseUrl}/partialRatings`, {
       method: "POST",
       headers: this.defaultHeaders,
       body: JSON.stringify(updateSubmissionBody)
     });
     return await response.json();
   }
-
-  async addRating(submissionId: number, addRatingBody: AddRatingBody): Promise<Rating> {
-    const response = await fetch(`${this.baseUrl}/ratings/${submissionId}`, {
-      method: "POST",
-      headers: this.defaultHeaders,
-      body: JSON.stringify(addRatingBody)
-    });
-    return await response.json();
-  }
 }
+
