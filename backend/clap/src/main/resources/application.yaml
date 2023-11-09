@@ -14,8 +14,33 @@ spring:
           jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken%40system.gserviceaccount.com
 
 frontend:
-  address: http://frontend:3000
+  address: http://localhost:3000
 
 firebase:
   issuer: https://securetoken.google.com/zpi-ist-fcbee
   audience: zpi-ist-fcbee
+
+firebaseAgent:
+  auth_done: "authdone"
+  first_name: "first_name"
+  last_name: "last_name"
+  person_id: "person_id"
+  assessor_id: "assessor_id"
+  awards_representative_id: "awards_representative_id"
+  jury_member_id: "jury_member_id"
+  ipma_expert_id: "ipma_expert_id"
+  applicant_id: "applicant_id"
+  refresh_token_header_name: "refresh"
+  bearer_prefix: "Bearer "
+
+# We can change them in the future without any problems, now they are all set to 24h
+caches:
+  caffeines:
+    - name: CalculateTotalRating
+      expiryInMinutes: 1440 # 24 * 60
+    - name: Submissions
+      expiryInMinutes: 1440
+    - name: DetailSubmission
+      expiryInMinutes: 1440
+    - name: SubmissionRatings
+      expiryInMinutes: 1440

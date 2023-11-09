@@ -1,8 +1,8 @@
 package zpi.ppea.clap.exceptions;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class ClientException extends RuntimeException {
     private final String refresh;
 

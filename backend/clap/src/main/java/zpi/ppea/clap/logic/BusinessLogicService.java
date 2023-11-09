@@ -1,11 +1,13 @@
 package zpi.ppea.clap.logic;
 
-import data_store.*;
-import lombok.RequiredArgsConstructor;
+import data_store.Criterion;
+import data_store.DataStoreGrpc;
+import data_store.PartialRating;
+import data_store.RatingsSubmissionRequest;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import zpi.ppea.clap.service.DataStoreService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,9 +18,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Service
 public class BusinessLogicService {
 
-    public static Double calculateSubmissionRating(RatingsSubmissionResponse ratings, Integer submissionId, Integer assessorId) {
+    @GrpcClient("dataStore")
+    DataStoreGrpc.DataStoreBlockingStub dataStoreBlockingStub;
+
+    @Cacheable("CalculateTotalRating")
+    public Double calculateSubmissionRating(Integer submissionId, int assessorId) {
+        var ratings = dataStoreBlockingStub.getSubmissionRatings(RatingsSubmissionRequest.newBuilder()
+                .setSubmissionId(submissionId).setAssessorId(assessorId).build());
 
         // Take criterias (distinct by id) and partial ratings
         var criterias = ratings.getCriteriaList().stream()
