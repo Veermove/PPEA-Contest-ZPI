@@ -24,7 +24,7 @@ public class BusinessLogicService {
     @GrpcClient("dataStore")
     DataStoreGrpc.DataStoreBlockingStub dataStoreBlockingStub;
 
-    @Cacheable("calculateTotalRating")
+    @Cacheable("CalculateTotalRating")
     public Double calculateSubmissionRating(Integer submissionId, int assessorId) {
         var ratings = dataStoreBlockingStub.getSubmissionRatings(RatingsSubmissionRequest.newBuilder()
                 .setSubmissionId(submissionId).setAssessorId(assessorId).build());

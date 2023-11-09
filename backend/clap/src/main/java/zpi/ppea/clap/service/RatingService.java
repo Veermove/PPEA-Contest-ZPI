@@ -18,7 +18,7 @@ public class RatingService {
 
     private final RatingsRepository ratingsRepository;
 
-    @Cacheable("submissionRatings")
+    @Cacheable("SubmissionRatings")
     public RatingsSubmissionResponseDto getSubmissionRatings(Integer submissionId, FirebaseAgent.UserAuthData authentication) {
         var ratings = ratingsRepository.submissionRatings(submissionId, authentication);
         return DtoMapper.INSTANCE.ratingsResponseToDto(ratings);
@@ -34,5 +34,5 @@ public class RatingService {
         var updatedPartialRating = ratingsRepository.submitRatingDraft(ratingId, authentication);
         return DtoMapper.INSTANCE.partialRatingToDtos(updatedPartialRating);
     }
-    
+
 }

@@ -32,3 +32,15 @@ firebaseAgent:
   applicant_id: "applicant_id"
   refresh_token_header_name: "refresh"
   bearer_prefix: "Bearer "
+
+# We can change them in the future without any problems, now they are all set to 24h
+caches:
+  caffeines:
+    - name: CalculateTotalRating
+      expiryInMinutes: 1440 # 24 * 60
+    - name: Submissions
+      expiryInMinutes: 1440
+    - name: DetailSubmission
+      expiryInMinutes: 1440
+    - name: SubmissionRatings
+      expiryInMinutes: 1440

@@ -20,12 +20,12 @@ public class SubmissionService {
     private final BusinessLogicService businessLogicService;
     private final SubmissionRepository submissionRepository;
 
-    @Cacheable("submissions")
+    @Cacheable("Submissions")
     public List<SubmissionDto> getSubmissions(FirebaseAgent.UserAuthData authentication) {
         return DtoMapper.INSTANCE.submissionListToDtos(submissionRepository.allSubmissions(authentication).getSubmissionsList());
     }
 
-    @Cacheable("detailSubmission")
+    @Cacheable("DetailSubmission")
     public DetailsSubmissionResponseDto getDetailedSubmission(Integer submissionId, FirebaseAgent.UserAuthData authentication) {
         var detailsSubmissionResponseDto = DtoMapper.INSTANCE.detailsSubmissionToDto(
                 submissionRepository.getDetailedSubmission(submissionId, authentication));
