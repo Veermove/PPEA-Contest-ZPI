@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
-import zpi.ppea.clap.exceptions.GrpcDatastoreException;
+import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.security.FirebaseAgent;
 
 import java.util.concurrent.ExecutionException;
@@ -23,7 +23,7 @@ public class DataStoreService {
         try {
             return dataStoreFutureStub.getUserClaims(UserRequest.newBuilder().setEmail(email).build()).get();
         } catch (InterruptedException | ExecutionException e) {
-            throw new GrpcDatastoreException(e, data.getRefresh());
+            throw new NoAccessToResource(e, data.getRefresh());
         }
     }
 

@@ -22,8 +22,8 @@ public class GlobalExceptionHandler {
                 .header(valueConfig.getRefreshTokenHeaderName(), ex.getRefresh()).body(ex.getMessage());
     }
 
-    @ExceptionHandler(GrpcDatastoreException.class)
-    public ResponseEntity<String> handleNoAccessToResourceException(GrpcDatastoreException ex) {
+    @ExceptionHandler(NoAccessToResource.class)
+    public ResponseEntity<String> handleNoAccessToResourceException(NoAccessToResource ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .header(valueConfig.getRefreshTokenHeaderName(), ex.getRefresh()).body(ex.getMessage());
     }

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Repository;
 import zpi.ppea.clap.dtos.UpdatePartialRatingDto;
-import zpi.ppea.clap.exceptions.GrpcDatastoreException;
+import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.mappers.PartialRatingMapper;
 import zpi.ppea.clap.security.FirebaseAgent;
 
@@ -25,7 +25,7 @@ public class PartialRatingRepository {
                     updatePartialRatingDto, authentication.getClaims().getAssessorId())).get();
         } catch (InterruptedException | ExecutionException e) {
             Thread.currentThread().interrupt();
-            throw new GrpcDatastoreException(e, authentication.getRefresh());
+            throw new NoAccessToResource(e, authentication.getRefresh());
         }
     }
 }
