@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssessorRatingsDto {
+    private int ratingId;
     private int assessorId;
     private String firstName;
     private String lastName;
