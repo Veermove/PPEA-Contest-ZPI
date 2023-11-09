@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import zpi.ppea.clap.config.ValueConfig;
 import zpi.ppea.clap.dtos.NewRatingDto;
 import zpi.ppea.clap.dtos.PartialRatingDto;
 import zpi.ppea.clap.dtos.RatingDto;
@@ -16,6 +17,7 @@ import zpi.ppea.clap.service.RatingService;
 @AllArgsConstructor
 public class RatingController {
 
+    private final ValueConfig valueConfig;
     private final FirebaseAgent firebaseAgent;
     private final RatingService ratingService;
 
@@ -25,7 +27,7 @@ public class RatingController {
             @PathVariable Integer submissionId) {
         var authentication = firebaseAgent.authenticate(bearerToken);
         return ResponseEntity.ok()
-                .header(FirebaseAgent.REFRESH_TOKEN_NAME, authentication.getRefresh())
+                .header(valueConfig.getRefreshTokenHeaderName(), authentication.getRefresh())
                 .body(ratingService.getSubmissionRatings(submissionId, authentication));
     }
 
@@ -36,7 +38,7 @@ public class RatingController {
             @Valid @RequestBody NewRatingDto newRatingDto) {
         var authentication = firebaseAgent.authenticate(bearerToken);
         return ResponseEntity.ok()
-                .header(FirebaseAgent.REFRESH_TOKEN_NAME, authentication.getRefresh())
+                .header(valueConfig.getRefreshTokenHeaderName(), authentication.getRefresh())
                 .body(ratingService.createNewRating(submissionId, newRatingDto, authentication));
     }
 
@@ -46,7 +48,7 @@ public class RatingController {
             @PathVariable Integer ratingId) {
         var authentication = firebaseAgent.authenticate(bearerToken);
         return ResponseEntity.ok()
-                .header(FirebaseAgent.REFRESH_TOKEN_NAME, authentication.getRefresh())
+                .header(valueConfig.getRefreshTokenHeaderName(), authentication.getRefresh())
                 .body(ratingService.submitRatingDraft(ratingId, authentication));
     }
 

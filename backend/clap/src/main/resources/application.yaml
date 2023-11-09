@@ -30,3 +30,5 @@ firebaseAgent:
   jury_member_id: "jury_member_id"
   ipma_expert_id: "ipma_expert_id"
   applicant_id: "applicant_id"
+  refresh_token_header_name: "refresh"
+  bearer_prefix: "Bearer "

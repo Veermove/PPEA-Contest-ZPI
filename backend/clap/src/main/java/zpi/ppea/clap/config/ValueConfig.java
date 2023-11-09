@@ -44,4 +44,10 @@ public class ValueConfig {
     @Value("${firebaseAgent.applicant_id}")
     private String applicantId;
 
+    @Value("${firebaseAgent.refresh_token_header_name}")
+    private String refreshTokenHeaderName;
+
+    @Value("${firebaseAgent.bearer_prefix}")
+    private String bearerPrefix;
+
 }

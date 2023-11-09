@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import zpi.ppea.clap.config.ValueConfig;
 import zpi.ppea.clap.dtos.PartialRatingDto;
 import zpi.ppea.clap.dtos.UpdatePartialRatingDto;
 import zpi.ppea.clap.security.FirebaseAgent;
@@ -14,6 +15,7 @@ import zpi.ppea.clap.service.PartialRatingService;
 @AllArgsConstructor
 public class PartialRatingController {
 
+    private final ValueConfig valueConfig;
     private final FirebaseAgent firebaseAgent;
     private final PartialRatingService partialRatingService;
 
@@ -23,7 +25,7 @@ public class PartialRatingController {
             @Valid @RequestBody UpdatePartialRatingDto updatePartialRatingDto) {
         var authentication = firebaseAgent.authenticate(bearerToken);
         return ResponseEntity.ok()
-                .header(FirebaseAgent.REFRESH_TOKEN_NAME, authentication.getRefresh())
+                .header(valueConfig.getRefreshTokenHeaderName(), authentication.getRefresh())
                 .body(partialRatingService.upsertPartialRating(updatePartialRatingDto, authentication));
     }
 

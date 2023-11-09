@@ -30,7 +30,6 @@ public class FirebaseAgent {
 
     private final DataStoreService client;
     private final ValueConfig valueConfig;
-    public static final String REFRESH_TOKEN_NAME = "refresh";
 
     @SneakyThrows
     @PostConstruct

@@ -3,6 +3,7 @@ package zpi.ppea.clap.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import zpi.ppea.clap.config.ValueConfig;
 import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
 import zpi.ppea.clap.dtos.SubmissionDto;
 import zpi.ppea.clap.security.FirebaseAgent;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SubmissionController {
 
+    private final ValueConfig valueConfig;
     private final FirebaseAgent firebaseAgent;
     private final SubmissionService submissionService;
 
@@ -22,7 +24,7 @@ public class SubmissionController {
     public ResponseEntity<List<SubmissionDto>> getSubmissions(@RequestHeader(name = "Authorization") String bearerToken) {
         var authentication = firebaseAgent.authenticate(bearerToken);
         return ResponseEntity.ok()
-                .header(FirebaseAgent.REFRESH_TOKEN_NAME, authentication.getRefresh())
+                .header(valueConfig.getRefreshTokenHeaderName(), authentication.getRefresh())
                 .body(submissionService.getSubmissions(authentication));
     }
 
@@ -32,7 +34,7 @@ public class SubmissionController {
             @PathVariable Integer submissionId) {
         var authentication = firebaseAgent.authenticate(bearerToken);
         return ResponseEntity.ok()
-                .header(FirebaseAgent.REFRESH_TOKEN_NAME, authentication.getRefresh())
+                .header(valueConfig.getRefreshTokenHeaderName(), authentication.getRefresh())
                 .body(submissionService.getDetailedSubmission(submissionId, authentication));
     }
 
