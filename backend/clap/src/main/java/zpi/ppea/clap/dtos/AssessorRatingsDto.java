@@ -1,11 +1,11 @@
 package zpi.ppea.clap.dtos;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -16,4 +16,5 @@ public class AssessorRatingsDto {
     private String firstName;
     private String lastName;
     private List<PartialRatingDto> partialRatings;
+    private boolean isDraft;
 }

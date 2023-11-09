@@ -1,11 +1,11 @@
 package zpi.ppea.clap.service;
 
-import data_store.RatingType;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import data_store.RatingType;
+import lombok.RequiredArgsConstructor;
 import zpi.ppea.clap.dtos.NewRatingDto;
-import zpi.ppea.clap.dtos.PartialRatingDto;
 import zpi.ppea.clap.dtos.RatingDto;
 import zpi.ppea.clap.dtos.RatingsSubmissionResponseDto;
 import zpi.ppea.clap.mappers.DtoMapper;
@@ -30,9 +30,9 @@ public class RatingService {
         return DtoMapper.INSTANCE.ratingToDto(rating);
     }
 
-    public PartialRatingDto submitRatingDraft(Integer ratingId, FirebaseAgent.UserAuthData authentication) {
-        var updatedPartialRating = ratingsRepository.submitRatingDraft(ratingId, authentication);
-        return DtoMapper.INSTANCE.partialRatingToDtos(updatedPartialRating);
+    public RatingDto submitRatingDraft(Integer ratingId, FirebaseAgent.UserAuthData authentication) {
+        var updatedRating = ratingsRepository.submitRatingDraft(ratingId, authentication);
+        return DtoMapper.INSTANCE.ratingToDto(updatedRating);
     }
 
 }
