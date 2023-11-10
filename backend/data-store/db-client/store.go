@@ -550,7 +550,10 @@ func (st *Store) SubmitRating(ctx context.Context, in *pb.SubmitRatingDraft) (*p
 		return nil, fmt.Errorf("rating cannot be submitted because not all partial rating were present")
 	}
 
-	ret, err := queries.New(st.Pool).SubmitRating(ctx, in.GetRatingId())
+	ret, err := queries.New(st.Pool).SubmitRating(ctx, queries.SubmitRatingParams{
+		IsDraft:  false,
+		RatingID: in.GetRatingId(),
+	})
 	if err != nil {
 		return nil, fmt.Errorf("submitting rating: %w", err)
 	}

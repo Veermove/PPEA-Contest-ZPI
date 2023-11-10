@@ -19,12 +19,12 @@ with getRatingCirtsId as (
         where rating.rating_id = $1
 ),
 getContestCritsId as (
-select
-    criterion.pem_criterion_id as "criterion_id"
-from project.partial_rating as part_rating
-    inner join project.rating        as rating     on rating.rating_id         = part_rating.rating_id
-    inner join project.submission    as submission on submission.submission_id = rating.submission_id
-    inner join edition.pem_criterion as criterion  on criterion.contest_id     = submission.contest_id
+    select
+        criterion.pem_criterion_id as "criterion_id"
+    from project.partial_rating as part_rating
+        inner join project.rating        as rating     on rating.rating_id         = part_rating.rating_id
+        inner join project.submission    as submission on submission.submission_id = rating.submission_id
+        inner join edition.pem_criterion as criterion  on criterion.contest_id     = submission.contest_id
 ),
 diffCrits as (
     select

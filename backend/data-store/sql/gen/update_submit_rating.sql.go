@@ -10,17 +10,19 @@ import (
 )
 
 const submitRating = `-- name: SubmitRating :one
-update project.rating set (
-    "is_draft"
-) = (
-    $2
-)
-where rating_id = $1
+update project.rating set
+    "is_draft" = $1
+where rating_id = $2
 returning rating_id, submission_id, assessor_id, is_draft, type
 `
 
-func (q *Queries) SubmitRating(ctx context.Context, ratingID int32) (ProjectRating, error) {
-	row := q.db.QueryRow(ctx, submitRating, ratingID)
+type SubmitRatingParams struct {
+	IsDraft  bool
+	RatingID int32
+}
+
+func (q *Queries) SubmitRating(ctx context.Context, arg SubmitRatingParams) (ProjectRating, error) {
+	row := q.db.QueryRow(ctx, submitRating, arg.IsDraft, arg.RatingID)
 	var i ProjectRating
 	err := row.Scan(
 		&i.RatingID,
