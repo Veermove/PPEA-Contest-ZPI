@@ -40,15 +40,15 @@ function EditableRating({ initialJustification, initialPoints, onSubmit, onCance
         }
         <Row>
           <Col>
-            <Form.Group controlId="ratingDescription">
+            <Form.Group>
               <Form.Label htmlFor="justification">{t('description')}:</Form.Label>
-              <Form.Control name="justification" as="textarea" rows={5} value={initialJustification} />
+              <Form.Control name="justification" as="textarea" rows={5} defaultValue={initialJustification} />
             </Form.Group>
           </Col>
           <Col>
-            <Form.Group controlId="ratingPoints">
+            <Form.Group>
               <Form.Label htmlFor="points">{t('rating')}</Form.Label>
-              <Form.Control type="number" name="points" value={initialPoints} step={1} min={0} max={100} />
+              <Form.Control type="number" name="points" defaultValue={initialPoints} step={1} min={0} max={100} />
             </Form.Group>
             <Form.Group controlId="ratingButtons">
               <Button className="text-white" variant="primary" type="submit">

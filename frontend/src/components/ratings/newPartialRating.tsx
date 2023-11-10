@@ -18,9 +18,9 @@ function NewPartialRating({onSubmit, onCancel}: {onSubmit: (description: string,
   }
 
   return isExpanded ? (
-    <Button className="btn-primary" onClick={() => setIsExpanded(true)}>{t('add')}</Button>
-  ) : (
     <EditableRating initialJustification="" initialPoints={0} onSubmit={handleSubmit} onCancel={handleCancel}/>
+  ) : (
+    <Button className="btn-primary" onClick={() => setIsExpanded(true)}>{t('add')}</Button>
   )
 }
 

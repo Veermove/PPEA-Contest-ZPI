@@ -50,7 +50,7 @@ export class ClapApi {
   }
 
   async upsertPartialRating(updateSubmissionBody: UpdateSubmissionBody): Promise<PartialRating> {
-    const response = await fetch(`${this.baseUrl}/partialRatings`, {
+    const response = await fetch(`${this.baseUrl}/partialratings`, {
       method: "POST",
       headers: this.defaultHeaders,
       body: JSON.stringify(updateSubmissionBody)

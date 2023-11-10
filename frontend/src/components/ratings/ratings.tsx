@@ -9,11 +9,11 @@ import SingleCriterion from "./singleCriterion";
 
 function Ratings({ ratings, criteria, type }: { ratings: AssessorsRatings[], criteria: PEMCriterion[], type: RatingType }) {
   const { user } = useAuthContext();
-  const [assessorId, setAssessorId] = useState<number>(0);
+  const [assessorId, setAssessorId] = useState(0);
 
   useEffect(() => {
     (async () => {
-      setAssessorId((await user!.getIdTokenResult()).claims.assessorId as number)
+      setAssessorId((await user!.getIdTokenResult()).claims.assessor_id as number)
     })()
   }, [user])
 

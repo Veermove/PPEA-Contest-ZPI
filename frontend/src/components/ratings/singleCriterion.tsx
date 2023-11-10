@@ -9,7 +9,7 @@ import NewPartialRating from "./newPartialRating";
 import SingleRating from "./singleRating";
 
 function SingleCriterion({ assessorsRatings, criterionName, type, id, currentAssessorId }: { assessorsRatings: AssessorsRatings[], criterionName: string, type: RatingType, id: number, currentAssessorId: number }) {
-  
+
   function isEditable(assessorsRating: AssessorsRatings) {
     return !assessorsRating.draft && (type === RatingType.INDIVIDUAL ? assessorsRating.assessorId === currentAssessorId : true)
   }
@@ -21,9 +21,9 @@ function SingleCriterion({ assessorsRatings, criterionName, type, id, currentAss
 
   let isRated = false;
   const ratings = assessorsRatings.map((assessorRating) => {
-    const isEditableRating = isEditable(assessorRating)
     const partialRating = assessorRating.partialRatings.find((partialRating) => partialRating.criterionId === id)
     if (partialRating) {
+      const isEditableRating = isEditable(assessorRating)
       isRated = true;
       return <SingleRating
         key={partialRating.partialRatingId}
@@ -34,7 +34,7 @@ function SingleCriterion({ assessorsRatings, criterionName, type, id, currentAss
         isEditable={isEditableRating}
       />
     }
-    else if (isEditableRating) {
+    else if (type !== RatingType.INDIVIDUAL || assessorRating.assessorId === currentAssessorId) {
       const onSubmit = async (justification: string, points: number) => {
         try {
           const partialRating = await clapApi!.upsertPartialRating({
@@ -49,11 +49,10 @@ function SingleCriterion({ assessorsRatings, criterionName, type, id, currentAss
           console.error(error)
         }
       }
-      return <NewPartialRating key={`criterion-${id}-${type}`} onCancel={() => {}} onSubmit={onSubmit} />
+      return <NewPartialRating key={`newRating-${id}-${type}-${assessorRating.assessorId}`} onCancel={() => { }} onSubmit={onSubmit} /> 
     }
-    return <h6 className="text-purple my-4" key={`criterion-${id}-${type}`}>{t('noRatingsFrom')} {assessorRating.firstName} {assessorRating.lastName}</h6 >
+    return <h6 className="text-purple my-4" key={`criterion-${id}-${type}-${assessorRating.assessorId}`}>{t('noRatingsFrom')} {assessorRating.firstName} {assessorRating.lastName}</h6 >
   });
-
 
   return (
     <Accordion className="my-2">
