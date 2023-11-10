@@ -30,6 +30,11 @@ var (
 		queries.ProjectRatingTypeInitial:    pb.RatingType_INITIAL,
 		queries.ProjectRatingTypeFinal:      pb.RatingType_FINAL,
 	}
+	RatingTypesMappingRev = map[pb.RatingType]queries.ProjectRatingType{
+		pb.RatingType_INDIVIDUAL: queries.ProjectRatingTypeIndividual,
+		pb.RatingType_INITIAL:    queries.ProjectRatingTypeInitial,
+		pb.RatingType_FINAL:      queries.ProjectRatingTypeFinal,
+	}
 	SubmissionStatesTypesMapping = map[queries.ProjectState]pb.ProjectState{
 		queries.ProjectStateDraft:     pb.ProjectState_DRAFT,
 		queries.ProjectStateSubmitted: pb.ProjectState_SUBMITTED,
@@ -43,7 +48,8 @@ type (
 		Pool *pgxpool.Pool
 		Log  *zap.Logger
 	}
-	AccessParams = queries.DoesAssessorHaveAccessParams
+	AccessParams     = queries.DoesAssessorHaveAccessParams
+	NewRatingsParams = queries.DoesAssessorHaveAccessToRatingParams
 )
 
 func GetConnectionString() string {
@@ -412,6 +418,118 @@ func (st *Store) CreateAssessorRatings(ctx context.Context, ratingId int32, asse
 	}
 
 	return initialRs, nil
+}
+
+func (st *Store) CreateNewSubmissionRating(ctx context.Context, assessorId int32, submissionId int32, rtype pb.RatingType) (*pb.Rating, error) {
+	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccess(ctx, AccessParams{AssessorID: assessorId, SubmissionID: submissionId})
+	if err != nil {
+		return nil, fmt.Errorf("checking access: %w", err)
+	}
+	if !hasAccess {
+		return nil, fmt.Errorf("User does not have access to resource")
+	}
+
+	// For individual inserts we use provided Assessor id
+	if rtype.Type() == pb.RatingType_INDIVIDUAL.Type() {
+		r, err := queries.New(st.Pool).CreateProjectRatingIndividual(ctx, queries.CreateProjectRatingIndividualParams{
+			AssessorID:   assessorId,
+			SubmissionID: submissionId,
+			IsDraft:      true,
+			Type:         RatingTypesMappingRev[rtype],
+		})
+
+		if err != nil {
+			return nil, fmt.Errorf("creating new submission rating: %w", err)
+		}
+
+		return &pb.Rating{
+			RatingId:   r.RatingID,
+			AssessorId: r.AssessorID,
+			IsDraft:    r.IsDraft,
+			Type:       rtype,
+		}, nil
+	}
+
+	// ...else we have to find lead assessor id and use it
+	r, err := queries.New(st.Pool).CreateProjectRating(ctx, queries.CreateProjectRatingParams{
+		SubmissionID: submissionId,
+		IsDraft:      true,
+		Type:         RatingTypesMappingRev[rtype],
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("creating new submission rating: %w", err)
+	}
+
+	return &pb.Rating{
+		RatingId:   r.RatingID,
+		AssessorId: r.AssessorID,
+		IsDraft:    r.IsDraft,
+		Type:       rtype,
+	}, nil
+}
+
+func (st *Store) CreateNewPartialRating(ctx context.Context, in *pb.PartialRatingRequest) (*pb.PartialRating, error) {
+	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccessToRating(ctx, NewRatingsParams{AssessorID: in.GetAssessorId(), RatingID: in.GetCriterionId()})
+	if err != nil {
+		return nil, fmt.Errorf("checking access: %w", err)
+	}
+	if !hasAccess {
+		return nil, fmt.Errorf("User does not have access to resource")
+	}
+
+	// If we have partial rating id we update existing
+	if in.GetPartialRatingId() != 0 {
+		found, err := queries.New(st.Pool).DoesPartialRatingExist(ctx, in.GetPartialRatingId())
+		if err != nil {
+			return nil, fmt.Errorf("checking if partial rating exists: %w", err)
+		}
+		if !found {
+			return nil, fmt.Errorf("partial rating with id %d does not exist", in.GetPartialRatingId())
+		}
+
+		ret, err := queries.New(st.Pool).UpdatePartialRating(ctx, queries.UpdatePartialRatingParams{
+			PartialRatingID: in.GetPartialRatingId(),
+			Points:          in.GetPoints(),
+			Justification:   in.GetJustification(),
+			ModifiedByID:    in.GetAssessorId(),
+		})
+
+		if err != nil {
+			return nil, fmt.Errorf("updating partial rating with id %d: %w", in.GetPartialRatingId(), err)
+		}
+
+		return &pb.PartialRating{
+			PartialRatingId: ret.PartialRatingID,
+			CriterionId:     ret.CriterionID,
+			Points:          ret.Points,
+			Justification:   ret.Justification,
+			Modified:        ret.Modified.Format(time.RFC3339),
+			ModifiedBy:      ret.ModifiedByID,
+		}, nil
+	}
+
+	// Otherwise we create new partial rating
+	ret, err := queries.New(st.Pool).CreatePartialRating(ctx, queries.CreatePartialRatingParams{
+		RatingID:      in.GetRatingId(),
+		CriterionID:   in.GetCriterionId(),
+		Points:        in.GetPoints(),
+		Justification: in.GetJustification(),
+		ModifiedByID:  in.GetAssessorId(),
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("creating partial rating: %w", err)
+	}
+
+	return &pb.PartialRating{
+		PartialRatingId: ret.PartialRatingID,
+		CriterionId:     ret.CriterionID,
+		Points:          ret.Points,
+		Justification:   ret.Justification,
+		Modified:        ret.Modified.Format(time.RFC3339),
+		ModifiedBy:      ret.ModifiedByID,
+	}, nil
 }
 
 func MapRatingsFromSql(rts []queries.GetRatingsForSubissionRow) (ratings []*pb.Rating) {

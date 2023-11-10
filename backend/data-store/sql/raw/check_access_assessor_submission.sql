@@ -1,5 +1,4 @@
 -- name: DoesAssessorHaveAccess :one
-
 select (
     @submission_id::integer in (
         select submission_id
