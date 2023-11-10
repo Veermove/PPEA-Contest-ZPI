@@ -1,14 +1,15 @@
 package zpi.ppea.clap.mappers;
 
-import data_store.*;
+import java.util.List;
+import java.util.Optional;
+
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import zpi.ppea.clap.dtos.*;
 
-import java.util.List;
-import java.util.Optional;
+import data_store.*;
+import zpi.ppea.clap.dtos.*;
 
 @Mapper
 public interface DtoMapper {
@@ -44,6 +45,8 @@ public interface DtoMapper {
     PartialRatingRequest dtoToPartialRatingRequest(UpdatePartialRatingDto dto, @Context Integer assessorId);
 
     default RatingsSubmissionResponseDto ratingsResponseToDto(RatingsSubmissionResponse ratings) {
+        final AssessorRatings initialRatings = ratings.getInitial();
+        final AssessorRatings finalRatings = ratings.getFinal();
         return RatingsSubmissionResponseDto.builder()
                 .criteria(DtoMapper.INSTANCE.criterionListToDto(
                         Optional.of(ratings.getCriteriaList()).orElse(List.of())
@@ -51,8 +54,8 @@ public interface DtoMapper {
                 .individualRatings(DtoMapper.INSTANCE.assessorRatingsListToDtos(
                         Optional.of(ratings.getIndividualList()).orElse(List.of())
                 ))
-                .initialRating(DtoMapper.INSTANCE.assessorRatingsToDtos(ratings.getInitial()))
-                .finalRating(DtoMapper.INSTANCE.assessorRatingsToDtos(ratings.getInitial()))
+                .initialRating(initialRatings != null ? DtoMapper.INSTANCE.assessorRatingsToDtos(initialRatings) : null)
+                .finalRating(finalRatings != null ? DtoMapper.INSTANCE.assessorRatingsToDtos(finalRatings) : null)
                 .build();
     }
 
