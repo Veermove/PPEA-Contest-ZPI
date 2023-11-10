@@ -92,6 +92,12 @@ func (s *DataStore) PostPartialRating(ctx context.Context, in *ds.PartialRatingR
 	return s.Db.CreateNewPartialRating(ctx, in)
 }
 
-func (s *DataStore) PostSubmitRating(ctx context.Context, in *ds.SubmitRatingDraft) (*ds.PartialRating, error) {
-	panic("TODO:PostSubmitRating")
+func (s *DataStore) PostSubmitRating(ctx context.Context, in *ds.SubmitRatingDraft) (*ds.Rating, error) {
+	if in.GetRatingId() == 0 || in.GetAssessorId() == 0 {
+		return nil, fmt.Errorf("cannot submit rating with assessorId = %d and ratingId = %d", in.GetRatingId(), in.GetAssessorId())
+	}
+
+	s.Log.Info("submitting rating", zap.Int32("ratingId", in.GetRatingId()), zap.Int32("assessorId", in.GetAssessorId()))
+
+	return s.Db.SubmitRating(ctx, in)
 }

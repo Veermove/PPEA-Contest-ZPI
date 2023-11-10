@@ -470,7 +470,7 @@ func (st *Store) CreateNewSubmissionRating(ctx context.Context, assessorId int32
 }
 
 func (st *Store) CreateNewPartialRating(ctx context.Context, in *pb.PartialRatingRequest) (*pb.PartialRating, error) {
-	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccessToRating(ctx, NewRatingsParams{AssessorID: in.GetAssessorId(), RatingID: in.GetCriterionId()})
+	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccessToRating(ctx, NewRatingsParams{AssessorID: in.GetAssessorId(), RatingID: in.GetRatingId()})
 	if err != nil {
 		return nil, fmt.Errorf("checking access: %w", err)
 	}
@@ -529,6 +529,37 @@ func (st *Store) CreateNewPartialRating(ctx context.Context, in *pb.PartialRatin
 		Justification:   ret.Justification,
 		Modified:        ret.Modified.Format(time.RFC3339),
 		ModifiedBy:      ret.ModifiedByID,
+	}, nil
+}
+
+func (st *Store) SubmitRating(ctx context.Context, in *pb.SubmitRatingDraft) (*pb.Rating, error) {
+	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccessToRating(ctx, NewRatingsParams{AssessorID: in.GetAssessorId(), RatingID: in.GetRatingId()})
+	if err != nil {
+		return nil, fmt.Errorf("checking access: %w", err)
+	}
+	if !hasAccess {
+		return nil, fmt.Errorf("User does not have access to resource")
+	}
+
+	allGood, err := queries.New(st.Pool).CheckAllPartialRatingsSubmitted(ctx, in.GetRatingId())
+	if err != nil {
+		return nil, fmt.Errorf("checking if all p-ratings are submitted")
+	}
+
+	if !allGood {
+		return nil, fmt.Errorf("rating cannot be submitted because not all partial rating were present")
+	}
+
+	ret, err := queries.New(st.Pool).SubmitRating(ctx, in.GetRatingId())
+	if err != nil {
+		return nil, fmt.Errorf("submitting rating: %w", err)
+	}
+
+	return &pb.Rating{
+		RatingId:   ret.RatingID,
+		IsDraft:    ret.IsDraft,
+		AssessorId: ret.AssessorID,
+		Type:       RatingTypesMapping[ret.Type],
 	}, nil
 }
 
