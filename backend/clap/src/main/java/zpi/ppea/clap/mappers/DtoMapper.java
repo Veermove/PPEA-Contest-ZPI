@@ -45,6 +45,8 @@ public interface DtoMapper {
     PartialRatingRequest dtoToPartialRatingRequest(UpdatePartialRatingDto dto, @Context Integer assessorId);
 
     default RatingsSubmissionResponseDto ratingsResponseToDto(RatingsSubmissionResponse ratings) {
+        final AssessorRatings initialRatings = ratings.getInitial();
+        final AssessorRatings finalRatings = ratings.getFinal();
         return RatingsSubmissionResponseDto.builder()
                 .criteria(DtoMapper.INSTANCE.criterionListToDto(
                         Optional.of(ratings.getCriteriaList()).orElse(List.of())
@@ -52,8 +54,8 @@ public interface DtoMapper {
                 .individualRatings(DtoMapper.INSTANCE.assessorRatingsListToDtos(
                         Optional.of(ratings.getIndividualList()).orElse(List.of())
                 ))
-                .initialRating(Optional.ofNullable(DtoMapper.INSTANCE.assessorRatingsToDtos(ratings.getInitial())).orElse(null))
-                .finalRating(Optional.ofNullable(DtoMapper.INSTANCE.assessorRatingsToDtos(ratings.getFinal())).orElse(null))
+                .initialRating(initialRatings.getAssessorId() == 0 ? null : DtoMapper.INSTANCE.assessorRatingsToDtos(initialRatings))
+                .finalRating(finalRatings.getAssessorId() == 0 ? null : DtoMapper.INSTANCE.assessorRatingsToDtos(finalRatings))
                 .build();
     }
 
