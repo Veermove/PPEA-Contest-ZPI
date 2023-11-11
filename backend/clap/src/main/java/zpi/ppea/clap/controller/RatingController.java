@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zpi.ppea.clap.config.ValueConfig;
 import zpi.ppea.clap.dtos.NewRatingDto;
-import zpi.ppea.clap.dtos.PartialRatingDto;
 import zpi.ppea.clap.dtos.RatingDto;
 import zpi.ppea.clap.dtos.RatingsSubmissionResponseDto;
 import zpi.ppea.clap.security.FirebaseAgent;
@@ -43,7 +42,7 @@ public class RatingController {
     }
 
     @PutMapping("/{ratingId}")
-    public ResponseEntity<PartialRatingDto> submitRatingDraft(
+    public ResponseEntity<RatingDto> submitRatingDraft(
             @RequestHeader(name = "Authorization") String bearerToken,
             @PathVariable Integer ratingId) {
         var authentication = firebaseAgent.authenticate(bearerToken);

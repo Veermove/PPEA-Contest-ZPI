@@ -1,13 +1,14 @@
 package zpi.ppea.clap.repository;
 
+import java.util.concurrent.ExecutionException;
+
+import org.springframework.stereotype.Repository;
+
 import data_store.*;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
-import org.springframework.stereotype.Repository;
 import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.security.FirebaseAgent;
-
-import java.util.concurrent.ExecutionException;
 
 @Repository
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class RatingsRepository {
         }
     }
 
-    public PartialRating submitRatingDraft(Integer ratingId, FirebaseAgent.UserAuthData authentication) {
+    public Rating submitRatingDraft(Integer ratingId, FirebaseAgent.UserAuthData authentication) {
         try {
             return dataStoreFutureStub.postSubmitRating(SubmitRatingDraft.newBuilder()
                     .setRatingId(ratingId).setAssessorId(authentication.getClaims().getAssessorId()).build()).get();

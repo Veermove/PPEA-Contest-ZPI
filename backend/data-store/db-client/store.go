@@ -401,6 +401,7 @@ func (st *Store) CreateAssessorRatings(ctx context.Context, ratingId int32, asse
 
 	// Remap values
 	initialRs := &pb.AssessorRatings{
+		RatingId:       ratingId,
 		AssessorId:     assessorId,
 		FirstName:      firstN,
 		LastName:       lastN,
