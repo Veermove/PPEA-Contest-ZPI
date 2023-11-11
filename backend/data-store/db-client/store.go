@@ -541,12 +541,12 @@ func (st *Store) SubmitRating(ctx context.Context, in *pb.SubmitRatingDraft) (*p
 		return nil, fmt.Errorf("User does not have access to resource")
 	}
 
-	allGood, err := queries.New(st.Pool).CheckAllPartialRatingsSubmitted(ctx, in.GetRatingId())
+	allPartialRatingsSubmitted, err := queries.New(st.Pool).CheckAllPartialRatingsSubmitted(ctx, in.GetRatingId())
 	if err != nil {
 		return nil, fmt.Errorf("checking if all p-ratings are submitted")
 	}
 
-	if !allGood {
+	if !allPartialRatingsSubmitted {
 		return nil, fmt.Errorf("rating cannot be submitted because not all partial rating were present")
 	}
 
