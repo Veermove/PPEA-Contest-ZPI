@@ -157,5 +157,5 @@ service DataStore {
     rpc GetSubmissionRatings    (RatingsSubmissionRequest)    returns (RatingsSubmissionResponse) {}
     rpc PostNewSubmissionRating (NewSubmissionRatingRequest)  returns (Rating)                    {}
     rpc PostPartialRating       (PartialRatingRequest)        returns (PartialRating)             {}
-    rpc PostSubmitRating        (SubmitRatingDraft)           returns (PartialRating)             {}
+    rpc PostSubmitRating        (SubmitRatingDraft)           returns (Rating)                    {}
 }

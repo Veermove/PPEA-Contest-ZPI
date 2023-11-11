@@ -10,7 +10,6 @@ import (
 )
 
 const doesAssessorHaveAccess = `-- name: DoesAssessorHaveAccess :one
-
 select (
     $2::integer in (
         select submission_id

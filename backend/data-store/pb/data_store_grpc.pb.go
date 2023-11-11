@@ -38,7 +38,7 @@ type DataStoreClient interface {
 	GetSubmissionRatings(ctx context.Context, in *RatingsSubmissionRequest, opts ...grpc.CallOption) (*RatingsSubmissionResponse, error)
 	PostNewSubmissionRating(ctx context.Context, in *NewSubmissionRatingRequest, opts ...grpc.CallOption) (*Rating, error)
 	PostPartialRating(ctx context.Context, in *PartialRatingRequest, opts ...grpc.CallOption) (*PartialRating, error)
-	PostSubmitRating(ctx context.Context, in *SubmitRatingDraft, opts ...grpc.CallOption) (*PartialRating, error)
+	PostSubmitRating(ctx context.Context, in *SubmitRatingDraft, opts ...grpc.CallOption) (*Rating, error)
 }
 
 type dataStoreClient struct {
@@ -103,8 +103,8 @@ func (c *dataStoreClient) PostPartialRating(ctx context.Context, in *PartialRati
 	return out, nil
 }
 
-func (c *dataStoreClient) PostSubmitRating(ctx context.Context, in *SubmitRatingDraft, opts ...grpc.CallOption) (*PartialRating, error) {
-	out := new(PartialRating)
+func (c *dataStoreClient) PostSubmitRating(ctx context.Context, in *SubmitRatingDraft, opts ...grpc.CallOption) (*Rating, error) {
+	out := new(Rating)
 	err := c.cc.Invoke(ctx, DataStore_PostSubmitRating_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -122,7 +122,7 @@ type DataStoreServer interface {
 	GetSubmissionRatings(context.Context, *RatingsSubmissionRequest) (*RatingsSubmissionResponse, error)
 	PostNewSubmissionRating(context.Context, *NewSubmissionRatingRequest) (*Rating, error)
 	PostPartialRating(context.Context, *PartialRatingRequest) (*PartialRating, error)
-	PostSubmitRating(context.Context, *SubmitRatingDraft) (*PartialRating, error)
+	PostSubmitRating(context.Context, *SubmitRatingDraft) (*Rating, error)
 	mustEmbedUnimplementedDataStoreServer()
 }
 
@@ -148,7 +148,7 @@ func (UnimplementedDataStoreServer) PostNewSubmissionRating(context.Context, *Ne
 func (UnimplementedDataStoreServer) PostPartialRating(context.Context, *PartialRatingRequest) (*PartialRating, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostPartialRating not implemented")
 }
-func (UnimplementedDataStoreServer) PostSubmitRating(context.Context, *SubmitRatingDraft) (*PartialRating, error) {
+func (UnimplementedDataStoreServer) PostSubmitRating(context.Context, *SubmitRatingDraft) (*Rating, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostSubmitRating not implemented")
 }
 func (UnimplementedDataStoreServer) mustEmbedUnimplementedDataStoreServer() {}
