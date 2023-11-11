@@ -3,13 +3,15 @@ package zpi.ppea.clap.mappers;
 import java.util.List;
 import java.util.Optional;
 
-import org.mapstruct.Context;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 import data_store.*;
 import zpi.ppea.clap.dtos.*;
+import zpi.ppea.clap.security.FirebaseAgent;
 
 @Mapper
 public interface DtoMapper {
@@ -42,7 +44,12 @@ public interface DtoMapper {
 
     RatingDto ratingToDto(Rating rating);
 
-    PartialRatingRequest dtoToPartialRatingRequest(UpdatePartialRatingDto dto, @Context Integer assessorId);
+    PartialRatingRequest dtoToPartialRatingRequest(UpdatePartialRatingDto dto);
+
+    @AfterMapping
+    default void setAssessorId(@MappingTarget PartialRatingRequest.Builder builder, FirebaseAgent.UserAuthData authentication) {
+        builder.setAssessorId(authentication.getClaims().getAssessorId());
+    }
 
     default RatingsSubmissionResponseDto ratingsResponseToDto(RatingsSubmissionResponse ratings) {
         final AssessorRatings initialRatings = ratings.getInitial();

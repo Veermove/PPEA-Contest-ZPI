@@ -1,14 +1,16 @@
 package zpi.ppea.clap.dtos;
 
+import javax.annotation.Nonnegative;
+
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 import zpi.ppea.clap.annotations.ExclusiveFields;
 
 @Data
@@ -23,11 +25,11 @@ public class UpdatePartialRatingDto {
 
     @NotNull
     @NotEmpty
-    @Length(min = 10, max = 250)
+    @Length(max = 250)
     String justification;
 
     @NotNull
-    @Positive
+    @Nonnegative
     @Max(100)
     Integer points;
 }

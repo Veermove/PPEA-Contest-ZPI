@@ -80,7 +80,7 @@ func (s *DataStore) PostNewSubmissionRating(ctx context.Context, in *ds.NewSubmi
 }
 
 func (s *DataStore) PostPartialRating(ctx context.Context, in *ds.PartialRatingRequest) (*ds.PartialRating, error) {
-	if in.GetPartialRatingId() == 0 || (in.GetCriterionId() == 0 && in.GetRatingId() == 0) {
+	if in.GetPartialRatingId() == 0 && (in.GetCriterionId() == 0 || in.GetRatingId() == 0) {
 		return nil, fmt.Errorf("not enough information to post partial rating")
 	}
 
