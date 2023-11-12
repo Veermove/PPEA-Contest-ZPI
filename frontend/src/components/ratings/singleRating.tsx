@@ -102,12 +102,12 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>((({
     return <h6 className="text-purple my-4">{t('noRatingsFrom')} {firstName} {lastName}</h6 >
   } else {
     return (
-      <Container className="text-left my-4 mx-0">
+      <Container className="text-left my-4 mx-0 p-3">
         <Row>
           <Col xs={6} className="text-purple p-0">
             <h5>{t('assessor')} {firstName} {lastName}</h5>
           </Col>
-          <Col xs={2} >
+          <Col xs={6} >
             {t(type)}
           </Col>
         </Row>
@@ -122,36 +122,42 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>((({
           </Col>
         )}{!currentRating && !isEditing && ( // no rating, current user has permissions to add it
           <Row>
+            <Col xs={10} />
             <Col xs={2}>
-              <Button className="btn-primary" onClick={() => setIsEditing(true)}>{t('add')}</Button>
+              <Button className="text-white" onClick={() => setIsEditing(true)}>{t('add')}</Button>
             </Col>
           </Row>
         )}{!!currentRating && !isEditing && ( // rating exists, in view mode
           <>
             <Row>
               <Col xs={2} className="text-purple font-bold">
-                {currentRating.points}
+                {currentRating.points} {t('points')}
               </Col>
-              <Col xs={10} className="text-purple">
+              <Col xs={10}>
                 {currentRating.justification}
               </Col>
             </Row>
           </>
         )}{!!currentRating && !!isEditable && !isEditing && ( // rating exists, in view mode, current user has permissions to edit
-          <Col xs={2} >
-            <Button className="text-white" variant="primary" onClick={() => setIsEditing(true)}>
-              {t('edit')}
-            </Button>
-          </Col>
+          <Row>
+            <Col xs={10} />
+            <Col xs={2} >
+              <Button className="text-white" variant="primary" onClick={() => setIsEditing(true)}>
+                {t('edit')}
+              </Button>
+            </Col>
+          </Row>
         )}{!!currentRating && !!isEditable && !!isEditing && ( // rating exists, in edit mode, current user has permissions to edit
-          <Col xs={12} >
-            <EditableRating
-              initialJustification={currentRating.justification}
-              initialPoints={currentRating.points}
-              onSubmit={updateRating}
-              onCancel={() => setIsEditing(false)}
-            />
-          </Col>
+          <Row>
+            <Col xs={12} >
+              <EditableRating
+                initialJustification={currentRating.justification}
+                initialPoints={currentRating.points}
+                onSubmit={updateRating}
+                onCancel={() => setIsEditing(false)}
+              />
+            </Col>
+          </Row>
         )}
       </Container>
     )

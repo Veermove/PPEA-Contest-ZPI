@@ -1,4 +1,3 @@
-import { useClapAPI } from "@/context/clapApiContext";
 import { PartialRating, RatingType, RatingsDTO } from "@/services/clap/model/rating";
 import { Assessor, AssessorsRatings } from "@/services/clap/model/submission";
 import { useCallback, useEffect, useState } from "react";
@@ -6,11 +5,11 @@ import { Accordion, AccordionHeader, AccordionItem } from "react-bootstrap";
 import AccordionBody from "react-bootstrap/esm/AccordionBody";
 import SingleRating from "./singleRating";
 
-function SingleCriterion({ criterionName, type, id, currentAssessorId, ratingsDTO, assessors }: { criterionName: string, type: RatingType, id: number, currentAssessorId: number, ratingsDTO: RatingsDTO, assessors: Assessor[] }) {
+function isRated(partialRating?: PartialRating): boolean {
+  return !!partialRating && !!partialRating.justification
+}
 
-  function isEditable(assessorsRating: AssessorsRatings) {
-    return !assessorsRating.draft && (type === RatingType.INDIVIDUAL ? assessorsRating.assessorId === currentAssessorId : true)
-  }
+function SingleCriterion({ criterionName, type, id, currentAssessorId, ratingsDTO, assessors }: { criterionName: string, type: RatingType, id: number, currentAssessorId: number, ratingsDTO: RatingsDTO, assessors: Assessor[] }) {
 
   const toPartialRating = useCallback((assessorsRating?: AssessorsRatings): PartialRating | undefined => {
     if (!assessorsRating?.partialRatings) return undefined;
@@ -35,18 +34,17 @@ function SingleCriterion({ criterionName, type, id, currentAssessorId, ratingsDT
   const [editableRating, setEditableRating] = useState<PartialRating | undefined>();
   const [isEditing, setIsEditing] = useState(false);
 
-  const clapApi = useClapAPI();
-
   useEffect(() => {
     switch (type) {
     case RatingType.FINAL:
       setEditableRating(toPartialRating(ratingsDTO.finalRating));
       break;
-    case RatingType.INITIAL:
+    case RatingType.INITIAL: 
       setEditableRating(toPartialRating(ratingsDTO.initialRating));
       break;
     case RatingType.INDIVIDUAL:
-      setEditableRating(toPartialRating(ratingsDTO.individualRatings.find(assessorRating => assessorRating.assessorId === currentAssessorId)));
+      const ownedRating = ratingsDTO.individualRatings.find(assessorRating => assessorRating.assessorId === currentAssessorId)
+      setEditableRating(toPartialRating(ownedRating));
       break;
     }
   }, [type, toPartialRating, ratingsDTO.finalRating, ratingsDTO.initialRating, ratingsDTO.individualRatings, currentAssessorId])
@@ -67,7 +65,7 @@ function SingleCriterion({ criterionName, type, id, currentAssessorId, ratingsDT
     <Accordion className="my-2">
       <AccordionItem eventKey={id.toString()}>
         <AccordionHeader>
-          <h5 className="text-purple">{criterionName}</h5>
+          <h5 className={isRated(editableRating) ? "text-purple" : "text-gray"}>{criterionName}</h5>
         </AccordionHeader>
         <AccordionBody>
           {type === RatingType.FINAL && !!ratingsDTO.finalRating && (

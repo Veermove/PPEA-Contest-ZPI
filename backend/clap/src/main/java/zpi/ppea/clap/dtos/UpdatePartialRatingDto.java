@@ -23,7 +23,7 @@ public class UpdatePartialRatingDto {
     Integer partialRatingId;
 
     @NotNull
-    @Length(max = 250)
+    @Length(max = 2500)
     String justification;
 
     @NotNull
