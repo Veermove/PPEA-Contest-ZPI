@@ -12,6 +12,9 @@ function Ratings({ ratings, criteria, type, assessors }: { ratings: RatingsDTO, 
   const [assessorId, setAssessorId] = useState(0);
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
     (async () => {
       setAssessorId((await user!.getIdTokenResult()).claims.assessor_id as number)
     })()

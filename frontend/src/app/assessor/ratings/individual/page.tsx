@@ -8,13 +8,14 @@ import { useAuthContext } from "@/context/authContext";
 import { useClapAPI } from "@/context/clapApiContext";
 import { RatingType, RatingsDTO } from "@/services/clap/model/rating";
 import { SubmissionDTO } from "@/services/clap/model/submission";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 
 function IndividualRatings() {
-  const { t } = useTranslation('ratings/individual');
+  const { t } = useTranslation('ratings/page');
   const clapApi = useClapAPI();
+  const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [submission, setSubmission] = useState<SubmissionDTO | undefined>(undefined);
@@ -59,7 +60,7 @@ function IndividualRatings() {
       <Container className="mx-4 my-2">
         <Row>
           <Col xs={12}>
-            <Button className="btn btn-secondary text-white" onClick={() => redirect(`/assessor/submissions/${submission.submissionId}`)}>
+            <Button className="btn btn-secondary text-white" onClick={() => router.push(`/assessor/submissions/${submission.submissionId}`)}>
               {t('submissionDetails')}
             </Button>
           </Col>

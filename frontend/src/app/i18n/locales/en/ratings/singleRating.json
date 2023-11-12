@@ -1,6 +1,10 @@
 {
+    "noRatingsFrom": "No ratings from assessor",
     "assessor": "Assessor",
     "INDIVIDUAL": "Individual rating",
     "INITIAL": "Initial rating",
-    "FINAL": "Final rating"
+    "FINAL": "Final rating",
+    "add": "Add",
+    "points": "points",
+    "edit": "Edit"
 }
