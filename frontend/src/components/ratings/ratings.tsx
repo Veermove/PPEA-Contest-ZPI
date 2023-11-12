@@ -1,25 +1,11 @@
 'use client'
 
-import { useAuthContext } from "@/context/authContext";
 import { PEMCriterion } from "@/services/clap/model/criterion";
 import { RatingType, RatingsDTO } from "@/services/clap/model/rating";
 import { Assessor } from "@/services/clap/model/submission";
-import { useEffect, useState } from "react";
 import SingleCriterion from "./singleCriterion";
 
-function Ratings({ ratings, criteria, type, assessors }: { ratings: RatingsDTO, criteria: PEMCriterion[], type: RatingType, assessors: Assessor[] }) {
-  const { user } = useAuthContext();
-  const [assessorId, setAssessorId] = useState(0);
-
-  useEffect(() => {
-    if (!user) {
-      return;
-    }
-    (async () => {
-      setAssessorId((await user!.getIdTokenResult()).claims.assessor_id as number)
-    })()
-  }, [user])
-
+function Ratings({ ratings, criteria, type, assessors, assessorId }: { ratings: RatingsDTO, criteria: PEMCriterion[], type: RatingType, assessors: Assessor[], assessorId: number }) {
   return (
     <>
       {criteria.map(criterion => {

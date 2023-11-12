@@ -21,8 +21,20 @@ function IndividualRatings() {
   const [submission, setSubmission] = useState<SubmissionDTO | undefined>(undefined);
   const [ratings, setRatings] = useState<RatingsDTO>();
   const [error, setError] = useState<boolean>(false);
+  const [assessorId, setAssessorId] = useState(0);
 
   const { user } = useAuthContext();
+
+  const addRating = async () => {
+    if (!clapApi || !submission) {
+      return;
+    }
+    await clapApi.createRating(submission.submissionId, {
+      ratingType: RatingType.INDIVIDUAL,
+    });
+
+    window.location.reload();
+  }
 
   useEffect(() => {
     if (!clapApi || !user) {
@@ -31,11 +43,12 @@ function IndividualRatings() {
     (async () => {
       try {
         setLoading(true);
+        setAssessorId((await user.getIdTokenResult()).claims.assessor_id as number);
+        console.log(assessorId)
         const submissions = await clapApi!.getSubmissions();
         const currentYear = new Date().getFullYear();
         const currentSubmission = submissions.find(s => s.year === currentYear)
         if (!currentSubmission) {
-          setLoading(false);
           return;
         }
         setSubmission(currentSubmission);
@@ -47,15 +60,28 @@ function IndividualRatings() {
         setLoading(false);
       }
     })()
-  }, [clapApi, user])
+  }, [clapApi, user, assessorId])
 
   if (loading) {
     return <Spinner />;
   } else if (!user) {
     return redirect('/login')
-  } else if (!submission || !ratings || error) {
+  } else if (!submission || !assessorId || error) {
     return <Error text={t('noRatings')} />
-  } else {
+  } else if (!ratings?.individualRatings.find(rating => rating.assessorId === assessorId)) {
+    return (
+      <Container className="m-2">
+        <Row>
+          <Col xs={2}>
+            <Button className="text-white" onClick={addRating}>
+              {t('addNewRating')}
+            </Button>
+          </Col>
+        </Row>
+      </Container>
+    )
+  }
+  else {
     return (
       <Container className="mx-4 my-2">
         <Row>
@@ -66,7 +92,7 @@ function IndividualRatings() {
           </Col>
         </Row>
         <Row>
-          <Ratings ratings={ratings} criteria={ratings.criteria} type={RatingType.INDIVIDUAL} assessors={submission.assessors} />
+          <Ratings ratings={ratings} criteria={ratings.criteria} type={RatingType.INDIVIDUAL} assessors={submission.assessors} assessorId={assessorId}/>
         </Row>
       </Container>
     )
