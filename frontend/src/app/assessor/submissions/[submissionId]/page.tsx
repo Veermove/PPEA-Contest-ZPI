@@ -6,7 +6,6 @@ import SubmissionDetails from "@/components/submission/details";
 import { useAuthContext } from "@/context/authContext";
 import { useClapAPI } from "@/context/clapApiContext";
 import { SubmissionDTO, SubmissionDetailsDTO } from "@/services/clap/model/submission";
-import { useLocalStorage } from "@uidotdev/usehooks";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -21,14 +20,7 @@ function Submission({ params }: { params: { submissionId: string } }) {
     }
   })
 
-  const [submissions] = useLocalStorage<SubmissionDTO[]>("submissions", []);
-  const submission = submissions?.find(submission => submission.submissionId === id)
-  useEffect(() => {
-    if (!submission) {
-      return redirect('/assessor/submissions');
-    }
-  })
-
+  const [submission, setSubmission] = useState<SubmissionDTO | undefined>(undefined);
   const [submissionDetails, setSubmissionDetails] = useState<SubmissionDetailsDTO | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -42,17 +34,24 @@ function Submission({ params }: { params: { submissionId: string } }) {
     }
     (async () => {
       setLoading(true)
-      clapApi!.getSubmissionDetails(id).then((submissionDetails) => {
-        setSubmissionDetails(submissionDetails);
+      const [submissions, submissionDetails] = await Promise.all([
+        clapApi!.getSubmissions(),
+        clapApi!.getSubmissionDetails(id)
+      ])
+      const currentSubmission = submissions.find(submission => submission.submissionId === id);
+      if (!currentSubmission || !submissionDetails) {
+        setError(true);
+        return;
+      }
+      setSubmission(currentSubmission);
+      setSubmissionDetails(submissionDetails);
+    })().catch((error) => {
+      console.error(error);
+      setError(true);
+    })
+      .finally(() => {
+        setLoading(false);
       })
-        .catch((error) => {
-          console.error(error);
-          setError(true);
-        })
-        .finally(() => {
-          setLoading(false);
-        })
-    })()
   }, [clapApi, user, id])
 
   if (!user) {

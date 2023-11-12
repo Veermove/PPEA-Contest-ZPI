@@ -6,6 +6,7 @@ import { AddRatingBody as NewRatingBody, SubmissionDTO, SubmissionDetailsDTO, Up
 export class ClapApi {
   private readonly defaultHeaders: HeadersInit;
   private readonly baseUrl = clapConfig.baseUrl;
+  private cache: Record<string, any> = {};
 
   constructor(idToken: string) {
     this.defaultHeaders = buildDefaultHeaders(idToken);
@@ -19,10 +20,15 @@ export class ClapApi {
   }
 
   async getSubmissions(): Promise<SubmissionDTO[]> {
+    if (this.cache.submissions) {
+      return this.cache.submissions;
+    }
     const response = await fetch(`${this.baseUrl}/submissions`, {
       headers: this.defaultHeaders
     });
-    return await ClapApi.handleResponse(response).json();
+    const submissions = await ClapApi.handleResponse(response).json();
+    this.cache.submissions = submissions;
+    return submissions;
   }
 
   async getSubmissionDetails(submissionId: number): Promise<SubmissionDetailsDTO> {

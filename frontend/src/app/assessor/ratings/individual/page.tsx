@@ -7,54 +7,43 @@ import Spinner from "@/components/spinner";
 import { useAuthContext } from "@/context/authContext";
 import { useClapAPI } from "@/context/clapApiContext";
 import { RatingType, RatingsDTO } from "@/services/clap/model/rating";
+import { SubmissionDTO } from "@/services/clap/model/submission";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
-import { isSubmissionRatingActive } from "../ratingsFilter";
 
 function IndividualRatings() {
   const { t } = useTranslation('ratings/individual');
   const clapApi = useClapAPI();
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [submission, setSubmission] = useState<SubmissionDTO | undefined>(undefined);
   const [ratings, setRatings] = useState<RatingsDTO>();
+  const [error, setError] = useState<boolean>(false);
 
   const { user } = useAuthContext();
-  const [assessorId, setAssessorId] = useState<number>(0);
 
   useEffect(() => {
-    (async () => {
-      setAssessorId((await user!.getIdTokenResult()).claims.assessorId as number)
-    })()
-  }, [user])
-
-  useEffect(() => {
-    if (!clapApi) {
+    if (!clapApi || !user) {
       return;
     }
     (async () => {
-      setLoading(true);
-      const submissions = await clapApi!.getSubmissions();
-      const currentYear = new Date().getFullYear();
-      const currentSubmission = submissions.find(s => s.year === currentYear)
-      if (!currentSubmission) {
+      try {
+        setLoading(true);
+        const submissions = await clapApi!.getSubmissions();
+        const currentYear = new Date().getFullYear();
+        const currentSubmission = submissions.find(s => s.year === currentYear)
+        if (!currentSubmission) {
+          setLoading(false);
+          return;
+        }
+        setSubmission(currentSubmission);
+        const submissionRatings = await clapApi!.getSubmissionRatings(currentSubmission.submissionId)
+        setRatings(submissionRatings)
+      } catch {
+        setError(true);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      let submissionRatings = await clapApi!.getSubmissionRatings(currentSubmission.submissionId)
-      if (!isSubmissionRatingActive(submissionRatings, RatingType.INDIVIDUAL)) {
-        setLoading(false);
-        return;
-      }
-
-      const assessorRatings = submissionRatings.individualRatings.find(rating => rating.assessorId === assessorId);
-      if (!assessorRatings) {
-        await clapApi!.createRating(currentSubmission.submissionId, {ratingType: RatingType.INDIVIDUAL});
-        submissionRatings = await clapApi!.getSubmissionRatings(currentSubmission.submissionId)
-      }
-
-      setRatings(submissionRatings);
-      setLoading(false);
     })()
   })
 
@@ -62,10 +51,10 @@ function IndividualRatings() {
     return Spinner;
   } else if (!user) {
     return redirect('/login')
-  } else if (!ratings) {
+  } else if (!submission || !ratings || error) {
     return <Error text={t('noRatings')} />
   } else {
-    return <Ratings ratings={ratings.individualRatings} criteria={ratings.criteria} type={RatingType.INDIVIDUAL} />
+    return <Ratings ratings={ratings} criteria={ratings.criteria} type={RatingType.INDIVIDUAL} assessors={submission.assessors} />
   }
 }
 

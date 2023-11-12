@@ -15,11 +15,7 @@ function EditableRating({ initialJustification, initialPoints, onSubmit, onCance
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget)
-    const justification = formData.get('justification')?.toString() || initialJustification
-    if (!justification) {
-      setError(t('emptyJustification'))
-      return;
-    }
+    const justification = formData.get('justification')?.toString() || ''
     const points = parseInt(formData.get('points')?.toString() || '') || initialPoints
     onSubmit(justification, points)
   }

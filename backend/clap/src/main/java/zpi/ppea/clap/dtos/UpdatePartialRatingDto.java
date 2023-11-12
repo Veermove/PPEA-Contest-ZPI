@@ -5,7 +5,6 @@ import javax.annotation.Nonnegative;
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +23,6 @@ public class UpdatePartialRatingDto {
     Integer partialRatingId;
 
     @NotNull
-    @NotEmpty
     @Length(max = 250)
     String justification;
 

@@ -7,6 +7,7 @@ import { useAuthContext } from "@/context/authContext";
 import { useClapAPI } from "@/context/clapApiContext";
 import { PEMCriterion } from "@/services/clap/model/criterion";
 import { RatingType, RatingsDTO } from "@/services/clap/model/rating";
+import { Assessor } from "@/services/clap/model/submission";
 import { redirect, useRouter } from "next/navigation";
 import { ReactElement, useEffect, useState } from "react";
 import { Accordion, AccordionHeader, AccordionItem, Button } from "react-bootstrap";
@@ -31,6 +32,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
   const [error, setError] = useState<ReactElement>();
   const [ratings, setRatings] = useState<RatingsDTO>();
   const [sortedCriteria, setSortedCriteria] = useState<PEMCriterion[]>([]);
+  const [assessors, setAssessors] = useState<Assessor[]>([]);
   const clapApi = useClapAPI();
 
 
@@ -43,21 +45,33 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
     if (!user || !clapApi) {
       return;
     }
+  
     (async () => {
-      setLoading(true)
-      clapApi!.getSubmissionRatings(id).then((ratings) => {
+      setLoading(true);
+      try {
+        const [ratings, submissions] = await Promise.all([
+          clapApi.getSubmissionRatings(id),
+          clapApi.getSubmissions(),
+        ]);
+  
+        const currentSubmission = submissions.find(
+          (submission) => submission.submissionId === id
+        );
+  
+        if (currentSubmission) {
+          setAssessors(currentSubmission.assessors);
+        }
+  
         setRatings(ratings);
-        setSortedCriteria(ratings.criteria.sort(sortCriteria))
-      })
-        .catch((error) => {
-          console.error(error);
-          setError(Error({ text: t('error') }));
-        })
-        .finally(() => {
-          setLoading(false);
-        })
-    })()
-  }, [clapApi, user, id, t])
+        setSortedCriteria(ratings.criteria.sort(sortCriteria));
+      } catch (error) {
+        console.error(error);
+        setError(Error({ text: t('error') }));
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [clapApi, user, id, t]);
 
   if (!user) {
     return redirect('/');
@@ -77,9 +91,10 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
             </AccordionHeader>
             <AccordionBody>
               <Ratings
-                ratings={[ratings.finalRating!]}
+                ratings={ratings}
                 criteria={sortedCriteria}
                 type={RatingType.FINAL}
+                assessors={assessors}
               />
             </AccordionBody>
           </AccordionItem>
@@ -93,9 +108,10 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
             </AccordionHeader>
             <AccordionBody>
               <Ratings
-                ratings={[ratings.initialRating!]}
+                ratings={ratings}
                 criteria={sortedCriteria}
                 type={RatingType.INITIAL}
+                assessors={assessors}
               />
             </AccordionBody>
           </AccordionItem>
@@ -109,9 +125,10 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
             </AccordionHeader>
             <AccordionBody>
               <Ratings
-                ratings={ratings.individualRatings}
+                ratings={ratings}
                 criteria={sortedCriteria}
                 type={RatingType.INDIVIDUAL}
+                assessors={assessors}
               />
             </AccordionBody>
           </AccordionItem>
