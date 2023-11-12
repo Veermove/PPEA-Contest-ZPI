@@ -73,7 +73,7 @@ function SingleCriterion({ criterionName, type, id, currentAssessorId, ratingsDT
               <SingleRating // final rating, editable
                 firstName={ratingsDTO.finalRating.firstName}
                 lastName={ratingsDTO.finalRating.lastName}
-                isEditable={true}
+                isEditable={ratingsDTO.finalRating.draft}
                 criterionId={id}
                 ratingId={ratingsDTO.finalRating.ratingId}
                 isEditing={isEditing}
@@ -121,7 +121,7 @@ function SingleCriterion({ criterionName, type, id, currentAssessorId, ratingsDT
               <SingleRating // initial rating, editable
                 firstName={ratingsDTO.initialRating.firstName}
                 lastName={ratingsDTO.initialRating.lastName}
-                isEditable={true}
+                isEditable={ratingsDTO.initialRating.draft}
                 criterionId={id}
                 ratingId={ratingsDTO.initialRating.ratingId}
                 isEditing={isEditing}
@@ -156,7 +156,7 @@ function SingleCriterion({ criterionName, type, id, currentAssessorId, ratingsDT
                 <SingleRating // individual rating, editable
                   firstName={ownedRating.firstName}
                   lastName={ownedRating.lastName}
-                  isEditable={true}
+                  isEditable={ownedRating.draft}
                   criterionId={id}
                   ratingId={ownedRating.ratingId}
                   isEditing={isEditing}

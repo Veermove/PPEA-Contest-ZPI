@@ -33,6 +33,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
   const [ratings, setRatings] = useState<RatingsDTO>();
   const [sortedCriteria, setSortedCriteria] = useState<PEMCriterion[]>([]);
   const [assessors, setAssessors] = useState<Assessor[]>([]);
+  const [assessorId, setAssessorId] = useState(0);
   const clapApi = useClapAPI();
 
 
@@ -49,9 +50,10 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
     (async () => {
       setLoading(true);
       try {
-        const [ratings, submissions] = await Promise.all([
+        const [ratings, submissions, tokenResult] = await Promise.all([
           clapApi.getSubmissionRatings(id),
           clapApi.getSubmissions(),
+          user.getIdTokenResult(),
         ]);
   
         const currentSubmission = submissions.find(
@@ -62,6 +64,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
           setAssessors(currentSubmission.assessors);
         }
   
+        setAssessorId(tokenResult.claims.assessor_id as number);
         setRatings(ratings);
         setSortedCriteria(ratings.criteria.sort(sortCriteria));
       } catch (error) {
@@ -95,6 +98,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
                 criteria={sortedCriteria}
                 type={RatingType.FINAL}
                 assessors={assessors}
+                assessorId={assessorId}
               />
             </AccordionBody>
           </AccordionItem>
@@ -112,6 +116,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
                 criteria={sortedCriteria}
                 type={RatingType.INITIAL}
                 assessors={assessors}
+                assessorId={assessorId}
               />
             </AccordionBody>
           </AccordionItem>
@@ -129,6 +134,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
                 criteria={sortedCriteria}
                 type={RatingType.INDIVIDUAL}
                 assessors={assessors}
+                assessorId={assessorId}
               />
             </AccordionBody>
           </AccordionItem>
