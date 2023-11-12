@@ -6,5 +6,7 @@
     "FINAL": "Final rating",
     "add": "Add",
     "points": "points",
-    "edit": "Edit"
+    "edit": "Edit",
+    "justificationLengthError": "Too long justification",
+    "error": "An error occured. Please try again in few seconds."
 }

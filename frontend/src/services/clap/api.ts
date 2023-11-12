@@ -12,11 +12,12 @@ export class ClapApi {
     this.defaultHeaders = buildDefaultHeaders(idToken);
   }
 
-  private static handleResponse(response: Response): Response {
+  private static async  handleResponse(response: Response): Promise<any> {
+    const json = await response.json();
     if (!response.ok) {
-      throw new Error(response.statusText);
+      throw new Error(json);
     }
-    return response;
+    return json;
   }
 
   async getSubmissions(): Promise<SubmissionDTO[]> {
@@ -26,7 +27,7 @@ export class ClapApi {
     const response = await fetch(`${this.baseUrl}/submissions`, {
       headers: this.defaultHeaders
     });
-    const submissions = await ClapApi.handleResponse(response).json();
+    const submissions = await ClapApi.handleResponse(response);
     this.cache.submissions = submissions;
     return submissions;
   }
@@ -35,14 +36,14 @@ export class ClapApi {
     const response = await fetch(`${this.baseUrl}/submissions/${submissionId}`, {
       headers: this.defaultHeaders
     });
-    return await ClapApi.handleResponse(response).json();
+    return await ClapApi.handleResponse(response);
   }
 
   async getSubmissionRatings(submissionId: number): Promise<RatingsDTO> {
     const response = await fetch(`${this.baseUrl}/ratings/${submissionId}`, {
       headers: this.defaultHeaders
     });
-    return await ClapApi.handleResponse(response).json();
+    return await ClapApi.handleResponse(response);
   }
 
   async createRating(submissionId: number, newRatingBody: NewRatingBody): Promise<Rating> {
@@ -51,7 +52,7 @@ export class ClapApi {
       headers: this.defaultHeaders,
       body: JSON.stringify(newRatingBody)
     });
-    return await ClapApi.handleResponse(response).json();
+    return await ClapApi.handleResponse(response);
   }
 
   async submitRatingDraft(ratingId: number): Promise<Rating> {
@@ -59,7 +60,7 @@ export class ClapApi {
       method: "PUT",
       headers: this.defaultHeaders
     });
-    return await ClapApi.handleResponse(response).json();
+    return await ClapApi.handleResponse(response);
   }
 
   async upsertPartialRating(updateSubmissionBody: UpdateSubmissionBody): Promise<PartialRating> {
@@ -68,7 +69,7 @@ export class ClapApi {
       headers: this.defaultHeaders,
       body: JSON.stringify(updateSubmissionBody)
     });
-    return await ClapApi.handleResponse(response).json();
+    return await ClapApi.handleResponse(response);
   }
 }
 

@@ -38,7 +38,7 @@ function EditableRating({ initialJustification, initialPoints, onSubmit, onCance
           <Col>
             <Form.Group>
               <Form.Label className="font-bold" htmlFor="justification">{t('justification')}</Form.Label>
-              <Form.Control name="justification" as="textarea" rows={5} defaultValue={initialJustification} />
+              <Form.Control name="justification" as="textarea" rows={5} maxLength={2500} defaultValue={initialJustification} />
             </Form.Group>
           </Col>
           <Col>

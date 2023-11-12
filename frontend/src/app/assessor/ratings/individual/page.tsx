@@ -50,7 +50,7 @@ function IndividualRatings() {
   }, [clapApi, user])
 
   if (loading) {
-    return Spinner;
+    return <Spinner />;
   } else if (!user) {
     return redirect('/login')
   } else if (!submission || !ratings || error) {

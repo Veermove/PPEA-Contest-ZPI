@@ -6,5 +6,7 @@
     "FINAL": "Ocena końcowa",
     "add": "Dodaj",
     "points": "punkt(y/ów)",
-    "edit": "Edytuj"
+    "edit": "Edytuj",
+    "justificationLengthError": "Zbyt długie uzasadnienie",
+    "error": "Wystąpił błąd. Spróbuj ponownie za kilka sekund"
 }
