@@ -19,6 +19,7 @@ public interface DtoMapper {
     DtoMapper INSTANCE = Mappers.getMapper(DtoMapper.class);
 
     @Mapping(target = "partialRatings", source = "partialRatingsList")
+    @Mapping(target = "draft", source = "isDraft")
     AssessorRatingsDto assessorRatingsToDtos(AssessorRatings assessorRatings);
 
     List<AssessorRatingsDto> assessorRatingsListToDtos(List<AssessorRatings> assessorRatings);

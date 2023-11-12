@@ -11,9 +11,16 @@ export function ClapAPIProvider({ children }: { children: React.ReactNode }) {
   const [clapAPI, setClapAPI] = useState<ClapApi>();
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
     const initializeClapAPI = async () => {
-      const token = await user!.getIdToken();
-      const clapAPIInstance = new ClapApi(token);
+      let token = await user.getIdTokenResult();
+      if (token.claims.refresh as boolean) {
+        token = await user.getIdTokenResult(true);
+      }
+
+      const clapAPIInstance = new ClapApi(token.token);
       setClapAPI(clapAPIInstance);
     };
 

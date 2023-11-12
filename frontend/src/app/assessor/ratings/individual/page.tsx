@@ -43,7 +43,8 @@ function IndividualRatings() {
     (async () => {
       try {
         setLoading(true);
-        setAssessorId((await user.getIdTokenResult()).claims.assessor_id as number);
+        const assessor_id = (await user.getIdTokenResult()).claims.assessor_id as number;
+        setAssessorId(assessor_id);
         const submissions = await clapApi!.getSubmissions();
         const currentYear = new Date().getFullYear();
         const currentSubmission = submissions.find(s => s.year === currentYear)
