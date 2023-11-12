@@ -471,7 +471,23 @@ func (st *Store) CreateNewSubmissionRating(ctx context.Context, assessorId int32
 }
 
 func (st *Store) CreateNewPartialRating(ctx context.Context, in *pb.PartialRatingRequest) (*pb.PartialRating, error) {
-	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccessToRating(ctx, NewRatingsParams{AssessorID: in.GetAssessorId(), RatingID: in.GetRatingId()})
+
+	var (
+		err      error
+		ratingId = in.GetRatingId()
+	)
+	// For updates we don't have actual ratingId at hand, so...
+	// for checking access we have to get it from partial rating
+	if in.GetPartialRatingId() != 0 {
+
+		if ratingId, err = queries.New(st.Pool).GetRatingIdForPartialRating(ctx, in.GetPartialRatingId()); err != nil {
+
+			// allowing for errors == pgs.ErrNoRows to tgo this route
+			return nil, fmt.Errorf("getting rating id for partial rating: %w", err)
+		}
+	}
+
+	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccessToRating(ctx, NewRatingsParams{AssessorID: in.GetAssessorId(), RatingID: ratingId})
 	if err != nil {
 		return nil, fmt.Errorf("checking access: %w", err)
 	}

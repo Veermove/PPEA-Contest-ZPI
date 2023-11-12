@@ -5,6 +5,9 @@ create type project.state as enum (
     'draft',
     'submitted',
     'accepted',
+    'accepted_individual',
+    'accepted_initial',
+    'accepted_final',
     'rejected'
 );
 
