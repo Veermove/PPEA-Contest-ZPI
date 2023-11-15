@@ -94,6 +94,7 @@ func Open(ctx context.Context, log *zap.Logger, init_dict bool) (*Store, error) 
 	}
 
 	if init_dict {
+		log.Info("initializing dictionary data")
 		conn, err := store.Pool.Acquire(ctx)
 		if err != nil {
 			return nil, fmt.Errorf("acquiring connection for init dict: %w", err)
@@ -567,12 +568,31 @@ func (st *Store) SubmitRating(ctx context.Context, in *pb.SubmitRatingDraft) (*p
 		return nil, fmt.Errorf("rating cannot be submitted because not all partial rating were present")
 	}
 
-	ret, err := queries.New(st.Pool).SubmitRating(ctx, queries.SubmitRatingParams{
+	// start transaction
+	tx, err := st.Pool.Begin(ctx)
+	// if we commit transaction before the end this becomes a no-op
+	defer tx.Rollback(ctx)
+
+	if err != nil {
+		return nil, fmt.Errorf("starting transaction: %w", err)
+	}
+
+	// submit the rating
+	ret, err := queries.New(tx).SubmitRating(ctx, queries.SubmitRatingParams{
 		IsDraft:  false,
 		RatingID: in.GetRatingId(),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("submitting rating: %w", err)
+	}
+
+	// check condition and set next status
+	if err := queries.New(tx).SetNextStatus(ctx, ret.SubmissionID); err != nil {
+		return nil, fmt.Errorf("setting next status for submission: %w", err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("committing transaction: %w", err)
 	}
 
 	return &pb.Rating{

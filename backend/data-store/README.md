@@ -14,7 +14,7 @@ $ migrate \
 
 $ migrate \
     -path ./db-client/migrations/ \
-    -database postgres://postgres:postgres@localhost:5431/datastore?sslmode=disable version
+    -database postgres://postgres_user_env:postgres_password_env@localhost:5431/datastore?sslmode=disable version
 ```
 
 Apply all "up" migrations:
