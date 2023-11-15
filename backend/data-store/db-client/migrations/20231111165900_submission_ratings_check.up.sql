@@ -45,7 +45,7 @@ begin
         ),
         submitted_individual_ratings_cnt as (
             select count(rating.rating_id) as "count"
-                from rating as rating
+                from project.rating as rating
                 where rating.submission_id = submission_id
                 and rating.is_draft = false
                 and rating.type = 'individual'
@@ -63,7 +63,7 @@ as $$
 begin
     return (
         select count(rating.rating_id) = 1
-            from rating as rating
+            from project.rating as rating
             where rating.submission_id = submission_id
             and rating.is_draft = false
             and rating.type = 'final'
@@ -78,7 +78,7 @@ as $$
 begin
     return (
         select count(rating.rating_id) = 1
-            from rating as rating
+            from project.rating as rating
             where rating.submission_id = submission_id
             and rating.is_draft = false
             and rating.type = 'initial'
