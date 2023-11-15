@@ -41,7 +41,7 @@ begin
         with assessors_cnt as (
             select count(assessor_submission.assessor_id) as "count"
                 from project.assessor_submission as assessor_submission
-                where assessor_submission.rating_id = submission_id
+                where assessor_submission.submission_id = submission_id
         ),
         submitted_individual_ratings_cnt as (
             select count(rating.rating_id) as "count"
