@@ -109,10 +109,9 @@ func Open(ctx context.Context, log *zap.Logger, init_dict bool) (*Store, error) 
 			_, err = conn.Exec(ctx, stmt)
 
 			if err != nil {
-				return nil, fmt.Errorf("executing init.sql, stmt %d : %w", i, err)
+				return nil, fmt.Errorf("executing init.sql, stmt %d : %w \n%s\n", i, err, stmt)
 			}
 		}
-
 	}
 
 	return store, nil

@@ -28,7 +28,6 @@ end;
 $$ language plpgsql;
 
 
--- this is disabled and re-enabled in init.sql
 alter table only project.partial_rating
     add constraint partial_rating_correct_status
     check (validation_checks.rating_matches(rating_id));
