@@ -3,5 +3,6 @@
     "submissionDetails": "Submission Details",
     "submitUnknownError": "Unknown error when submitting rating. Please try again later.",
     "notAllRatingsFilled": "Not all ratings are filled. Please fill all ratings.",
-    "submit": "Submit"
+    "submit": "Submit",
+    "addNewRating": "Add new rating"
 }
