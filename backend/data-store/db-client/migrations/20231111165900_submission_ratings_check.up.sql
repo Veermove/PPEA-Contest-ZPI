@@ -118,8 +118,8 @@ begin
     -- for other states we need to validate that...
     if current_status = 'accepted' then
 
-        -- in accepted state we need to validate that all assessors that were assigned
-        -- to that submission have submitted their ratings
+        -- in state 'accepted' all assessors that were assigned to that submission
+        -- have submitted their ratings.
         if validation_checks.all_assessors_submitted_rating(sub_id) then
             -- if so we go to accepted_individual
             return 'accepted_individual';
@@ -129,8 +129,7 @@ begin
 
     elsif current_status = 'accepted_individual' then
 
-        -- in accepted_individual state we need to validate
-        -- that exactly one initial rating has been submitted
+        -- in state 'accepted_individual' exactly one initial rating has been submitted.
         if validation_checks.exactly_one_initial_rating(sub_id) then
             -- if so we go to accepted_initial
             return 'accepted_initial';
@@ -140,8 +139,7 @@ begin
 
     elsif current_status = 'accepted_initial' then
 
-        -- in accepted_initial state we need to validate
-        -- that exactly one final rating has been submitted
+        -- in state 'accepted_initial' exactly one final rating has been submitted.
         if validation_checks.exactly_one_final_rating(sub_id) then
             -- if so we go to accepted_final
             return 'accepted_final';
