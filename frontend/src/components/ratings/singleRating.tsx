@@ -11,7 +11,7 @@ import Error from "../error";
 import Spinner from "../spinner";
 import EditableRating from "./editableRating";
 
-type SingleRatingForwardData = {
+export type SingleRatingForwardData = {
   getIsReadyToSubmit: () => boolean;
 }
 
@@ -27,9 +27,10 @@ interface SingleRatingProps {
   setCurrentRating: (currentRating: PartialRating) => void;
   assessorId: number;
   type: RatingType;
+  draft: boolean;
 }
 
-const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>((({
+const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
   firstName,
   lastName,
   isEditable,
@@ -40,7 +41,8 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>((({
   currentRating,
   setCurrentRating,
   assessorId,
-  type
+  type,
+  draft
 }, ref) => {
   const { t } = useTranslation('ratings/singleRating')
   const { user } = useAuthContext();
@@ -68,6 +70,7 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>((({
     }
 
     try {
+      // TODO current rating doesn't get updated
       setError('');
       const response = await clapAPI.upsertPartialRating({
         partialRatingId: currentRating.partialRatingId,
@@ -116,7 +119,7 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>((({
 
   if (!clapAPI) {
     return <Spinner />
-  } else if (!isEditable && !currentRating) { // no rating, current user has no permissions to add
+  } else if (!isEditable && (!currentRating || draft)) { // no rating, current user has no permissions to add
     return <h6 className="text-purple my-4">{t('noRatingsFrom')} {firstName} {lastName}</h6 >
   } else {
     return (
@@ -187,7 +190,7 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>((({
       </Container>
     )
   }
-}));
+});
 
 SingleRating.displayName = 'SingleRating';
 
