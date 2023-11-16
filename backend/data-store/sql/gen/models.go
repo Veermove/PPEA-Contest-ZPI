@@ -59,10 +59,13 @@ func (ns NullProjectRatingType) Value() (driver.Value, error) {
 type ProjectState string
 
 const (
-	ProjectStateDraft     ProjectState = "draft"
-	ProjectStateSubmitted ProjectState = "submitted"
-	ProjectStateAccepted  ProjectState = "accepted"
-	ProjectStateRejected  ProjectState = "rejected"
+	ProjectStateDraft              ProjectState = "draft"
+	ProjectStateSubmitted          ProjectState = "submitted"
+	ProjectStateAccepted           ProjectState = "accepted"
+	ProjectStateAcceptedIndividual ProjectState = "accepted_individual"
+	ProjectStateAcceptedInitial    ProjectState = "accepted_initial"
+	ProjectStateAcceptedFinal      ProjectState = "accepted_final"
+	ProjectStateRejected           ProjectState = "rejected"
 )
 
 func (e *ProjectState) Scan(src interface{}) error {

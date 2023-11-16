@@ -197,15 +197,15 @@ insert into project.submission (
     "budget",
     "description"
 ) values
-    (1, 'EcoGlobe', 45, 5, '2023-12-31', 'submitted', 50000.00, 'Rewolucyjny projekt mający na celu stworzenie zrównoważonego świata poprzez innowacyjne technologie i praktyki.'),
-    (1, 'AquaBotics', 60, 3, '2023-11-15', 'submitted', 35000.00, 'Podwodna przygoda odkrywająca tajemnice głębokich mórz za pomocą nowoczesnych technologii robotycznych.'),
-    (1, 'SolarScape', 30, 4, '2022-02-28', 'submitted', 75000.00, 'Podróż ku jaśniejszej przyszłości dzięki rozwiązaniom związanym z energią słoneczną.'),
-    (2, 'UrbanHarmony', 55, 2, '2023-12-31', 'submitted', 40000.00, 'Tworzenie harmonijnych przestrzeni miejskich dla lepszej jakości życia.'),
-    (2, 'BioWonders', 40, 6, '2023-11-15', 'submitted', 60000.00, 'Odkrywanie cudów natury poprzez biotechnologię i ochronę środowiska.'),
-    (2, 'SpaceVoyage', 25, 8, '2022-02-28', 'submitted', 90000.00, 'Wyruszenie w podróż, aby odkryć tajemnice kosmosu zewnętrznego.'),
-    (3, 'FutureFarms', 35, 4, '2023-12-31', 'submitted', 55000.00, 'Pionierskie praktyki zrównoważonej uprawy dla bardziej zielonej przyszłości.'),
-    (3, 'TechNest', 50, 3, '2023-11-15', 'submitted', 45000.00, 'Budowa wysokotechnologicznego gniazda dla innowacji i kreatywności.'),
-    (3, 'ArtisanCraft', 65, 7, '2022-02-28', 'submitted', 80000.00, 'Odrodzenie sztuki rzemiosła dla współczesnego świata.');
+    (1, 'EcoGlobe', 45, 5, '2023-12-31', 'accepted', 50000.00, 'Rewolucyjny projekt mający na celu stworzenie zrównoważonego świata poprzez innowacyjne technologie i praktyki.'),
+    (1, 'AquaBotics', 60, 3, '2023-11-15', 'accepted', 35000.00, 'Podwodna przygoda odkrywająca tajemnice głębokich mórz za pomocą nowoczesnych technologii robotycznych.'),
+    (1, 'SolarScape', 30, 4, '2022-02-28', 'accepted', 75000.00, 'Podróż ku jaśniejszej przyszłości dzięki rozwiązaniom związanym z energią słoneczną.'),
+    (2, 'UrbanHarmony', 55, 2, '2023-12-31', 'accepted', 40000.00, 'Tworzenie harmonijnych przestrzeni miejskich dla lepszej jakości życia.'),
+    (2, 'BioWonders', 40, 6, '2023-11-15', 'accepted', 60000.00, 'Odkrywanie cudów natury poprzez biotechnologię i ochronę środowiska.'),
+    (2, 'SpaceVoyage', 25, 8, '2022-02-28', 'accepted', 90000.00, 'Wyruszenie w podróż, aby odkryć tajemnice kosmosu zewnętrznego.'),
+    (3, 'FutureFarms', 35, 4, '2023-12-31', 'accepted', 55000.00, 'Pionierskie praktyki zrównoważonej uprawy dla bardziej zielonej przyszłości.'),
+    (3, 'TechNest', 50, 3, '2023-11-15', 'accepted', 45000.00, 'Budowa wysokotechnologicznego gniazda dla innowacji i kreatywności.'),
+    (3, 'ArtisanCraft', 65, 7, '2022-02-28', 'accepted', 80000.00, 'Odrodzenie sztuki rzemiosła dla współczesnego świata.');
 
 insert into project.application_report (
     "submission_id",
@@ -266,92 +266,90 @@ insert into project.applicant_submission (
     (8, 8),
     (9, 9);
 
-insert into project.rating (
-    "submission_id",
-    "assessor_id",
-    "is_draft",
-    "type"
-) values
-    (1, 1, true, 'final'),
-    (1, 2, false,'initial'),
-    (1, 2, false,'individual'),
-    (1, 1, false,'individual'),
-    (2, 3, true, 'final'),
-    (2, 4, false,'initial'),
-    (2, 4, false,'individual'),
-    (2, 3, false,'individual'),
-    (3, 5, true, 'final'),
-    (3, 6, false,'initial'),
-    (3, 6, false,'individual'),
-    (3, 5, false,'individual'),
-    (4, 7, true, 'final'),
-    (4, 8, false,'initial'),
-    (4, 8, false,'individual'),
-    (4, 7, false,'individual'),
-    (5, 9, true, 'final'),
-    (5, 10, false,'initial'),
-    (5, 10, false,'individual'),
-    (5, 9, false,'individual'),
-    (6, 1, true, 'final'),
-    (6, 2, false,'initial'),
-    (6, 2, false,'individual'),
-    (6, 1, false,'individual'),
-    (7, 3, true, 'final'),
-    (7, 4, false,'initial'),
-    (7, 4, false,'individual'),
-    (7, 3, false,'individual'),
-    (8, 5, true, 'final'),
-    (8, 6, false,'initial'),
-    (8, 6, false,'individual'),
-    (8, 5, false,'individual'),
-    (9, 7, true, 'final'),
-    (9, 8, false,'initial'),
-    (9, 8, false,'individual'),
-    (9, 7, false,'individual');
+-- submissions 1-3 are from active contest
+-- submission 4
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (4, 7, false,'individual');
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (4, 8, false,'individual');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (1,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (2,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
-insert into project.partial_rating (
-    "rating_id",
-    "criterion_id",
-    "points",
-    "justification",
-    "modified_by_id"
-) values
-    (1,  1,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (2,  4,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (3,  7,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (4,  10, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (5,  13, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (6,  16, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (7,  19, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (8,  22, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (9,  25, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (10, 28, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (11, 31, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (12, 34, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (13, 2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (14, 5,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (15, 8,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (16, 11, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (17, 14, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (18, 17, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (19, 20, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (20, 23, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (21, 26, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (22, 29, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2),
-    (23, 32, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (24, 35, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (25, 3,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (26, 6,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (27, 9,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (28, 12, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (29, 15, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (30, 18, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (31, 21, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (32, 24, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (33, 27, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (34, 30, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (35, 33, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1),
-    (36, 36, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 1);
+update project.submission set status = 'accepted_individual' where submission_id = 4;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (4, 8, false,'initial');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (3,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_initial' where submission_id = 4;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (4, 8, false,'final');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (4,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+-- submission 5
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (5, 10, false,'individual');
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (5, 9, false,'individual');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (5,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (6,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_individual' where submission_id = 5;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (5, 9, false,'initial');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (7,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_initial' where submission_id = 5;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (5, 10, false,'final');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (8,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+-- submission 6
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (6, 1, false,'individual');
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (6, 2, false,'individual');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (9,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (10,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_individual' where submission_id = 6;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (6, 2, false,'initial');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (11,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_initial' where submission_id = 6;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (6, 1, false,'final');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (12,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+-- submission 7
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (7, 3, false,'individual');
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (7, 4, false,'individual');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (13,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (14,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_individual' where submission_id = 7;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (7, 4, false,'initial');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (15,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_initial' where submission_id = 7;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (7, 3, false,'final');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (16,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+-- submission 8
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (8, 5, false,'individual');
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (8, 6, false,'individual');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (17,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (18,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_individual' where submission_id = 8;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (8, 6, false,'initial');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (19,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_initial' where submission_id = 8;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (8, 5, false,'final');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (20,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+-- submission 9
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (9, 5, false,'individual');
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (9, 6, false,'individual');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (21,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (22,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_individual' where submission_id = 9;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (9, 6, false,'initial');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (23,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_initial' where submission_id = 9;
+insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (9, 5, false,'final');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (24,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 insert into project.ipma_expert_submission (
     "ipma_expert_id",

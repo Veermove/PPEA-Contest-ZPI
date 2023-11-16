@@ -4,7 +4,10 @@ create schema pem;
 create type project.state as enum (
     'draft',
     'submitted',
-    'accepted',
+    'accepted',             -- accepted by PEM, waiting for individual ratings
+    'accepted_individual',  -- individual ratings submitted, waiting for initial rating
+    'accepted_initial',     -- initial rating submitted, waiting for final rating
+    'accepted_final',       -- final rating submitted
     'rejected'
 );
 
