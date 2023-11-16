@@ -7,7 +7,7 @@ import Spinner from "@/components/spinner";
 import { useAuthContext } from "@/context/authContext";
 import { useClapAPI } from "@/context/clapApiContext";
 import { RatingType, RatingsDTO } from "@/services/clap/model/rating";
-import { SubmissionDTO } from "@/services/clap/model/submission";
+import { ProjectState, SubmissionDTO, SubmissionDetailsDTO } from "@/services/clap/model/submission";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
@@ -19,8 +19,10 @@ function IndividualRatings() {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [submission, setSubmission] = useState<SubmissionDTO | undefined>(undefined);
+  const [submissionDetails, setSubmissionDetails] = useState<SubmissionDetailsDTO | undefined>(undefined);
   const [ratings, setRatings] = useState<RatingsDTO>();
   const [error, setError] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string>('');
   const [assessorId, setAssessorId] = useState(0);
 
   const { user } = useAuthContext();
@@ -54,8 +56,10 @@ function IndividualRatings() {
           return;
         }
         setSubmission(currentSubmission);
-        const submissionRatings = await clapApi!.getSubmissionRatings(currentSubmission.submissionId)
-        setRatings(submissionRatings)
+        const submissionDetails = clapApi!.getSubmissionDetails(currentSubmission.submissionId);
+        const submissionRatings = clapApi!.getSubmissionRatings(currentSubmission.submissionId)
+        setSubmissionDetails(await submissionDetails);
+        setRatings(await submissionRatings)
       } catch {
         setError(true);
       } finally {
@@ -65,22 +69,24 @@ function IndividualRatings() {
   }, [clapApi, user, assessorId])
 
   const handleSubmit = async () => {
+    setSubmitError('');
     const ownedRatingId = ratings?.individualRatings.find(rating => rating.assessorId === assessorId)?.ratingId;
     if (!ratingsRef.current || !ownedRatingId) {
       console.error('no idea what happened')
-      // some error
+      setSubmitError(t('submitUnknownError'))
     }
     const isValid = ratingsRef.current!.handleSubmit();
     if (!isValid) {
+      setSubmitError(t('notAllRatingsFilled'));
       return;
     }
     try {
       await clapApi?.submitRatingDraft(ownedRatingId!);
       console.log('all good')
       window.location.reload();
-    } catch(e) {
+    } catch (e) {
       console.error(e);
-      // error handling
+      setSubmitError(t('submitUnknownError'))
     }
   }
 
@@ -107,20 +113,29 @@ function IndividualRatings() {
     return (
       <Container className="mx-4 my-2">
         <Row>
-          <Col xs={6}>
+          <Col xs={2}>
             <Button className="btn btn-secondary text-white" onClick={() => router.push(`/assessor/submissions/${submission.submissionId}`)}>
               {t('submissionDetails')}
             </Button>
           </Col>
-          {/* TODO check if the rating status allows submitting the ratings */}
-          <Col xs={6} className="text-right">
-            <Button className="btn btn-primary text-white" onClick={handleSubmit}>
-              {t('submit')}
-            </Button>
-          </Col>
+          {submissionDetails && submissionDetails?.status === ProjectState.ACCEPTED && (
+            <Col xs={10}>
+              <Col xs={8}>
+                {!!submitError && (
+                  <Error text={submitError} />
+                )}
+              </Col>
+              <Col xs={4} className="text-right">
+                <Button className="btn btn-primary text-white" onClick={handleSubmit}>
+                  {t('submit')}
+                </Button>
+              </Col>
+            </Col>
+          )}
+
         </Row>
         <Row>
-          <Ratings ref={ratingsRef} ratings={ratings} criteria={ratings.criteria} type={RatingType.INDIVIDUAL} assessors={submission.assessors} assessorId={assessorId}/>
+          <Ratings ref={ratingsRef} ratings={ratings} criteria={ratings.criteria} type={RatingType.INDIVIDUAL} assessors={submission.assessors} assessorId={assessorId} />
         </Row>
       </Container>
     )
