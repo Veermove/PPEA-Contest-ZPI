@@ -89,8 +89,6 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
         justification,
         points
       });
-      console.log('justification', response.justification)
-      console.log('points', response.points)
       setInternalCurrentRating(response)
       setIsEditing(false);
     } catch (error) {
