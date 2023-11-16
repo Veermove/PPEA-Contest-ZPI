@@ -48,12 +48,19 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
   const { user } = useAuthContext();
   const clapAPI = useClapAPI();
   const [error, setError] = useState('');
+  const [internalCurrentRating, setInternalCurrentRating] = useState<PartialRating | undefined>(currentRating);
 
   useEffect(() => {
     if (!user) {
       redirect('/login');
     }
-  });
+  }, [user]);
+
+  useEffect(() => {
+    if (currentRating) {
+      setInternalCurrentRating(currentRating);
+    }
+  }, [currentRating])
 
   function buildErrorMessage(error: any): string {
     console.error(JSON.stringify(error))
@@ -64,20 +71,27 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
     return t('error');
   }
 
+  useEffect(() => {
+    if (internalCurrentRating) {
+      setCurrentRating(internalCurrentRating);
+    }
+  }, [internalCurrentRating, setCurrentRating])
+
   const updateRating = async (justification: string, points: number) => {
-    if (!clapAPI || !currentRating) {
+    if (!clapAPI || !internalCurrentRating) {
       return;
     }
 
     try {
-      // TODO current rating doesn't get updated
       setError('');
       const response = await clapAPI.upsertPartialRating({
-        partialRatingId: currentRating.partialRatingId,
+        partialRatingId: internalCurrentRating.partialRatingId,
         justification,
         points
       });
-      setCurrentRating({ ...currentRating, justification: response.justification, points: response.points });
+      console.log('justification', response.justification)
+      console.log('points', response.points)
+      setInternalCurrentRating(response)
       setIsEditing(false);
     } catch (error) {
       console.error('Unable to update rating:', error);
@@ -98,7 +112,7 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
         criterionId,
         ratingId,
       });
-      setCurrentRating(response);
+      setInternalCurrentRating(response);
       setIsEditing(false);
     } catch (error) {
       console.error('Unable to add rating:', error);
@@ -113,13 +127,13 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
 
   useImperativeHandle(ref, () => ({
     getIsReadyToSubmit: () => {
-      return !!currentRating && !!currentRating.justification;
+      return !!internalCurrentRating && !!internalCurrentRating.justification;
     }
   }))
 
   if (!clapAPI) {
     return <Spinner />
-  } else if (!isEditable && (!currentRating || draft)) { // no rating, current user has no permissions to add
+  } else if (!isEditable && (!internalCurrentRating || draft)) { // no rating, current user has no permissions to add
     return <h6 className="text-purple my-4">{t('noRatingsFrom')} {firstName} {lastName}</h6 >
   } else {
     return (
@@ -139,7 +153,7 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
             {t(type)}
           </Col>
         </Row>
-        {!currentRating && !!isEditing && ( // no rating, current user is adding it now
+        {!internalCurrentRating && !!isEditing && ( // no rating, current user is adding it now
           <Col xs={12} >
             <EditableRating
               initialJustification=""
@@ -148,25 +162,25 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
               onCancel={onCancel}
             />
           </Col>
-        )}{!currentRating && !isEditing && ( // no rating, current user has permissions to add it
+        )}{!internalCurrentRating && !isEditing && ( // no rating, current user has permissions to add it
           <Row>
             <Col xs={10} />
             <Col xs={2}>
               <Button className="text-white" onClick={() => setIsEditing(true)}>{t('add')}</Button>
             </Col>
           </Row>
-        )}{!!currentRating && !isEditing && ( // rating exists, in view mode
+        )}{!!internalCurrentRating && !isEditing && ( // rating exists, in view mode
           <>
             <Row>
               <Col xs={2} className="text-purple font-bold">
-                {currentRating.points} {t('points')}
+                {internalCurrentRating.points} {t('points')}
               </Col>
               <Col xs={10}>
-                {currentRating.justification}
+                {internalCurrentRating.justification}
               </Col>
             </Row>
           </>
-        )}{!!currentRating && !!isEditable && !isEditing && ( // rating exists, in view mode, current user has permissions to edit
+        )}{!!internalCurrentRating && !!isEditable && !isEditing && ( // rating exists, in view mode, current user has permissions to edit
           <Row>
             <Col xs={10} />
             <Col xs={2} >
@@ -175,12 +189,12 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
               </Button>
             </Col>
           </Row>
-        )}{!!currentRating && !!isEditable && !!isEditing && ( // rating exists, in edit mode, current user has permissions to edit
+        )}{!!internalCurrentRating && !!isEditable && !!isEditing && ( // rating exists, in edit mode, current user has permissions to edit
           <Row>
             <Col xs={12} >
               <EditableRating
-                initialJustification={currentRating.justification}
-                initialPoints={currentRating.points}
+                initialJustification={internalCurrentRating.justification}
+                initialPoints={internalCurrentRating.points}
                 onSubmit={updateRating}
                 onCancel={onCancel}
               />

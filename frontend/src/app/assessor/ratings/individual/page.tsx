@@ -118,21 +118,23 @@ function IndividualRatings() {
               {t('submissionDetails')}
             </Button>
           </Col>
-          {submissionDetails && submissionDetails?.status === ProjectState.ACCEPTED && (
+          {submissionDetails && submissionDetails?.status === ProjectState.ACCEPTED &&
+            ratings?.individualRatings.find(rating => rating.assessorId === assessorId)?.draft && (
             <Col xs={10}>
-              <Col xs={8}>
-                {!!submitError && (
-                  <Error text={submitError} />
-                )}
-              </Col>
-              <Col xs={4} className="text-right">
-                <Button className="btn btn-primary text-white" onClick={handleSubmit}>
-                  {t('submit')}
-                </Button>
-              </Col>
+              <Row>
+                <Col xs={8}>
+                  {!!submitError && (
+                    <Error text={submitError} />
+                  )}
+                </Col>
+                <Col xs={4} className="text-right">
+                  <Button className="btn btn-primary text-white" onClick={handleSubmit}>
+                    {t('submit')}
+                  </Button>
+                </Col>
+              </Row>
             </Col>
           )}
-
         </Row>
         <Row>
           <Ratings ref={ratingsRef} ratings={ratings} criteria={ratings.criteria} type={RatingType.INDIVIDUAL} assessors={submission.assessors} assessorId={assessorId} />

@@ -1,4 +1,7 @@
 {
     "noRatings": "Brak ocen w obecnej edycji",
-    "submissionDetails": "Detale zgłoszenia"
+    "submissionDetails": "Detale zgłoszenia",
+    "submitUnknownError": "Wystąpił błąd przy zatwierdzaniu. Proszę spróbować ponownie.",
+    "notAllRatingsFilled": "Nie wszystkie kryteria mają ocenę. Proszę wypełnić wszystkie kryteria.",
+    "submit": "Zatwierdź"
 }
