@@ -72,7 +72,6 @@ function IndividualRatings() {
     setSubmitError('');
     const ownedRatingId = ratings?.individualRatings.find(rating => rating.assessorId === assessorId)?.ratingId;
     if (!ratingsRef.current || !ownedRatingId) {
-      console.error('no idea what happened')
       setSubmitError(t('submitUnknownError'))
     }
     const isValid = ratingsRef.current!.handleSubmit();
