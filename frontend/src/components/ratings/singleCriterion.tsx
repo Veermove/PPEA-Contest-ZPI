@@ -19,7 +19,7 @@ type SingleCriterionProps = {
   assessors: Assessor[]
 }
 
-function isRated(partialRating?: PartialRating): boolean {
+function calculateIsRated(partialRating?: PartialRating): boolean {
   return !!partialRating && !!partialRating.justification
 }
 
@@ -54,6 +54,7 @@ const SingleCriterion = forwardRef<SingleCriterionForwardData, SingleCriterionPr
 
   const [editableRating, setEditableRating] = useState<PartialRating | undefined>();
   const [isEditing, setIsEditing] = useState(false);
+  const [isRated, setIsRated] = useState(false);
   const ratingRef = useRef<SingleRatingForwardData | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -74,6 +75,10 @@ const SingleCriterion = forwardRef<SingleCriterionForwardData, SingleCriterionPr
     if (!rating) return;
     setEditableRating(toPartialRating(rating));
   }, [type, toPartialRating, ratingsDTO.finalRating, ratingsDTO.initialRating, ratingsDTO.individualRatings, currentAssessorId, ratingRef, id, isEditing])
+
+  useEffect(() => {
+    setIsRated(calculateIsRated(editableRating))
+  }, [editableRating])
 
   const individualRatings: AssessorsRatings[] = assessors.map(assessor => {
     return ratingsDTO.individualRatings.find(assessorRating => assessorRating.assessorId === assessor.assessorId) ||
@@ -104,7 +109,7 @@ const SingleCriterion = forwardRef<SingleCriterionForwardData, SingleCriterionPr
       <Accordion className="my-2">
         <AccordionItem eventKey={id.toString()}>
           <AccordionHeader>
-            <h5 className={isRated(editableRating) ? "text-purple" : "text-gray"}>{criterionName}</h5>
+            <h5 className={isRated ? "text-purple" : "text-gray"}>{criterionName}</h5>
           </AccordionHeader>
           <AccordionBody>
             {type === RatingType.FINAL && !!ratingsDTO.finalRating && (

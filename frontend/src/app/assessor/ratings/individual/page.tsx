@@ -91,7 +91,7 @@ function IndividualRatings() {
   if (loading) {
     return <Spinner />;
   } else if (!user) {
-    return redirect('/login')
+    return redirect('/')
   } else if (!submission || !assessorId || !ratings || error) {
     return <Error text={t('noRatings')} />
   } else if (!ratings?.individualRatings.some(rating => rating.assessorId === assessorId)) {

@@ -52,7 +52,7 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
 
   useEffect(() => {
     if (!user) {
-      redirect('/login');
+      redirect('/');
     }
   }, [user]);
 

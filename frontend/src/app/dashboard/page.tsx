@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuthContext } from '@/context/authContext';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { Container } from 'react-bootstrap';
 import { FaCommentDots, FaRegCheckCircle, FaRegListAlt, FaRegTimesCircle, FaUserPlus } from 'react-icons/fa';
 import { LuFolderEdit } from 'react-icons/lu';
@@ -18,7 +18,7 @@ function Dashboard() {
   }
 
   if (!user) {
-    return router.push('/signin')
+    return redirect('/signin')
   }
 
   return (

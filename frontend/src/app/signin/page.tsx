@@ -43,7 +43,7 @@ function Page() {
     setError('')
     signIn(email, password)
       .then(() => {
-        router.push('/dashboard')
+        redirect('/dashboard')
       })
       .catch((error) => {
         console.error('Error signing in');
