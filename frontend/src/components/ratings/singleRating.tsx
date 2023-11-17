@@ -170,8 +170,8 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
         )}{!!internalCurrentRating && !isEditing && ( // rating exists, in view mode
           <>
             <Row>
-              <Col xs={2} className="text-purple font-bold">
-                {internalCurrentRating.points} {t('points')}
+              <Col xs={2} className="text-purple font-bold text-wrap">
+                {t('points')}: {internalCurrentRating.points} 
               </Col>
               <Col xs={10}>
                 {internalCurrentRating.justification}
