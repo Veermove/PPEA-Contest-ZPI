@@ -82,7 +82,6 @@ function IndividualRatings() {
     }
     try {
       await clapApi?.submitRatingDraft(ownedRatingId!);
-      console.log('all good')
       window.location.reload();
     } catch (e) {
       console.error(e);
