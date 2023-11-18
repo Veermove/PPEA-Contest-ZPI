@@ -9,7 +9,7 @@ export enum RatingType {
 
 export interface Rating {
     ratingId: number;
-    draft: boolean;
+    isDraft: boolean;
     assessorId: number;
     type: RatingType;
 }
@@ -18,8 +18,9 @@ export interface PartialRating {
     partialRatingId: number;
     points: number;
     justification: string;
-    lastModified: Date;
     criterionId: number;
+    modified: string;
+    modifiedBy: number;
 }
 
 export interface RatingsDTO {

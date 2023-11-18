@@ -17,5 +17,5 @@ public class AssessorRatingsDto {
     private String firstName;
     private String lastName;
     private List<PartialRatingDto> partialRatings;
-    private boolean isDraft;
+    private boolean draft;
 }

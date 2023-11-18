@@ -1,4 +1,15 @@
-import { PartialRating, Rating } from "./rating";
+import { PartialRating, Rating, RatingType } from "./rating";
+
+export enum ProjectState {
+    DRAFT = "DRAFT",
+    SUBMITTED = "SUBMITTED",
+    ACCEPTED = "ACCEPTED",
+    ACCEPTED_INDIVIDUAL = "ACCEPTED_INDIVIDUAL",
+    ACCEPTED_INITIAL = "ACCEPTED_INITIAL",
+    ACCEPTED_FINAL = "ACCEPTED_FINAL",
+    REJECTED = "REJECTED",
+    UNRECOGNIZED = "UNRECOGNIZED",
+}
 
 export interface Assessor {
     assessorId: number;
@@ -36,11 +47,26 @@ export interface SubmissionDetailsDTO {
     description: string;
     appReportDto?: ApplicationReport;
     points: number;
+    status: ProjectState;
 }
 
 export interface AssessorsRatings {
+    assessorId: number;
+    ratingId: number;
     firstName: string;
     lastName: string;
+    draft: boolean;
     partialRatings: PartialRating[];
 }
 
+export interface UpdateSubmissionBody {
+    criterionId?: number;
+    ratingId?: number;
+    partialRatingId?: number;
+    justification: string;
+    points: number;
+}
+
+export interface AddRatingBody {
+    ratingType: RatingType;
+}

@@ -1,6 +1,12 @@
 {
+    "noRatingsFrom": "Brak ocen od asesora",
     "assessor": "Asesor",
     "INDIVIDUAL": "Ocena indywidualna",
     "INITIAL": "Ocena wstępna",
-    "FINAL": "Ocena końcowa"
+    "FINAL": "Ocena końcowa",
+    "add": "Dodaj",
+    "points": "Punkty",
+    "edit": "Edytuj",
+    "justificationLengthError": "Zbyt długie uzasadnienie",
+    "error": "Wystąpił błąd. Spróbuj ponownie za kilka sekund"
 }

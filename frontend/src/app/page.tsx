@@ -1,20 +1,19 @@
 'use client'
 
 import { useAuthContext } from "@/context/authContext";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
 function Page() {
   const { user } = useAuthContext()
-  const router = useRouter()
 
   useEffect(() => {
     if (user) {
-      router.push(`/dashboard`)
+      redirect(`/dashboard`)
     } else {
-      router.push(`/signin`)
+      redirect(`/signin`)
     }
-  }, [user, router])
+  }, [user])
 
   return null;
 }

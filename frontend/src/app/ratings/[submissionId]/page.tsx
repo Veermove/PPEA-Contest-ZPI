@@ -4,9 +4,10 @@ import Error from "@/components/error";
 import Ratings from "@/components/ratings/ratings";
 import Spinner from "@/components/spinner";
 import { useAuthContext } from "@/context/authContext";
-import { ClapApi } from "@/services/clap/api";
+import { useClapAPI } from "@/context/clapApiContext";
 import { PEMCriterion } from "@/services/clap/model/criterion";
 import { RatingType, RatingsDTO } from "@/services/clap/model/rating";
+import { Assessor } from "@/services/clap/model/submission";
 import { redirect, useRouter } from "next/navigation";
 import { ReactElement, useEffect, useState } from "react";
 import { Accordion, AccordionHeader, AccordionItem, Button } from "react-bootstrap";
@@ -31,8 +32,10 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
   const [error, setError] = useState<ReactElement>();
   const [ratings, setRatings] = useState<RatingsDTO>();
   const [sortedCriteria, setSortedCriteria] = useState<PEMCriterion[]>([]);
+  const [assessors, setAssessors] = useState<Assessor[]>([]);
+  const [assessorId, setAssessorId] = useState(0);
+  const clapApi = useClapAPI();
 
-  let clapApi: ClapApi;
 
   const id = parseInt(params.submissionId)
   if (Number.isNaN(id)) {
@@ -40,25 +43,38 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
   }
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !clapApi) {
       return;
     }
+  
     (async () => {
-      setLoading(true)
-      const clapApi = new ClapApi(await user.getIdToken());
-      clapApi.getSubmissionRatings(id).then((ratings) => {
+      setLoading(true);
+      try {
+        const [ratings, submissions, tokenResult] = await Promise.all([
+          clapApi.getSubmissionRatings(id),
+          clapApi.getSubmissions(),
+          user.getIdTokenResult(),
+        ]);
+  
+        const currentSubmission = submissions.find(
+          (submission) => submission.submissionId === id
+        );
+  
+        if (currentSubmission) {
+          setAssessors(currentSubmission.assessors);
+        }
+  
+        setAssessorId(tokenResult.claims.assessor_id as number);
         setRatings(ratings);
-        setSortedCriteria(ratings.criteria.sort(sortCriteria))
-      })
-        .catch((error) => {
-          console.error(error);
-          setError(Error({ text: t('error') }));
-        })
-        .finally(() => {
-          setLoading(false);
-        })
-    })()
-  }, [user, id, t])
+        setSortedCriteria(ratings.criteria.sort(sortCriteria));
+      } catch (error) {
+        console.error(error);
+        setError(Error({ text: t('error') }));
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [clapApi, user, id, t]);
 
   if (!user) {
     return redirect('/');
@@ -78,9 +94,11 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
             </AccordionHeader>
             <AccordionBody>
               <Ratings
-                ratings={[ratings.finalRating!]}
+                ratings={ratings}
                 criteria={sortedCriteria}
                 type={RatingType.FINAL}
+                assessors={assessors}
+                assessorId={assessorId}
               />
             </AccordionBody>
           </AccordionItem>
@@ -94,9 +112,11 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
             </AccordionHeader>
             <AccordionBody>
               <Ratings
-                ratings={[ratings.initialRating!]}
+                ratings={ratings}
                 criteria={sortedCriteria}
                 type={RatingType.INITIAL}
+                assessors={assessors}
+                assessorId={assessorId}
               />
             </AccordionBody>
           </AccordionItem>
@@ -110,9 +130,11 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
             </AccordionHeader>
             <AccordionBody>
               <Ratings
-                ratings={ratings.individualRatings}
+                ratings={ratings}
                 criteria={sortedCriteria}
                 type={RatingType.INDIVIDUAL}
+                assessors={assessors}
+                assessorId={assessorId}
               />
             </AccordionBody>
           </AccordionItem>

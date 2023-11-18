@@ -5,7 +5,7 @@ import Spinner from "@/components/spinner";
 import { useAuthContext } from "@/context/authContext";
 import signIn from "@/services/firebase/auth/signin";
 import Image from "next/image";
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import React from "react";
 import isEmail from 'validator/es/lib/isEmail';
 
@@ -43,7 +43,7 @@ function Page() {
     setError('')
     signIn(email, password)
       .then(() => {
-        router.push('/dashboard')
+        redirect('/dashboard')
       })
       .catch((error) => {
         console.error('Error signing in');
@@ -55,7 +55,7 @@ function Page() {
   }
 
   if (!!user) {
-    return router.push("/")
+    return redirect("/")
   }
 
   return (

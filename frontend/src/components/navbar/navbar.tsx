@@ -5,7 +5,7 @@ import { locales } from "@/app/i18n/settings";
 import { useAuthContext } from "@/context/authContext";
 import { logout } from "@/services/firebase/auth/logout";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { Dropdown, Nav, Navbar } from "react-bootstrap";
 import './navbar.css';
 
@@ -22,7 +22,7 @@ function AppNavbar() {
   const handleLogout = async () => {
     try {
       await logout()
-      router.push("/signin")
+      redirect("/signin")
       return null;
     } catch (error) {
       const err = error as Error

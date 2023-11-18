@@ -258,6 +258,7 @@ func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId, assesso
 					i.AssessorID,
 					i.FirstName,
 					i.LastName,
+					i.IsDraft,
 				)
 				if err != nil && err != pgx.ErrNoRows {
 					return fmt.Errorf("creating individual rating for rating %d, assessor %d: %w", i.RatingID, i.AssessorID, err)
@@ -287,6 +288,7 @@ func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId, assesso
 					initials[0].AssessorID,
 					initials[0].FirstName,
 					initials[0].LastName,
+					initials[0].IsDraft,
 				)
 
 				if err != nil && err != pgx.ErrNoRows {
@@ -312,6 +314,7 @@ func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId, assesso
 					finals[0].AssessorID,
 					finals[0].FirstName,
 					finals[0].LastName,
+					finals[0].IsDraft,
 				)
 
 				if err != nil {
@@ -389,7 +392,7 @@ func (st *Store) GetUserClaims(ctx context.Context, email string) (*pb.UserClaim
 // CreateAssessorRatings creates a new AssessorRatings object with the given rating ID, assessor ID, first name, and last name.
 // It retrieves partial ratings for the given assessor and rating ID, and remaps the values to create the new AssessorRatings object.
 // Returns the new AssessorRatings object and an error if there was any issue retrieving the partial ratings.
-func (st *Store) CreateAssessorRatings(ctx context.Context, ratingId int32, assessorId int32, firstN, lastN string) (*pb.AssessorRatings, error) {
+func (st *Store) CreateAssessorRatings(ctx context.Context, ratingId int32, assessorId int32, firstN, lastN string, isDraft bool) (*pb.AssessorRatings, error) {
 
 	// Get partial ratings for this assessor and rating id
 	r, err := queries.New(st.Pool).GetPRatingsForAssessorAndRatingID(ctx,
@@ -405,6 +408,7 @@ func (st *Store) CreateAssessorRatings(ctx context.Context, ratingId int32, asse
 		AssessorId:     assessorId,
 		FirstName:      firstN,
 		LastName:       lastN,
+		IsDraft:        isDraft,
 		PartialRatings: []*pb.PartialRating{},
 	}
 	for _, rt := range r {

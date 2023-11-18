@@ -1,9 +1,10 @@
 package zpi.ppea.clap.controller;
 
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import zpi.ppea.clap.config.ValueConfig;
 import zpi.ppea.clap.dtos.NewRatingDto;
 import zpi.ppea.clap.dtos.RatingDto;

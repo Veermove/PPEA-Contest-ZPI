@@ -4,7 +4,8 @@ select
     base.last_name        as "last_name",
     assessor.assessor_id  as "assessor_id",
     full_rating.rating_id as "rating_id",
-    full_rating.type      as "rating_type"
+    full_rating.type      as "rating_type",
+    full_rating.is_draft  as "is_draft"
 from project.assessor_submission
 inner join person.assessor    as assessor    on assessor.assessor_id = assessor_submission.assessor_id -- join to get ipma_expert_id
 inner join person.ipma_expert as ipma_expert on ipma_expert.ipma_expert_id = assessor.ipma_expert_id   -- join to get person_id

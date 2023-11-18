@@ -124,7 +124,7 @@ begin
             -- if so we go to accepted_individual
             return 'accepted_individual';
         else
-            raise exception 'Cannot change status from state % to accepted_individual because not all assessors submitted ratings for submission with id %', current_status, sub_id;
+            return 'accepted';
         end if;
 
     elsif current_status = 'accepted_individual' then
