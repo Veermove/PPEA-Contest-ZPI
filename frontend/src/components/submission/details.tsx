@@ -36,11 +36,30 @@ function SubmissionDetails({ submission, submissionDetails }: { submission: Subm
           <SubmissionDescription title="description" description={submissionDetails.description} />
         </Col>
         <Col xs={6} className="border-l-2 border-lightgray mr-0 max-w-full">
-          {!!submissionDetails.appReportDto?.projectGoals && <SubmissionAttachment url={submissionDetails.appReportDto.projectGoals} name={"projectGoals"} />}
-          {!!submissionDetails.appReportDto?.organisationStructure && <SubmissionAttachment url={submissionDetails.appReportDto.organisationStructure} name={"organisationStructure"} />}
-          {!!submissionDetails.appReportDto?.divisionOfWork && <SubmissionAttachment url={submissionDetails.appReportDto?.divisionOfWork!} name="divisionOfWork" />}
-          {!!submissionDetails.appReportDto?.projectSchedule && <SubmissionAttachment url={submissionDetails.appReportDto?.projectSchedule!} name="projectSchedule" />}
-          {!!submissionDetails.appReportDto?.attachements && <SubmissionAttachment url={submissionDetails.appReportDto?.attachements!} name="attachments" />}
+          {!!submissionDetails.appReportDto?.projectGoals && <SubmissionAttachment
+            fileName={submissionDetails.appReportDto.projectGoals}
+            name={"projectGoals"}
+            submissionId={submission.submissionId} />}
+            
+          {!!submissionDetails.appReportDto?.organisationStructure && <SubmissionAttachment
+            fileName={submissionDetails.appReportDto.organisationStructure}
+            name={"organisationStructure"}
+            submissionId={submission.submissionId} />}
+
+          {!!submissionDetails.appReportDto?.divisionOfWork && <SubmissionAttachment
+            fileName={submissionDetails.appReportDto?.divisionOfWork!}
+            name="divisionOfWork"
+            submissionId={submission.submissionId} />}
+
+          {!!submissionDetails.appReportDto?.projectSchedule && <SubmissionAttachment
+            fileName={submissionDetails.appReportDto?.projectSchedule!}
+            name="projectSchedule"
+            submissionId={submission.submissionId} />}
+
+          {!!submissionDetails.appReportDto?.attachements && <SubmissionAttachment
+            fileName={submissionDetails.appReportDto?.attachements!}
+            name="attachments"
+            submissionId={submission.submissionId} />}
         </Col>
       </Row>
     </Container>
