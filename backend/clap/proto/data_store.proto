@@ -157,15 +157,12 @@ message Answer {
 }
 
 message Question {
-    repeated Answer answers = 1;
+    string content = 1;
+    repeated Answer answers = 2;
 }
 
 message StudyVisit {
     repeated Question questions = 1;
-}
-
-message StudyVisitResponse {
-    repeated StudyVisit visits = 1;
 }
 
 service DataStore {
@@ -176,5 +173,5 @@ service DataStore {
     rpc PostNewSubmissionRating (NewSubmissionRatingRequest)  returns (Rating)                    {}
     rpc PostPartialRating       (PartialRatingRequest)        returns (PartialRating)             {}
     rpc PostSubmitRating        (SubmitRatingDraft)           returns (Rating)                    {}
-    rpc GetStudyVisits          (SubmissionRequest)           returns (StudyVisitResponse)        {}
+    rpc GetStudyVisits          (SubmissionRequest)           returns (StudyVisit)                {}
 }
