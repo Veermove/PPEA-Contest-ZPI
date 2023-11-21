@@ -65,8 +65,12 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
   function buildErrorMessage(error: any): string {
     console.error(JSON.stringify(error))
     const message = error.response?.data?.errors?.[0];
-    if (message && message.includes('length')) {
+    if (!message) {
+      return t('error')
+    } if (message.includes('length')) {
       return t('justificationLengthError');
+    } if (message.includes('changed')) {
+      return t('justificationWasEditedError')
     }
     return t('error');
   }
@@ -87,7 +91,8 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
       const response = await clapAPI.upsertPartialRating({
         partialRatingId: internalCurrentRating.partialRatingId,
         justification,
-        points
+        points,
+        lastModified: currentRating?.modified
       });
       setInternalCurrentRating(response)
       setIsEditing(false);
