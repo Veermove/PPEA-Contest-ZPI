@@ -151,6 +151,20 @@ message SubmitRatingDraft {
     int32 rating_id = 2;
 }
 
+message Answer {
+    string description = 1;
+    repeated string files = 2;
+}
+
+message Question {
+    string content = 1;
+    repeated Answer answers = 2;
+}
+
+message StudyVisit {
+    repeated Question questions = 1;
+}
+
 service DataStore {
     rpc GetUserClaims           (UserRequest)                 returns (UserClaimsResponse)        {}
     rpc GetSubmissions          (SubmissionRequest)           returns (SubmissionsResponse)       {}
@@ -159,4 +173,5 @@ service DataStore {
     rpc PostNewSubmissionRating (NewSubmissionRatingRequest)  returns (Rating)                    {}
     rpc PostPartialRating       (PartialRatingRequest)        returns (PartialRating)             {}
     rpc PostSubmitRating        (SubmitRatingDraft)           returns (Rating)                    {}
+    rpc GetStudyVisits          (SubmissionRequest)           returns (StudyVisit)                {}
 }
