@@ -2,7 +2,6 @@ package dbclient
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 	pb "zpi/pb"
@@ -159,7 +158,7 @@ func (st *Store) UpsertPartialRatings(ctx context.Context, in *pb.PartialRatingR
 				st.Log.Warn("failed to parse modified time from db", zap.String("time_from_db", result))
 			}
 
-			return nil, errors.New("CONDITIONRACE")
+			return nil, RaceConditionDetectedErr
 		}
 
 		ret, err := queries.New(st.Pool).UpdatePartialRating(ctx, queries.UpdatePartialRatingParams{

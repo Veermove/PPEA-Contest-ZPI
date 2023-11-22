@@ -39,7 +39,7 @@ type DataStoreClient interface {
 	GetSubmissionRatings(ctx context.Context, in *RatingsSubmissionRequest, opts ...grpc.CallOption) (*RatingsSubmissionResponse, error)
 	GetStudyVisit(ctx context.Context, in *StudyVisitRequest, opts ...grpc.CallOption) (*StudyVisitResponse, error)
 	PostNewSubmissionRating(ctx context.Context, in *NewSubmissionRatingRequest, opts ...grpc.CallOption) (*Rating, error)
-	PostPartialRating(ctx context.Context, in *PartialRatingRequest, opts ...grpc.CallOption) (*PartialRating, error)
+	PostPartialRating(ctx context.Context, in *PartialRatingRequest, opts ...grpc.CallOption) (*PostPartialRatingResponse, error)
 	PostSubmitRating(ctx context.Context, in *SubmitRatingDraft, opts ...grpc.CallOption) (*Rating, error)
 }
 
@@ -105,8 +105,8 @@ func (c *dataStoreClient) PostNewSubmissionRating(ctx context.Context, in *NewSu
 	return out, nil
 }
 
-func (c *dataStoreClient) PostPartialRating(ctx context.Context, in *PartialRatingRequest, opts ...grpc.CallOption) (*PartialRating, error) {
-	out := new(PartialRating)
+func (c *dataStoreClient) PostPartialRating(ctx context.Context, in *PartialRatingRequest, opts ...grpc.CallOption) (*PostPartialRatingResponse, error) {
+	out := new(PostPartialRatingResponse)
 	err := c.cc.Invoke(ctx, DataStore_PostPartialRating_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -133,7 +133,7 @@ type DataStoreServer interface {
 	GetSubmissionRatings(context.Context, *RatingsSubmissionRequest) (*RatingsSubmissionResponse, error)
 	GetStudyVisit(context.Context, *StudyVisitRequest) (*StudyVisitResponse, error)
 	PostNewSubmissionRating(context.Context, *NewSubmissionRatingRequest) (*Rating, error)
-	PostPartialRating(context.Context, *PartialRatingRequest) (*PartialRating, error)
+	PostPartialRating(context.Context, *PartialRatingRequest) (*PostPartialRatingResponse, error)
 	PostSubmitRating(context.Context, *SubmitRatingDraft) (*Rating, error)
 	mustEmbedUnimplementedDataStoreServer()
 }
@@ -160,7 +160,7 @@ func (UnimplementedDataStoreServer) GetStudyVisit(context.Context, *StudyVisitRe
 func (UnimplementedDataStoreServer) PostNewSubmissionRating(context.Context, *NewSubmissionRatingRequest) (*Rating, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostNewSubmissionRating not implemented")
 }
-func (UnimplementedDataStoreServer) PostPartialRating(context.Context, *PartialRatingRequest) (*PartialRating, error) {
+func (UnimplementedDataStoreServer) PostPartialRating(context.Context, *PartialRatingRequest) (*PostPartialRatingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostPartialRating not implemented")
 }
 func (UnimplementedDataStoreServer) PostSubmitRating(context.Context, *SubmitRatingDraft) (*Rating, error) {

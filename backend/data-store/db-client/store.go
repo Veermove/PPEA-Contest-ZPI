@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"embed"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -57,6 +58,8 @@ type (
 
 //go:embed migrations
 var migrations embed.FS
+
+var RaceConditionDetectedErr = errors.New("RACECONDITION")
 
 func GetConnectionString() string {
 	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
