@@ -26,6 +26,7 @@ const (
 	DataStore_PostNewSubmissionRating_FullMethodName = "/data_store.DataStore/PostNewSubmissionRating"
 	DataStore_PostPartialRating_FullMethodName       = "/data_store.DataStore/PostPartialRating"
 	DataStore_PostSubmitRating_FullMethodName        = "/data_store.DataStore/PostSubmitRating"
+	DataStore_GetStudyVisits_FullMethodName          = "/data_store.DataStore/GetStudyVisits"
 )
 
 // DataStoreClient is the client API for DataStore service.
@@ -39,6 +40,7 @@ type DataStoreClient interface {
 	PostNewSubmissionRating(ctx context.Context, in *NewSubmissionRatingRequest, opts ...grpc.CallOption) (*Rating, error)
 	PostPartialRating(ctx context.Context, in *PartialRatingRequest, opts ...grpc.CallOption) (*PartialRating, error)
 	PostSubmitRating(ctx context.Context, in *SubmitRatingDraft, opts ...grpc.CallOption) (*Rating, error)
+	GetStudyVisits(ctx context.Context, in *SubmissionRequest, opts ...grpc.CallOption) (*StudyVisit, error)
 }
 
 type dataStoreClient struct {
@@ -112,6 +114,15 @@ func (c *dataStoreClient) PostSubmitRating(ctx context.Context, in *SubmitRating
 	return out, nil
 }
 
+func (c *dataStoreClient) GetStudyVisits(ctx context.Context, in *SubmissionRequest, opts ...grpc.CallOption) (*StudyVisit, error) {
+	out := new(StudyVisit)
+	err := c.cc.Invoke(ctx, DataStore_GetStudyVisits_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DataStoreServer is the server API for DataStore service.
 // All implementations must embed UnimplementedDataStoreServer
 // for forward compatibility
@@ -123,6 +134,7 @@ type DataStoreServer interface {
 	PostNewSubmissionRating(context.Context, *NewSubmissionRatingRequest) (*Rating, error)
 	PostPartialRating(context.Context, *PartialRatingRequest) (*PartialRating, error)
 	PostSubmitRating(context.Context, *SubmitRatingDraft) (*Rating, error)
+	GetStudyVisits(context.Context, *SubmissionRequest) (*StudyVisit, error)
 	mustEmbedUnimplementedDataStoreServer()
 }
 
@@ -150,6 +162,9 @@ func (UnimplementedDataStoreServer) PostPartialRating(context.Context, *PartialR
 }
 func (UnimplementedDataStoreServer) PostSubmitRating(context.Context, *SubmitRatingDraft) (*Rating, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostSubmitRating not implemented")
+}
+func (UnimplementedDataStoreServer) GetStudyVisits(context.Context, *SubmissionRequest) (*StudyVisit, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStudyVisits not implemented")
 }
 func (UnimplementedDataStoreServer) mustEmbedUnimplementedDataStoreServer() {}
 
@@ -290,6 +305,24 @@ func _DataStore_PostSubmitRating_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DataStore_GetStudyVisits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubmissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataStoreServer).GetStudyVisits(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DataStore_GetStudyVisits_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataStoreServer).GetStudyVisits(ctx, req.(*SubmissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DataStore_ServiceDesc is the grpc.ServiceDesc for DataStore service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -324,6 +357,10 @@ var DataStore_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PostSubmitRating",
 			Handler:    _DataStore_PostSubmitRating_Handler,
+		},
+		{
+			MethodName: "GetStudyVisits",
+			Handler:    _DataStore_GetStudyVisits_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
