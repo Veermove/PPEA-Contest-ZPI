@@ -1446,7 +1446,7 @@ type isPostPartialRatingResponse_Response interface {
 }
 
 type PostPartialRatingResponse_Error struct {
-	Error string `protobuf:"bytes,1,opt,name=error,proto3,oneof"`
+	Error string `protobuf:"bytes,1,opt,name=error,proto3,oneof"` // This is used ONLY for race condition errors
 }
 
 type PostPartialRatingResponse_PartialRating struct {

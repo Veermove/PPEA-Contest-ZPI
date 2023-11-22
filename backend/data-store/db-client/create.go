@@ -39,7 +39,7 @@ func (st *Store) CreateAssessorRatings(ctx context.Context, ratingId int32, asse
 			CriterionId:     rt.CriterionID,
 			Points:          rt.Points,
 			Justification:   rt.Justification,
-			Modified:        rt.Modified.Format(time.RFC3339),
+			Modified:        rt.Modified.UTC().Format(time.RFC3339),
 			ModifiedBy:      rt.ModifiedByID,
 		})
 	}
@@ -152,11 +152,13 @@ func (st *Store) UpsertPartialRatings(ctx context.Context, in *pb.PartialRatingR
 
 		// if timestamps are different result will be equal to string representation of timestamp;
 		if result != "" {
-			// This means we detected condition race.
+			// This means we detected race condition.
 			// We parse the error to make sure it's a valid timestamp -- if not this is a bug.
 			if _, err := time.Parse(time.RFC3339, result); err != nil {
 				st.Log.Warn("failed to parse modified time from db", zap.String("time_from_db", result))
 			}
+
+			st.Log.Info("race condition detected", zap.Time("last_modified", lastModified), zap.String("time_from_db", result))
 
 			return nil, RaceConditionDetectedErr
 		}
@@ -177,7 +179,7 @@ func (st *Store) UpsertPartialRatings(ctx context.Context, in *pb.PartialRatingR
 			CriterionId:     ret.CriterionID,
 			Points:          ret.Points,
 			Justification:   ret.Justification,
-			Modified:        ret.Modified.Format(time.RFC3339),
+			Modified:        ret.Modified.UTC().Format(time.RFC3339),
 			ModifiedBy:      ret.ModifiedByID,
 		}, nil
 	}
@@ -200,7 +202,7 @@ func (st *Store) UpsertPartialRatings(ctx context.Context, in *pb.PartialRatingR
 		CriterionId:     ret.CriterionID,
 		Points:          ret.Points,
 		Justification:   ret.Justification,
-		Modified:        ret.Modified.Format(time.RFC3339),
+		Modified:        ret.Modified.UTC().Format(time.RFC3339),
 		ModifiedBy:      ret.ModifiedByID,
 	}, nil
 }
