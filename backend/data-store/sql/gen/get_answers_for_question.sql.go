@@ -12,15 +12,15 @@ import (
 
 const getAnswersForQuestion = `-- name: GetAnswersForQuestion :many
 select
-    assessors_answer.answer as "description",
+    assessors_answer.answer as "answer",
     assessors_answer.files  as "files"
 from project.assessors_answer as assessors_answer
 where assessors_answer.jury_question_id = $1
 `
 
 type GetAnswersForQuestionRow struct {
-	Description sql.NullString
-	Files       sql.NullString
+	Answer sql.NullString
+	Files  sql.NullString
 }
 
 func (q *Queries) GetAnswersForQuestion(ctx context.Context, juryQuestionID int32) ([]GetAnswersForQuestionRow, error) {
@@ -32,7 +32,7 @@ func (q *Queries) GetAnswersForQuestion(ctx context.Context, juryQuestionID int3
 	var items []GetAnswersForQuestionRow
 	for rows.Next() {
 		var i GetAnswersForQuestionRow
-		if err := rows.Scan(&i.Description, &i.Files); err != nil {
+		if err := rows.Scan(&i.Answer, &i.Files); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

@@ -130,7 +130,7 @@ create table project.partial_rating (
     "points"            int not null,
     "justification"     text not null,
 
-    "modified"          timestamp not null default current_timestamp,
+    "modified"          timestamp with time zone not null default current_timestamp,
     "modified_by_id"    int not null,
 
     constraint rating_partial_rating_fk

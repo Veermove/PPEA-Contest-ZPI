@@ -89,7 +89,7 @@ func (s *DataStore) PostPartialRating(ctx context.Context, in *ds.PartialRatingR
 		zap.Int32("rating_id", in.GetRatingId()),
 		zap.Int32("criterion_id", in.GetCriterionId()))
 
-	return s.Db.CreateNewPartialRating(ctx, in)
+	return s.Db.UpsertPartialRatings(ctx, in)
 }
 
 func (s *DataStore) PostSubmitRating(ctx context.Context, in *ds.SubmitRatingDraft) (*ds.Rating, error) {

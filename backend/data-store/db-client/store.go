@@ -3,6 +3,7 @@ package dbclient
 import (
 	"context"
 	"database/sql"
+	"embed"
 	"fmt"
 	"os"
 	"strings"
@@ -11,8 +12,13 @@ import (
 	pb "zpi/pb"
 	queries "zpi/sql/gen"
 
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/source"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/zap"
+
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 )
 
 const (
@@ -46,7 +52,11 @@ type (
 	}
 	AccessParams     = queries.DoesAssessorHaveAccessParams
 	NewRatingsParams = queries.DoesAssessorHaveAccessToRatingParams
+	ValidationParams = queries.ValidatePartialRatingParams
 )
+
+//go:embed migrations
+var migrations embed.FS
 
 func GetConnectionString() string {
 	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
@@ -111,6 +121,33 @@ func Open(ctx context.Context, log *zap.Logger, init_dict bool) (*Store, error) 
 	}
 
 	return store, nil
+}
+
+func RunMigrations(log *zap.Logger) error {
+	var (
+		connStr = GetConnectionString()
+		err     error
+		dir     source.Driver
+	)
+
+	if dir, err = iofs.New(migrations, "migrations"); err != nil {
+		return fmt.Errorf("running migration - new iofs: %w", err)
+	}
+
+	var migs *migrate.Migrate
+	if migs, err = migrate.NewWithSourceInstance("iofs", dir, connStr); err != nil {
+		return fmt.Errorf("running migration - new with source instance, conn str: %s : %w", connStr, err)
+	}
+
+	if err = migs.Up(); err == migrate.ErrNoChange {
+		log.Info("no migrations to run")
+		return nil
+	} else if err != nil {
+		return err
+	}
+	log.Info("migrations ran successfully")
+
+	return nil
 }
 
 func MapRatingsFromSql(rts []queries.GetRatingsForSubissionRow) (ratings []*pb.Rating) {

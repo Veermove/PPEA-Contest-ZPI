@@ -322,7 +322,7 @@ func (st *Store) GetStudyVisits(ctx context.Context, assessorId, submissionId in
 
 		for _, a := range answerRows {
 			answers = append(answers, &pb.Answer{
-				Description: Denullify(a.Description),
+				AnswerText: Denullify(a.Answer),
 
 				// NOTE files are comma separated list of file locators (ids, urls, names, etc.)
 				Files: strings.Split(Denullify(a.Files), ","),

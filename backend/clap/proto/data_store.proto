@@ -144,6 +144,8 @@ message PartialRatingRequest {
     int32 partial_rating_id = 4;
     string justification    = 5;
     int32 points            = 6;
+
+    string _modified        = 7;
 }
 
 message SubmitRatingDraft {
@@ -152,7 +154,7 @@ message SubmitRatingDraft {
 }
 
 message Answer {
-    string description = 1;
+    string answer_text = 1;
     repeated string files = 2;
 }
 
