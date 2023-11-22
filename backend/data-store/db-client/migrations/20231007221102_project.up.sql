@@ -167,7 +167,7 @@ create table project.assessors_answer (
 
     constraint assessors_answer_not_empty
         check (not (
-            (answer = '' is not false ) and (files = '' is not false) -- we dont want both empty
+            (answer = '') and (files = '')
         ))
 );
 
