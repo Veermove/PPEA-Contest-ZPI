@@ -26,6 +26,7 @@ public class BusinessLogicService {
 
     @Cacheable("CalculateTotalRating")
     public Double calculateSubmissionRating(Integer submissionId, int assessorId) {
+        log.info("Counting submissionRating for submission {}", submissionId);
         var ratings = dataStoreBlockingStub.getSubmissionRatings(RatingsSubmissionRequest.newBuilder()
                 .setSubmissionId(submissionId).setAssessorId(assessorId).build());
 

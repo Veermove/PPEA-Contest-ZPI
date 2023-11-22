@@ -1,6 +1,7 @@
 package zpi.ppea.clap.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
@@ -12,6 +13,7 @@ import zpi.ppea.clap.security.FirebaseAgent;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SubmissionService {
@@ -22,11 +24,13 @@ public class SubmissionService {
 
     @Cacheable("Submissions")
     public List<SubmissionDto> getSubmissions(FirebaseAgent.UserAuthData authentication) {
+        log.info("Getting submissions for assessor {}", authentication.getClaims().getAssessorId());
         return DtoMapper.INSTANCE.submissionListToDtos(submissionRepository.allSubmissions(authentication).getSubmissionsList());
     }
 
     @Cacheable("DetailSubmission")
     public DetailsSubmissionResponseDto getDetailedSubmission(Integer submissionId, FirebaseAgent.UserAuthData authentication) {
+        log.info("Getting details for submission {}", submissionId);
         var detailsSubmissionResponseDto = DtoMapper.INSTANCE.detailsSubmissionToDto(
                 submissionRepository.getDetailedSubmission(submissionId, authentication));
         detailsSubmissionResponseDto.setPoints(businessLogicService.calculateSubmissionRating(
