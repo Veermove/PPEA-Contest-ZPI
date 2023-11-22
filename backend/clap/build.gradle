@@ -42,10 +42,8 @@ dependencies {
     )
     testImplementation(
             "org.springframework.boot:spring-boot-starter-test",
-            "org.springframework.boot:spring-boot-testcontainers",
             "org.testcontainers:junit-jupiter:1.19.2",
             "io.rest-assured:rest-assured",
-            "org.testcontainers:mockserver",
             "org.mock-server:mockserver-netty:5.15.0"
     )
 }
