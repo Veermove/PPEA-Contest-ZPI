@@ -3,6 +3,7 @@ package dbclient
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 	pb "zpi/pb"
 	queries "zpi/sql/gen"
@@ -13,6 +14,27 @@ import (
 	"github.com/sourcegraph/conc/pool"
 	"go.uber.org/zap"
 )
+
+func (st *Store) GetUserClaims(ctx context.Context, email string) (*pb.UserClaimsResponse, error) {
+	usr, err := queries.New(st.Pool).GetUserClaims(ctx, email)
+	if err == pgx.ErrNoRows {
+		return nil, fmt.Errorf("User not found")
+	} else if err != nil {
+		return nil, fmt.Errorf("getting user claims: %w", err)
+	}
+
+	return &pb.UserClaimsResponse{
+		FirstName:              usr.FirstName,
+		LastName:               usr.LastName,
+		PersonId:               usr.PersonID,
+		AssessorId:             DenullifyInt32(usr.AssessorID),
+		AwardsRepresentativeId: DenullifyInt32(usr.AwardsRepresentativeID),
+		JuryMemberId:           DenullifyInt32(usr.JuryMemberID),
+		IpmaExpertId:           DenullifyInt32(usr.IpmaExpertID),
+		ApplicantId:            DenullifyInt32(usr.ApplicantID),
+	}, nil
+
+}
 
 func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId, assessorId int32) (*pb.DetailsSubmissionResponse, error) {
 	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccess(ctx, AccessParams{AssessorID: assessorId, SubmissionID: submissionId})
@@ -265,23 +287,50 @@ func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId, assesso
 	return returnVal, nil
 }
 
-func (st *Store) GetUserClaims(ctx context.Context, email string) (*pb.UserClaimsResponse, error) {
-	usr, err := queries.New(st.Pool).GetUserClaims(ctx, email)
-	if err == pgx.ErrNoRows {
-		return nil, fmt.Errorf("User not found")
-	} else if err != nil {
-		return nil, fmt.Errorf("getting user claims: %w", err)
+func (st *Store) GetStudyVisits(ctx context.Context, assessorId, submissionId int32) (*pb.StudyVisitResponse, error) {
+	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccess(ctx, AccessParams{AssessorID: assessorId, SubmissionID: submissionId})
+	if err != nil {
+		return nil, fmt.Errorf("checking access: %w", err)
+	}
+	if !hasAccess {
+		return nil, fmt.Errorf("User does not have access to resource")
 	}
 
-	return &pb.UserClaimsResponse{
-		FirstName:              usr.FirstName,
-		LastName:               usr.LastName,
-		PersonId:               usr.PersonID,
-		AssessorId:             DenullifyInt32(usr.AssessorID),
-		AwardsRepresentativeId: DenullifyInt32(usr.AwardsRepresentativeID),
-		JuryMemberId:           DenullifyInt32(usr.JuryMemberID),
-		IpmaExpertId:           DenullifyInt32(usr.IpmaExpertID),
-		ApplicantId:            DenullifyInt32(usr.ApplicantID),
-	}, nil
+	db := queries.New(st.Pool)
 
+	// Get all questions for the submission
+	visits, err := db.GetSubmissionQuestions(ctx, submissionId)
+	if err != nil && err != pgx.ErrNoRows {
+		return nil, fmt.Errorf("getting study visits for submission: %w", err)
+	}
+	if len(visits) == 0 || err == pgx.ErrNoRows {
+		return &pb.StudyVisitResponse{}, nil
+	}
+
+	questions := make([]*pb.Question, 0, len(visits))
+
+	for _, row := range visits {
+		q := &pb.Question{Content: row.Question}
+
+		// ... for each question get all answers.
+		answerRows, err := db.GetAnswersForQuestion(ctx, row.JuryQuestionID)
+		if err != nil && err != pgx.ErrNoRows {
+			return nil, fmt.Errorf("getting answers for question %d: %w", row.JuryQuestionID, err)
+		}
+
+		answers := make([]*pb.Answer, 0, len(answerRows))
+
+		for _, a := range answerRows {
+			answers = append(answers, &pb.Answer{
+				Description: Denullify(a.Description),
+
+				// NOTE files are comma separated list of file locators (ids, urls, names, etc.)
+				Files: strings.Split(Denullify(a.Files), ","),
+			})
+		}
+		q.Answers = answers
+		questions = append(questions, q)
+	}
+
+	return &pb.StudyVisitResponse{Questions: questions}, nil
 }

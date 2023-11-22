@@ -147,13 +147,28 @@ create table project.jury_question (
     "criterion_id"     int     not null,
     "question"         text    not null,
     "is_draft"         boolean not null,
-    "assessors_answer" text,
 
     constraint jury_question_submission_fk
         foreign key (submission_id) references project.submission(submission_id),
 
     constraint jury_question_criterion_fk
         foreign key (criterion_id) references edition.pem_criterion(pem_criterion_id)
+);
+
+create table project.assessors_answer (
+    "assessors_answer_id" int generated always as identity primary key,
+    "jury_question_id"    int not null,
+    "assessor_id"         int not null,
+    "answer"              text,
+    "files"               text, -- in case of multiple files they are separated by ','
+
+    constraint assessors_answer_jury_question_fk
+        foreign key (jury_question_id) references project.jury_question(jury_question_id),
+
+    constraint assessors_answer_not_empty
+        check (not (
+            (answer = '' is not false ) and (files = '' is not false) -- we dont want both empty
+        ))
 );
 
 --zgloszenie_projektu_ekspert_IPMA
