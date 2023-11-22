@@ -321,11 +321,15 @@ func (st *Store) GetStudyVisits(ctx context.Context, assessorId, submissionId in
 		answers := make([]*pb.Answer, 0, len(answerRows))
 
 		for _, a := range answerRows {
+
+			var urls = []string{}
+			if a.Files.Valid && a.Files.String != "" {
+				// NOTE files are comma separated list of file locators (ids, urls, names, etc.)
+				urls = append(urls, strings.Split(strings.Trim(a.Files.String, " \r\t\n"), ",")...)
+			}
 			answers = append(answers, &pb.Answer{
 				AnswerText: Denullify(a.Answer),
-
-				// NOTE files are comma separated list of file locators (ids, urls, names, etc.)
-				Files: strings.Split(Denullify(a.Files), ","),
+				Files:      urls,
 			})
 		}
 		q.Answers = answers

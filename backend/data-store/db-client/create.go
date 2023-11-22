@@ -125,53 +125,19 @@ func (st *Store) UpsertPartialRatings(ctx context.Context, in *pb.PartialRatingR
 		return nil, fmt.Errorf("User does not have access to resource")
 	}
 
-	// If we have partial rating id we update existing
-	if in.GetPartialRatingId() != 0 {
+	// If we don't have partial rating id create new partial rating
+	if in.GetPartialRatingId() == 0 {
 
-		// First let's check for condition races and let's make sure the rating we are about to update exists:
-		// 1. Parse time from request
-		lastModified, err := time.Parse(time.RFC3339, in.GetXModified())
-		if err != nil {
-			return nil, fmt.Errorf("parsing modified time: %w", err)
-		}
-
-		// 2. Check if partial rating exists and compare timestamps. If all goes well result should be empty string.
-		result, err := queries.New(st.Pool).ValidatePartialRating(ctx, ValidationParams{
-			PartialRatingID: in.GetPartialRatingId(),
-			Modified:        lastModified,
+		ret, err := queries.New(st.Pool).CreatePartialRating(ctx, queries.CreatePartialRatingParams{
+			RatingID:      in.GetRatingId(),
+			CriterionID:   in.GetCriterionId(),
+			Points:        in.GetPoints(),
+			Justification: in.GetJustification(),
+			ModifiedByID:  in.GetAssessorId(),
 		})
 
 		if err != nil {
-			return nil, fmt.Errorf("checking if partial rating exists: %w", err)
-		}
-
-		// if rating with that id does not exist result will be equal to string 'id';
-		if result == "id" {
-			return nil, fmt.Errorf("partial rating with id %d does not exist", in.GetPartialRatingId())
-		}
-
-		// if timestamps are different result will be equal to string representation of timestamp;
-		if result != "" {
-			// This means we detected race condition.
-			// We parse the error to make sure it's a valid timestamp -- if not this is a bug.
-			if _, err := time.Parse(time.RFC3339, result); err != nil {
-				st.Log.Warn("failed to parse modified time from db", zap.String("time_from_db", result))
-			}
-
-			st.Log.Info("race condition detected", zap.Time("last_modified", lastModified), zap.String("time_from_db", result))
-
-			return nil, RaceConditionDetectedErr
-		}
-
-		ret, err := queries.New(st.Pool).UpdatePartialRating(ctx, queries.UpdatePartialRatingParams{
-			PartialRatingID: in.GetPartialRatingId(),
-			Points:          in.GetPoints(),
-			Justification:   in.GetJustification(),
-			ModifiedByID:    in.GetAssessorId(),
-		})
-
-		if err != nil {
-			return nil, fmt.Errorf("updating partial rating with id %d: %w", in.GetPartialRatingId(), err)
+			return nil, fmt.Errorf("creating partial rating: %w", err)
 		}
 
 		return &pb.PartialRating{
@@ -182,19 +148,54 @@ func (st *Store) UpsertPartialRatings(ctx context.Context, in *pb.PartialRatingR
 			Modified:        ret.Modified.UTC().Format(time.RFC3339),
 			ModifiedBy:      ret.ModifiedByID,
 		}, nil
+
 	}
 
-	// Otherwise we create new partial rating
-	ret, err := queries.New(st.Pool).CreatePartialRating(ctx, queries.CreatePartialRatingParams{
-		RatingID:      in.GetRatingId(),
-		CriterionID:   in.GetCriterionId(),
-		Points:        in.GetPoints(),
-		Justification: in.GetJustification(),
-		ModifiedByID:  in.GetAssessorId(),
+	// Otherwise we update existing
+	// First let's check for condition races and let's make sure the rating we are about to update exists:
+	// 1. Parse time from request
+	lastModified, err := time.Parse(time.RFC3339, in.GetXModified())
+	if err != nil {
+		return nil, fmt.Errorf("parsing modified time: %w", err)
+	}
+
+	// 2. Check if partial rating exists and compare timestamps. If all goes well result should be empty string.
+	result, err := queries.New(st.Pool).ValidatePartialRating(ctx, ValidationParams{
+		PartialRatingID: in.GetPartialRatingId(),
+		Modified:        lastModified,
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("creating partial rating: %w", err)
+		return nil, fmt.Errorf("checking if partial rating exists: %w", err)
+	}
+
+	// if rating with that id does not exist result will be equal to string 'id';
+	if result == "id" {
+		return nil, fmt.Errorf("partial rating with id %d does not exist", in.GetPartialRatingId())
+	}
+
+	// if timestamps are different result will be equal to string representation of timestamp;
+	if result != "" {
+		// This means we detected race condition.
+		// We parse the error to make sure it's a valid timestamp -- if not this is a bug.
+		if _, err := time.Parse(time.RFC3339, result); err != nil {
+			st.Log.Warn("failed to parse modified time from db", zap.String("time_from_db", result))
+		}
+
+		st.Log.Info("race condition detected", zap.Time("last_modified", lastModified), zap.String("time_from_db", result))
+
+		return nil, RaceConditionDetectedErr
+	}
+
+	ret, err := queries.New(st.Pool).UpdatePartialRating(ctx, queries.UpdatePartialRatingParams{
+		PartialRatingID: in.GetPartialRatingId(),
+		Points:          in.GetPoints(),
+		Justification:   in.GetJustification(),
+		ModifiedByID:    in.GetAssessorId(),
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("updating partial rating with id %d: %w", in.GetPartialRatingId(), err)
 	}
 
 	return &pb.PartialRating{
