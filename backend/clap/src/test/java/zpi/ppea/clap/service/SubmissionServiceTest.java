@@ -6,10 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import zpi.ppea.clap.dtos.DetailsSubmissionResponseDto;
-import zpi.ppea.clap.dtos.UpdatePartialRatingDto;
 import zpi.ppea.clap.logic.BusinessLogicService;
-import zpi.ppea.clap.repository.PartialRatingRepository;
 import zpi.ppea.clap.repository.SubmissionRepository;
 import zpi.ppea.clap.security.FirebaseAgent;
 
@@ -23,8 +20,9 @@ import static org.mockito.Mockito.when;
 class SubmissionServiceTest {
 
     @Mock
-    private  SubmissionRepository submissionRepository;
-
+    private SubmissionRepository submissionRepository;
+    @Mock
+    private BusinessLogicService businessLogicService;
     @InjectMocks
     private SubmissionService submissionService;
 
@@ -68,9 +66,11 @@ class SubmissionServiceTest {
 
     @Test
     void getDetailedSubmissionTest() {
-        FirebaseAgent.UserAuthData auth = new FirebaseAgent.UserAuthData(UserClaimsResponse.getDefaultInstance(), "false");
-
         int subId = 1;
+        int assessorId = 1;
+        FirebaseAgent.UserAuthData auth = new FirebaseAgent.UserAuthData(
+                UserClaimsResponse.newBuilder().setAssessorId(assessorId).build(), "false");
+        when(businessLogicService.calculateSubmissionRating(subId, assessorId)).thenReturn(95.12);
 
         AppReport appRep = AppReport.newBuilder().setIsDraft(false).setReportSubmissionDate("2022-07-01")
                 .setProjectGoals("goals.pdf").setOrganisationStructure("structure.pdf").setDivisionOfWork("division.pdf")

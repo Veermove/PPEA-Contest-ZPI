@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import zpi.ppea.clap.dtos.*;
+import zpi.ppea.clap.dtos.NewRatingDto;
 import zpi.ppea.clap.dtos.RatingType;
 import zpi.ppea.clap.repository.RatingsRepository;
 import zpi.ppea.clap.security.FirebaseAgent;
@@ -53,7 +53,7 @@ class RatingServiceTest {
         //when
         var newRating = ratingService.submitRatingDraft(draftId, auth);
         //then
-        assertThat(newRating.isDraft()).isEqualTo(true);
+        assertThat(newRating.isDraft()).isTrue();
     }
 
     @Test
