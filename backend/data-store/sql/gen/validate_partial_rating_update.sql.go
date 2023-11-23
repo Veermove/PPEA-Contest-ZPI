@@ -19,7 +19,7 @@ with get_modified_ts as (
     where partial_rating_id = $1
 ),
 eq_timestamps as (
-    select date_trunc('milliseconds', $2::timestamp) = date_trunc('milliseconds', (select modified from get_modified_ts)) as "eq_timestamps"
+    select date_trunc('second', $2::timestamp) = date_trunc('second', (select modified from get_modified_ts)) as "eq_timestamps"
 )
 select (
     case

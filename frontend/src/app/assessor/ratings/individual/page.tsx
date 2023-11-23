@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from "@/app/i18n/client";
-import Error from "@/components/error";
+import ErrorComponent from "@/components/error";
 import Ratings, { RatingsForwardData } from "@/components/ratings/ratings";
 import Spinner from "@/components/spinner";
 import { useAuthContext } from "@/context/authContext";
@@ -93,8 +93,8 @@ function IndividualRatings() {
   } else if (!user) {
     return redirect('/')
   } else if (!submission || !assessorId || !ratings || error) {
-    return <Error text={t('noRatings')} />
-  } else if (!ratings?.individualRatings.some(rating => rating.assessorId === assessorId)) {
+    return <ErrorComponent text={t('noRatings')} />
+  } else if (!ratings?.individualRatings.some(rating => rating.assessorId === assessorId) && submissionDetails?.status === ProjectState.ACCEPTED) {
     return (
       <Container className="m-2">
         <Row>
@@ -122,7 +122,7 @@ function IndividualRatings() {
               <Row>
                 <Col xs={8}>
                   {!!submitError && (
-                    <Error text={submitError} />
+                    <ErrorComponent text={submitError} />
                   )}
                 </Col>
                 <Col xs={4} className="text-right">

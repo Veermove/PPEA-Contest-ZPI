@@ -1,6 +1,6 @@
 'use client'
 
-import Error from "@/components/error";
+import ErrorComponent from "@/components/error";
 import Ratings from "@/components/ratings/ratings";
 import Spinner from "@/components/spinner";
 import { useAuthContext } from "@/context/authContext";
@@ -39,7 +39,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
 
   const id = parseInt(params.submissionId)
   if (Number.isNaN(id)) {
-    setError(Error({ text: t('invalidSubmissionId') }))
+    setError(ErrorComponent({ text: t('invalidSubmissionId') }))
   }
 
   useEffect(() => {
@@ -69,7 +69,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
         setSortedCriteria(ratings.criteria.sort(sortCriteria));
       } catch (error) {
         console.error(error);
-        setError(Error({ text: t('error') }));
+        setError(ErrorComponent({ text: t('error') }));
       } finally {
         setLoading(false);
       }
@@ -81,7 +81,7 @@ function RatingsForSubmission({ params }: { params: { submissionId: string } }) 
   } else if (loading) {
     return <Spinner />
   } else if (error || !ratings) {
-    return Error({ text: t('error') })
+    return ErrorComponent({ text: t('error') })
   }
   return (
     <div className="my-2 mx-3">

@@ -1,7 +1,7 @@
 import { useTranslation } from "@/app/i18n/client";
 import { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import Error from "../error";
+import ErrorComponent from "../error";
 
 function EditableRating({ initialJustification, initialPoints, onSubmit, onCancel }: {
   initialJustification: string,
@@ -30,7 +30,7 @@ function EditableRating({ initialJustification, initialPoints, onSubmit, onCance
         {
           !!error && (
             <Row>
-              <Error text={error} />
+              <ErrorComponent text={error} />
             </Row>
           )
         }

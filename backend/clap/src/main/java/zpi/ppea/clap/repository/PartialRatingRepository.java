@@ -23,10 +23,9 @@ public class PartialRatingRepository {
 
     public PartialRating upsertPartialRating(UpdatePartialRatingDto updatePartialRatingDto, FirebaseAgent.UserAuthData authentication) {
         try {
+            updatePartialRatingDto.setModified(updatePartialRatingDto.getModified() == null ? "" : updatePartialRatingDto.getModified());
             var requestBuilder = DtoMapper.INSTANCE.dtoToPartialRatingRequest(updatePartialRatingDto).toBuilder();
-            var request = requestBuilder
-                .setAssessorId(authentication.getClaims().getAssessorId())
-                .setModified(updatePartialRatingDto.getModified() == null ? "" : updatePartialRatingDto.getModified()).build();
+            var request = requestBuilder.setAssessorId(authentication.getClaims().getAssessorId()).build();
             var response = dataStoreFutureStub.postPartialRating(request).get();
             
             // We just detected race condition

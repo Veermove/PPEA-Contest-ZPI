@@ -13,11 +13,10 @@ export class ClapApi {
   }
 
   private static async  handleResponse(response: Response): Promise<any> {
-    const json = await response.json();
     if (!response.ok) {
-      throw new Error(json);
+      throw Error(`${response.status}: ${await response.text()}`)
     }
-    return json;
+    return await response.json();
   }
 
   async getSubmissions(): Promise<SubmissionDTO[]> {

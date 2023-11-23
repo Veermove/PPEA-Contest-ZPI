@@ -65,7 +65,7 @@ export interface UpsertPartialRatingBody {
     partialRatingId?: number;
     justification: string;
     points: number;
-    lastModified?: string;
+    modified?: string;
 }
 
 export interface AddRatingBody {
