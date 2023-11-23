@@ -49,7 +49,6 @@ public interface DtoMapper {
     @Mapping(target = "questions", source = "questionsList")
     StudyVisitDto toStudyVisitDto(StudyVisitResponse studyVisitResponse);
 
-    @Mapping(target = "content", source = "content")
     @Mapping(target = "answers", source = "answersList")
     QuestionDto toQuestionDto(Question question);
 
