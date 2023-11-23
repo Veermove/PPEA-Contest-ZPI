@@ -12,6 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnswerDto {
-    private String description;
+    private String answerText;
     private List<String> files;
 }

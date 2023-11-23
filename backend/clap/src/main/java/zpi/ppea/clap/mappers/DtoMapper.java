@@ -53,7 +53,6 @@ public interface DtoMapper {
     @Mapping(target = "answers", source = "answersList")
     QuestionDto toQuestionDto(Question question);
 
-    @Mapping(target = "description", source = "description")
     @Mapping(target = "files", source = "filesList")
     AnswerDto toAnswerDto(Answer answer);
 
