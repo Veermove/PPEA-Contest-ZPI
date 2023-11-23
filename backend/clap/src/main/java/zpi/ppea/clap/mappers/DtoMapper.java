@@ -1,17 +1,16 @@
 package zpi.ppea.clap.mappers;
 
-import java.util.List;
-import java.util.Optional;
-
+import data_store.*;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
-
-import data_store.*;
 import zpi.ppea.clap.dtos.*;
 import zpi.ppea.clap.security.FirebaseAgent;
+
+import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface DtoMapper {
@@ -47,6 +46,17 @@ public interface DtoMapper {
 
     PartialRatingRequest dtoToPartialRatingRequest(UpdatePartialRatingDto dto);
 
+    @Mapping(target = "questions", source = "questionsList")
+    StudyVisitDto toStudyVisitDto(StudyVisitResponse studyVisitResponse);
+
+    @Mapping(target = "answers", source = "answersList")
+    QuestionDto toQuestionDto(Question question);
+
+    @Mapping(target = "files", source = "filesList")
+    AnswerDto toAnswerDto(Answer answer);
+
+    List<QuestionDto> toQuestionDtoList(List<Question> questions);
+    List<AnswerDto> toAnswerDtoList(List<Answer> answers);
     @AfterMapping
     default void setAssessorId(@MappingTarget PartialRatingRequest.Builder builder, FirebaseAgent.UserAuthData authentication) {
         builder.setAssessorId(authentication.getClaims().getAssessorId());

@@ -44,3 +44,5 @@ caches:
       expiryInMinutes: 1440
     - name: SubmissionRatings
       expiryInMinutes: 1440
+    - name: Visits
+      expiryInMinutes: 1440
