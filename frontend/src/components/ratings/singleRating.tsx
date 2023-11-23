@@ -78,8 +78,6 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
       return t('justificationWasEditedError')
     } if (error.message.includes('length')) {
       return t('justificationLengthError');
-    } if (error.message.includes('changed')) {
-      return t('justificationWasEditedError')
     }
     return t('error');
   }
