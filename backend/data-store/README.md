@@ -68,3 +68,12 @@ $ create [-ext E] [-dir D] [-seq] [-digits N] [-format] [-tz] NAME
  |             9 | 2021 | ArtisanCraft |            65 |           7 |              7 |        27 | silvano.santucci@email.com|
  |             9 | 2021 | ArtisanCraft |            65 |           8 |              8 |        28 | teodora.sartore@email.com|
  |             9 | 2021 | ArtisanCraft |            65 |           9 |              9 |        29 | tommaso.savonarola@email.com|
+
+Useful commands:
+```bash
+grpcurl -d '{"submission_id":4, "assessor_id":7 }' -proto clap/proto/data_store.proto -plaintext localhost:8080 data_store.DataStore/GetSubmissionRatings
+```
+
+```bash
+grpcurl -d '{"assessor_id":7,"criterion_id":2,"rating_id":1,"partial_rating_id":1,"justification":"Changed","_modified":"2023-11-22T20:15:58Z"}' -proto clap/proto/data_store.proto -plaintext localhost:8080 data_store.DataStore/PostPartialRating
+```

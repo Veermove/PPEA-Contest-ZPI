@@ -144,6 +144,15 @@ message PartialRatingRequest {
     int32 partial_rating_id = 4;
     string justification    = 5;
     int32 points            = 6;
+
+    string _modified        = 7;
+}
+
+message PostPartialRatingResponse {
+    oneof response {
+        string error = 1;  // This is used ONLY for race condition errors
+        PartialRating partial_rating = 2;
+    }
 }
 
 message SubmitRatingDraft {
@@ -152,7 +161,7 @@ message SubmitRatingDraft {
 }
 
 message Answer {
-    string description = 1;
+    string answer_text = 1;
     repeated string files = 2;
 }
 
@@ -161,8 +170,13 @@ message Question {
     repeated Answer answers = 2;
 }
 
-message StudyVisit {
+message StudyVisitResponse {
     repeated Question questions = 1;
+}
+
+message StudyVisitRequest {
+    int32 assessor_id = 1;
+    int32 submission_id = 2;
 }
 
 service DataStore {
@@ -170,8 +184,8 @@ service DataStore {
     rpc GetSubmissions          (SubmissionRequest)           returns (SubmissionsResponse)       {}
     rpc GetSubmissionDetails    (DetailsSubmissionRequest)    returns (DetailsSubmissionResponse) {}
     rpc GetSubmissionRatings    (RatingsSubmissionRequest)    returns (RatingsSubmissionResponse) {}
+    rpc GetStudyVisit           (StudyVisitRequest)           returns (StudyVisitResponse)        {}
     rpc PostNewSubmissionRating (NewSubmissionRatingRequest)  returns (Rating)                    {}
-    rpc PostPartialRating       (PartialRatingRequest)        returns (PartialRating)             {}
+    rpc PostPartialRating       (PartialRatingRequest)        returns (PostPartialRatingResponse) {}
     rpc PostSubmitRating        (SubmitRatingDraft)           returns (Rating)                    {}
-    rpc GetStudyVisits          (SubmissionRequest)           returns (StudyVisit)                {}
 }
