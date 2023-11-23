@@ -201,6 +201,14 @@ type ProjectAssessorSubmission struct {
 	IsLeading            bool
 }
 
+type ProjectAssessorsAnswer struct {
+	AssessorsAnswerID int32
+	JuryQuestionID    int32
+	AssessorID        int32
+	Answer            sql.NullString
+	Files             sql.NullString
+}
+
 type ProjectIpmaExpertSubmission struct {
 	IpmaExpertSubmissionID int32
 	IpmaExpertID           int32
@@ -208,12 +216,11 @@ type ProjectIpmaExpertSubmission struct {
 }
 
 type ProjectJuryQuestion struct {
-	JuryQuestionID  int32
-	SubmissionID    int32
-	CriterionID     int32
-	Question        string
-	IsDraft         bool
-	AssessorsAnswer sql.NullString
+	JuryQuestionID int32
+	SubmissionID   int32
+	CriterionID    int32
+	Question       string
+	IsDraft        bool
 }
 
 type ProjectPartialRating struct {

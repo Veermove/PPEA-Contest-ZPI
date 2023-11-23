@@ -14,6 +14,8 @@ import java.util.*;
 @AllArgsConstructor
 public class GlobalExceptionHandler {
 
+    public static final String RACE_CONDITION_MESSAGE = "Partial rating has been modified meanwhile.";
+
     private final ValueConfig valueConfig;
 
     @ExceptionHandler(UserNotAuthorizedException.class)
@@ -36,6 +38,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .header(valueConfig.getRefreshTokenHeaderName(), "")
                 .body(getErrorsMap(errors));
+    }
+
+    @ExceptionHandler(RaceConditionException.class)
+    public ResponseEntity<String> handleRaceConditionException(RaceConditionException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .header(valueConfig.getRefreshTokenHeaderName(), ex.getRefresh())
+            .body(RACE_CONDITION_MESSAGE);
     }
 
     private Map<String, List<String>> getErrorsMap(List<String> errors) {
