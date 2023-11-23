@@ -30,4 +30,6 @@ public class UpdatePartialRatingDto {
     @Nonnegative
     @Max(100)
     Integer points;
+
+    String modified;
 }

@@ -10,12 +10,16 @@ import (
 	"go.uber.org/zap"
 )
 
-type DataStore struct {
-	ds.UnimplementedDataStoreServer
+type (
+	DataStore struct {
+		ds.UnimplementedDataStoreServer
 
-	Log *zap.Logger
-	Db  *dbclient.Store
-}
+		Log *zap.Logger
+		Db  *dbclient.Store
+	}
+	SuccessResponse       = ds.PostPartialRatingResponse_PartialRating
+	RaceConditionResponse = ds.PostPartialRatingResponse_Error
+)
 
 var (
 	_ ds.DataStoreServer = (*DataStore)(nil)
@@ -79,7 +83,7 @@ func (s *DataStore) PostNewSubmissionRating(ctx context.Context, in *ds.NewSubmi
 	return s.Db.CreateNewSubmissionRating(ctx, in.GetAssessorId(), in.GetSubmissionId(), in.GetType())
 }
 
-func (s *DataStore) PostPartialRating(ctx context.Context, in *ds.PartialRatingRequest) (*ds.PartialRating, error) {
+func (s *DataStore) PostPartialRating(ctx context.Context, in *ds.PartialRatingRequest) (*ds.PostPartialRatingResponse, error) {
 	if in.GetPartialRatingId() == 0 && (in.GetCriterionId() == 0 || in.GetRatingId() == 0) {
 		return nil, fmt.Errorf("not enough information to post partial rating")
 	}
@@ -89,7 +93,25 @@ func (s *DataStore) PostPartialRating(ctx context.Context, in *ds.PartialRatingR
 		zap.Int32("rating_id", in.GetRatingId()),
 		zap.Int32("criterion_id", in.GetCriterionId()))
 
-	return s.Db.CreateNewPartialRating(ctx, in)
+	partialRating, err := s.Db.UpsertPartialRatings(ctx, in)
+
+	if err == dbclient.RaceConditionDetectedErr {
+		return &ds.PostPartialRatingResponse{
+			Response: &RaceConditionResponse{
+				Error: err.Error(),
+			},
+		}, nil
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("creating new partial rating: %w", err)
+	}
+
+	return &ds.PostPartialRatingResponse{
+		Response: &SuccessResponse{
+			PartialRating: partialRating,
+		},
+	}, nil
 }
 
 func (s *DataStore) PostSubmitRating(ctx context.Context, in *ds.SubmitRatingDraft) (*ds.Rating, error) {
@@ -100,4 +122,15 @@ func (s *DataStore) PostSubmitRating(ctx context.Context, in *ds.SubmitRatingDra
 	s.Log.Info("submitting rating", zap.Int32("ratingId", in.GetRatingId()), zap.Int32("assessorId", in.GetAssessorId()))
 
 	return s.Db.SubmitRating(ctx, in)
+}
+
+func (s *DataStore) GetStudyVisits(ctx context.Context, in *ds.StudyVisitRequest) (*ds.StudyVisitResponse, error) {
+	if in.GetAssessorId() == 0 {
+		return nil, fmt.Errorf("assessor id is required")
+	}
+	if in.GetSubmissionId() == 0 {
+		return nil, fmt.Errorf("submission id is required")
+	}
+
+	return s.Db.GetStudyVisits(ctx, in.GetAssessorId(), in.GetSubmissionId())
 }
