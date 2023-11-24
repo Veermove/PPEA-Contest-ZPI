@@ -1,6 +1,7 @@
 package zpi.ppea.clap.config;
 
 import data_store.*;
+import zpi.ppea.clap.dtos.UpdatePartialRatingDto;
 import zpi.ppea.clap.security.FirebaseAgent;
 
 import java.util.List;
@@ -23,4 +24,17 @@ public class ValidData {
             .setType(RatingType.INITIAL)
             .setAssessorId(1)
             .build();
+
+    public static final UpdatePartialRatingDto UPDATE_PARTIAL_RATING_DTO = UpdatePartialRatingDto.builder()
+            .partialRatingId(1)
+            .points(100)
+            .justification("Very good work.")
+            .criterionId(1)
+            .build();
+
+    public static final PartialRating PARTIAL_RATING = PartialRating.newBuilder().setPartialRatingId(1)
+            .setPoints(100)
+            .setJustification("Very good work.")
+            .setCriterionId(1)
+            .buildPartial();
 }
