@@ -2,9 +2,10 @@ import Spinner from "@/components/spinner";
 import { Question } from "@/services/clap/model/studyVisits";
 import { getFileLink } from "@/services/firebase/attachments/getAttachment";
 import { useEffect, useState } from "react";
+import { Col, Row } from "react-bootstrap";
 import { FaPaperclip } from "react-icons/fa";
 
-function SingleQuestion({question, submissionId}: {question: Question, submissionId: number}) {
+function SingleQuestion({ question, submissionId, className }: { question: Question, submissionId: number, className: string }) {
 
   const [urls, setUrls] = useState<string[][] | undefined>(undefined)
 
@@ -24,19 +25,28 @@ function SingleQuestion({question, submissionId}: {question: Question, submissio
     return <Spinner />
   }
   return (
-    <tr>
-      <td>{content}</td>
-      <td>{answers.map(answer => answer.answerText).join('\n')}</td>
-      <td>{answers.map((answer, answerIndex) => {
-        return answer.files.map((_, fileIndex) => {
-          return (
-            <a href={urls[answerIndex][fileIndex]} key={`${answerIndex}/${fileIndex}`}>
-              <FaPaperclip size={10} className="text-purple ml-auto" />
-            </a>
-          )
-        })
-      })}</td>
-    </tr>
+    <Row className={className}>
+      <Col>
+        {content}
+      </Col>
+      <Col>
+        {answers.map((answer, idx) => {
+          return (<Row key={`answer-${idx}`} className="mt-2">{answer.answerText}
+          </Row>)
+        })}
+      </Col>
+      <Col>
+        {answers.map((answer, answerIndex) => {
+          return answer.files.map((_, fileIndex) => {
+            return (
+              <a href={urls[answerIndex][fileIndex]} key={`${answerIndex}/${fileIndex}`}>
+                <FaPaperclip size={10} className="text-purple ml-auto" />
+              </a>
+            )
+          })
+        })}
+      </Col>
+    </Row>
   )
 }
 

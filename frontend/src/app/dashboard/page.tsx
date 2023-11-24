@@ -44,7 +44,7 @@ function Dashboard() {
         secondTileProps={{
           text: t('finalRatings'),
           Icon: FaRegCheckCircle,
-          onClick: () => handleItemClick("/")
+          onClick: () => handleItemClick("/assessor/ratings/final")
         }}
       />
       <DoubleTile
