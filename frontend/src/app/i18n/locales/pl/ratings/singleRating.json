@@ -8,5 +8,6 @@
     "points": "Punkty",
     "edit": "Edytuj",
     "justificationLengthError": "Zbyt długie uzasadnienie",
-    "error": "Wystąpił błąd. Spróbuj ponownie za kilka sekund"
+    "error": "Wystąpił błąd. Spróbuj ponownie za kilka sekund",
+    "justificationWasEditedError": "Inny asesor dokonał zmian w ocenie. Odśwież stronę, aby pobrać uaktualnioną ocenę. Wszystkie niezapisane zmiany zostaną utracone."
 }

@@ -1,4 +1,4 @@
-function Error({text}: {text: string}) {
+function ErrorComponent({text}: {text: string}) {
   return (
     <div className="d-flex justify-content-center mt-3">
       <div className="alert alert-danger" role="alert">
@@ -8,4 +8,4 @@ function Error({text}: {text: string}) {
   )
 }
 
-export default Error;
+export default ErrorComponent;

@@ -1,6 +1,6 @@
 'use client'
 
-import Error from "@/components/error";
+import ErrorComponent from "@/components/error";
 import Spinner from "@/components/spinner";
 import SubmissionDetails from "@/components/submission/details";
 import { useAuthContext } from "@/context/authContext";
@@ -62,7 +62,7 @@ function Submission({ params }: { params: { submissionId: string } }) {
     )
   } else if (error) {
     return (
-      <Error text={t('error')} />
+      <ErrorComponent text={t('error')} />
     )
   }
   return (
