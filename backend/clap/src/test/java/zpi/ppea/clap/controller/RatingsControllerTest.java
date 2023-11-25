@@ -65,7 +65,7 @@ class RatingsControllerTest {
         // given
         when(firebaseAgent.authenticate(ValidData.VALID_TOKEN)).thenReturn(ValidData.ASSESSOR_AUTH);
         given(ratingsRepository.createNewRating(1,ValidData.ASSESSOR_AUTH, data_store.RatingType.INITIAL))
-                .willReturn(ValidData.RATING);
+                .willReturn(ValidData.RATING1);
 
         try {
             // when
@@ -93,7 +93,7 @@ class RatingsControllerTest {
         // given
         when(firebaseAgent.authenticate(ValidData.VALID_TOKEN)).thenReturn(ValidData.ASSESSOR_AUTH);
         given(ratingsRepository.createNewRating(1,ValidData.ASSESSOR_AUTH, data_store.RatingType.INITIAL))
-                .willReturn(ValidData.RATING);
+                .willReturn(ValidData.RATING1);
 
         try {
             // when
@@ -117,7 +117,7 @@ class RatingsControllerTest {
     void submitRatingDraft_response200() {
         // given
         when(firebaseAgent.authenticate(ValidData.VALID_TOKEN)).thenReturn(ValidData.ASSESSOR_AUTH);
-        given(ratingsRepository.submitRatingDraft(1,ValidData.ASSESSOR_AUTH)).willReturn(ValidData.RATING);
+        given(ratingsRepository.submitRatingDraft(1,ValidData.ASSESSOR_AUTH)).willReturn(ValidData.RATING1);
 
         try {
             // when

@@ -18,10 +18,17 @@ public class ValidData {
             .setInitial(AssessorRatings.newBuilder().setRatingId(1).build())
             .build();
 
-    public static final Rating RATING = Rating.newBuilder()
+    public static final Rating RATING1 = Rating.newBuilder()
             .setRatingId(1)
             .setIsDraft(true)
             .setType(RatingType.INITIAL)
+            .setAssessorId(1)
+            .build();
+
+    public static final Rating RATING2 = Rating.newBuilder()
+            .setRatingId(2)
+            .setIsDraft(false)
+            .setType(RatingType.INDIVIDUAL)
             .setAssessorId(1)
             .build();
 
@@ -37,4 +44,42 @@ public class ValidData {
             .setJustification("Very good work.")
             .setCriterionId(1)
             .buildPartial();
+
+    public static final SubmissionsResponse SUBMISSIONS_RESPONSE = SubmissionsResponse.newBuilder()
+            .addAllSubmissions(List.of(
+                    Submission.newBuilder().setSubmissionId(1).setName("sub1").setYear(2023).setDurationDays(30)
+                            .addAllAssessors(List.of(Assessor.newBuilder().setAssessorId(1).build()))
+                            .addAllRatings(List.of(ValidData.RATING1))
+                            .build(),
+                    Submission.newBuilder().setSubmissionId(2).setName("sub2").setYear(2022).setDurationDays(20)
+                            .addAllAssessors(List.of(Assessor.newBuilder().setAssessorId(1).build()))
+                            .addAllRatings(List.of(ValidData.RATING2))
+                            .build()
+            ))
+            .build();
+
+    public static final DetailsSubmissionResponse DETAILS_SUBMISSION_RESPONSE = DetailsSubmissionResponse.newBuilder()
+            .setTeamSize(5)
+            .setFinishDate("2023-12-20")
+            .setStatus(ProjectState.DRAFT)
+            .setBudget("10000")
+            .setDescription("New fast drone")
+            .setPoints(100)
+            .setReport(AppReport.newBuilder().setIsDraft(true).build())
+            .build();
+    public static final StudyVisitResponse STUDY_VISIT_RESPONSE = StudyVisitResponse.newBuilder()
+            .addAllQuestions(List.of(
+                    Question.newBuilder().setContent("Was the project made with the newest technology?")
+                            .addAllAnswers(List.of(
+                                    Answer.newBuilder().setAnswerText("No, there are some old libraries").build(),
+                                    Answer.newBuilder().setAnswerText("No, definitely no").build()
+                            )).build(),
+                    Question.newBuilder().setContent("Was the project well documented?")
+                            .addAllAnswers(List.of(
+                                    Answer.newBuilder().setAnswerText("Yes, there are necessary files").addAllFiles(
+                                            List.of("file1", "file2")
+                                    ).build()
+                            )).build()
+            ))
+            .build();
 }

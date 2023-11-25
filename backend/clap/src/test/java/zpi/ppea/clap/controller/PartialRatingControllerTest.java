@@ -37,7 +37,7 @@ class PartialRatingControllerTest {
     FirebaseAgent firebaseAgent;
 
     @Test
-    void upsertPartialRating() {
+    void upsertPartialRating_response200() {
         // given
         when(firebaseAgent.authenticate(ValidData.VALID_TOKEN)).thenReturn(ValidData.ASSESSOR_AUTH);
         given(partialRatingRepository.upsertPartialRating(ValidData.UPDATE_PARTIAL_RATING_DTO, ValidData.ASSESSOR_AUTH))
@@ -66,4 +66,35 @@ class PartialRatingControllerTest {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+    void upsertPartialRating_response400_RatingAndPartialRatingIdProvided() {
+        // given
+        when(firebaseAgent.authenticate(ValidData.VALID_TOKEN)).thenReturn(ValidData.ASSESSOR_AUTH);
+        given(partialRatingRepository.upsertPartialRating(ValidData.UPDATE_PARTIAL_RATING_DTO, ValidData.ASSESSOR_AUTH))
+                .willReturn(ValidData.PARTIAL_RATING);
+
+        try {
+            // when
+            mockMvc.perform(post("/partialratings")
+                            .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                            .header(ValidData.AUTH_HEADER, ValidData.VALID_TOKEN)
+                            .content("""
+                                    {
+                                        "partialRatingId": 1,
+                                        "ratingId": 2,
+                                        "points": 75,
+                                        "justification": "Not bad.",
+                                        "criterionId": 1
+                                    }
+                                    """
+                            ))
+                    // then
+                    .andExpect(status().isBadRequest())
+            ;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
