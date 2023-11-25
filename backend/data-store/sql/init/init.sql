@@ -23,17 +23,20 @@ alter sequence edition.contest_contest_id_seq                                   
 alter sequence edition.jury_member_contest_jury_member_contest_id_seq                  restart with 1;
 alter sequence edition.pem_criterion_pem_criterion_id_seq                              restart with 1;
 
-truncate table project.submission cascade;
+truncate table project.applicant_submission cascade;
 truncate table project.application_report cascade;
 truncate table project.assessor_submission cascade;
-truncate table project.applicant_submission cascade;
-truncate table project.rating cascade;
-truncate table project.partial_rating cascade;
+truncate table project.assessors_answer cascade;
 truncate table project.ipma_expert_submission cascade;
+truncate table project.jury_question cascade;
+truncate table project.partial_rating cascade;
+truncate table project.rating cascade;
+truncate table project.submission cascade;
 
 alter sequence project.applicant_submission_applicant_submission_id_seq     restart with 1;
 alter sequence project.application_report_application_report_id_seq         restart with 1;
 alter sequence project.assessor_submission_assessor_submission_id_seq       restart with 1;
+alter sequence project.assessors_answer_assessors_answer_id_seq             restart with 1;
 alter sequence project.ipma_expert_submission_ipma_expert_submission_id_seq restart with 1;
 alter sequence project.jury_question_jury_question_id_seq                   restart with 1;
 alter sequence project.partial_rating_partial_rating_id_seq                 restart with 1;
@@ -364,3 +367,55 @@ insert into project.ipma_expert_submission (
     (7, 7),
     (8, 8),
     (9, 9);
+
+
+
+insert into project.jury_question (
+    "submission_id",
+    "criterion_id",
+    "question",
+    "is_draft"
+) values
+    (1, 1, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (1, 4, 'Czy budżet został przekroczony?', true),
+    (2, 1, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (2, 4, 'Czy budżet został przekroczony?', true),
+    (3, 1, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (3, 4, 'Czy budżet został przekroczony?', true),
+    (4, 2, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (4, 5, 'Czy budżet został przekroczony?', true),
+    (5, 2, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (5, 5, 'Czy budżet został przekroczony?', true),
+    (6, 2, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (6, 5, 'Czy budżet został przekroczony?', true),
+    (7, 3, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (7, 6, 'Czy budżet został przekroczony?', true),
+    (8, 3, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (8, 6, 'Czy budżet został przekroczony?', true),
+    (9, 3, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (9, 6, 'Czy budżet został przekroczony?', true);
+
+insert into project.assessors_answer (
+    "jury_question_id",
+    "assessor_id",
+    "answer",
+    "files"
+) values
+    (1, 1, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (2, 2, 'Nie', ''),
+    (3, 3, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (4, 4, 'Nie', ''),
+    (5, 5, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (6, 6, 'Nie', ''),
+    (7, 7, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (8, 8, 'Nie', ''),
+    (9, 9, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (10, 10, 'Nie', ''),
+    (11, 1, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (12, 2, 'Nie', ''),
+    (13, 3, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (14, 4, 'Nie', ''),
+    (15, 5, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (16, 6, 'Nie', ''),
+    (17, 5, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (18, 7, 'Nie', '');
