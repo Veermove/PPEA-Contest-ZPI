@@ -1,6 +1,5 @@
 package zpi.ppea.clap.dtos;
 
-import data_store.Question;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudyVisitDto {
-    private List<Question> questions;
+    private List<QuestionDto> questions;
 }

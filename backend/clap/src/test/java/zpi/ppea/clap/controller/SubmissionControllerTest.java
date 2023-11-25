@@ -105,7 +105,13 @@ class SubmissionControllerTest {
                     // then
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON.toString()))
-                    .andExpect(jsonPath("$.[0].submissionId").value(1))
+                    .andExpect(jsonPath("$.questions[0].content").value("Was the project made with the newest technology?"))
+                    .andExpect(jsonPath("$.questions[0].answers[0].answerText").value("No, there are some old libraries"))
+                    .andExpect(jsonPath("$.questions[0].answers[1].answerText").value("No, definitely no"))
+                    .andExpect(jsonPath("$.questions[1].content").value("Was the project well documented?"))
+                    .andExpect(jsonPath("$.questions[1].answers[0].answerText").value("Yes, there are necessary files"))
+                    .andExpect(jsonPath("$.questions[1].answers[0].files[0]").value("file1"))
+                    .andExpect(jsonPath("$.questions[1].answers[0].files[1]").value("file2"))
             ;
         } catch (Exception e) {
             throw new RuntimeException(e);
