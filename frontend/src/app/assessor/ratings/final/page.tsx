@@ -140,7 +140,7 @@ function FinalRatings() {
           )}
         </Row>
         {!!studyVisit && !!studyVisit.questions.length && (
-          <Row>
+          <Row className="my-3">
             <SingleVisit
               questions={studyVisit?.questions}
               submissionId={submission.submissionId} />
