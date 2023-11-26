@@ -37,7 +37,7 @@ class PartialRatingControllerTest {
     FirebaseAgent firebaseAgent;
 
     @Test
-    void upsertPartialRating_response200() {
+    void upsertPartialRating_response200_partialRatingIdGiven() {
         // given
         when(firebaseAgent.authenticate(ValidData.VALID_TOKEN)).thenReturn(ValidData.ASSESSOR_AUTH);
         given(partialRatingRepository.upsertPartialRating(ValidData.UPDATE_PARTIAL_RATING_DTO, ValidData.ASSESSOR_AUTH))
@@ -61,6 +61,35 @@ class PartialRatingControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON.toString()))
                     .andExpect(jsonPath("$.partialRatingId").value(1))
+            ;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void upsertPartialRating_response200_ratingIdGiven() {
+        // given
+        when(firebaseAgent.authenticate(ValidData.VALID_TOKEN)).thenReturn(ValidData.ASSESSOR_AUTH);
+        given(partialRatingRepository.upsertPartialRating(ValidData.UPDATE_PARTIAL_RATING_DTO, ValidData.ASSESSOR_AUTH))
+                .willReturn(ValidData.PARTIAL_RATING);
+
+        try {
+            // when
+            mockMvc.perform(post("/partialratings")
+                            .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                            .header(ValidData.AUTH_HEADER, ValidData.VALID_TOKEN)
+                            .content("""
+                                    {
+                                        "ratingId": 1,
+                                        "points": 100,
+                                        "justification": "Very good work.",
+                                        "criterionId": 1
+                                    }
+                                    """
+                            ))
+                    // then
+                    .andExpect(status().isOk())
             ;
         } catch (Exception e) {
             throw new RuntimeException(e);
