@@ -85,6 +85,7 @@ jacocoTestReport {
                     "zpi/ppea/clap/logic/RatedCriterion.class",
                     "zpi/ppea/clap/config/**",
                     "zpi/ppea/clap/security/**",
+                    "zpi/ppea/clap/repository/**",
                     "zpi/ppea/clap/exceptions/**",
                     "zpi/ppea/clap/ClapApplication.class"
             ])

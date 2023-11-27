@@ -1,6 +1,7 @@
 package zpi.ppea.clap.service;
 
 import data_store.PartialRating;
+import data_store.PartialRatingRequest;
 import data_store.UserClaimsResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,11 +28,13 @@ class PartialRatingServiceTest {
     void upsertPartialRating() {
         // given
         FirebaseAgent.UserAuthData auth = new FirebaseAgent.UserAuthData(UserClaimsResponse.getDefaultInstance(), "false");
+        PartialRatingRequest partialRatingRequest = PartialRatingRequest.newBuilder()
+                .setPartialRatingId(1).setCriterionId(1).setJustification("ok").setPoints(5).build();
         UpdatePartialRatingDto partialRatingDto = UpdatePartialRatingDto.builder()
-                .partialRatingId(1).criterionId(1).justification("ok").points(5).build();
+                .partialRatingId(1).criterionId(1).justification("ok").points(5).modified("").build();
         PartialRating partialRating = PartialRating.newBuilder()
                 .setPartialRatingId(1).setModifiedBy(1).setJustification("ok").setCriterionId(1).setPoints(5).build();
-        when(partialRatingRepository.upsertPartialRating(partialRatingDto, auth)).thenReturn(partialRating);
+        when(partialRatingRepository.upsertPartialRating(partialRatingRequest, auth)).thenReturn(partialRating);
         
         // when
         var newPartialRating = partialRatingService.upsertPartialRating(partialRatingDto, auth);

@@ -20,7 +20,11 @@ public class PartialRatingService {
             UpdatePartialRatingDto updatePartialRatingDto, FirebaseAgent.UserAuthData authentication) {
         log.info("Upserting (partial) rating {}", updatePartialRatingDto.getRatingId() == null ?
                 updatePartialRatingDto.getPartialRatingId() : updatePartialRatingDto.getRatingId());
-        var updatedRating = partialRatingRepository.upsertPartialRating(updatePartialRatingDto, authentication);
+
+        var requestBuilder = DtoMapper.INSTANCE.dtoToPartialRatingRequest(updatePartialRatingDto).toBuilder();
+        var request = requestBuilder.setAssessorId(authentication.getClaims().getAssessorId()).build();
+
+        var updatedRating = partialRatingRepository.upsertPartialRating(request, authentication);
         return DtoMapper.INSTANCE.partialRatingToDtos(updatedRating);
     }
 }

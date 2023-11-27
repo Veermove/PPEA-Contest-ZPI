@@ -82,4 +82,14 @@ public class ValidData {
                             )).build()
             ))
             .build();
+
+    public static final PartialRatingRequest PARTIAL_RATING_REQUEST = PartialRatingRequest.newBuilder()
+            .setAssessorId(1)
+            .setPartialRatingId(1)
+            .setPoints(100)
+            .setJustification("Very good work.")
+            .setCriterionId(1)
+            .setModified("")
+            .build();
+
 }

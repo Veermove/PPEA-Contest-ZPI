@@ -40,7 +40,7 @@ class PartialRatingControllerTest {
     void upsertPartialRating_response200_partialRatingIdGiven() {
         // given
         when(firebaseAgent.authenticate(ValidData.VALID_TOKEN)).thenReturn(ValidData.ASSESSOR_AUTH);
-        given(partialRatingRepository.upsertPartialRating(ValidData.UPDATE_PARTIAL_RATING_DTO, ValidData.ASSESSOR_AUTH))
+        given(partialRatingRepository.upsertPartialRating(ValidData.PARTIAL_RATING_REQUEST, ValidData.ASSESSOR_AUTH))
                 .willReturn(ValidData.PARTIAL_RATING);
 
         try {
@@ -53,7 +53,8 @@ class PartialRatingControllerTest {
                                         "partialRatingId": 1,
                                         "points": 100,
                                         "justification": "Very good work.",
-                                        "criterionId": 1
+                                        "criterionId": 1,
+                                        "modified": ""
                                     }
                                     """
                             ))
@@ -71,7 +72,7 @@ class PartialRatingControllerTest {
     void upsertPartialRating_response200_ratingIdGiven() {
         // given
         when(firebaseAgent.authenticate(ValidData.VALID_TOKEN)).thenReturn(ValidData.ASSESSOR_AUTH);
-        given(partialRatingRepository.upsertPartialRating(ValidData.UPDATE_PARTIAL_RATING_DTO, ValidData.ASSESSOR_AUTH))
+        given(partialRatingRepository.upsertPartialRating(ValidData.PARTIAL_RATING_REQUEST, ValidData.ASSESSOR_AUTH))
                 .willReturn(ValidData.PARTIAL_RATING);
 
         try {
@@ -84,7 +85,8 @@ class PartialRatingControllerTest {
                                         "ratingId": 1,
                                         "points": 100,
                                         "justification": "Very good work.",
-                                        "criterionId": 1
+                                        "criterionId": 1,
+                                        "modified": ""
                                     }
                                     """
                             ))
@@ -100,7 +102,7 @@ class PartialRatingControllerTest {
     void upsertPartialRating_response400_RatingAndPartialRatingIdProvided() {
         // given
         when(firebaseAgent.authenticate(ValidData.VALID_TOKEN)).thenReturn(ValidData.ASSESSOR_AUTH);
-        given(partialRatingRepository.upsertPartialRating(ValidData.UPDATE_PARTIAL_RATING_DTO, ValidData.ASSESSOR_AUTH))
+        given(partialRatingRepository.upsertPartialRating(ValidData.PARTIAL_RATING_REQUEST, ValidData.ASSESSOR_AUTH))
                 .willReturn(ValidData.PARTIAL_RATING);
 
         try {
@@ -114,7 +116,8 @@ class PartialRatingControllerTest {
                                         "ratingId": 2,
                                         "points": 75,
                                         "justification": "Not bad.",
-                                        "criterionId": 1
+                                        "criterionId": 1,
+                                        "modified": ""
                                     }
                                     """
                             ))
