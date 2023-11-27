@@ -12,7 +12,7 @@ import { redirect, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 
-function IndividualRatings() {
+function InitialRatings() {
   const { t } = useTranslation('ratings/page');
   const clapApi = useClapAPI();
   const router = useRouter();
@@ -34,7 +34,7 @@ function IndividualRatings() {
       return;
     }
     await clapApi.createRating(submission.submissionId, {
-      ratingType: RatingType.INDIVIDUAL,
+      ratingType: RatingType.INITIAL,
     });
 
     window.location.reload();
@@ -70,8 +70,8 @@ function IndividualRatings() {
 
   const handleSubmit = async () => {
     setSubmitError('');
-    const ownedRatingId = ratings?.individualRatings.find(rating => rating.assessorId === assessorId)?.ratingId;
-    if (!ratingsRef.current || !ownedRatingId) {
+    const initialRatingId = ratings?.initialRating?.ratingId;
+    if (!ratingsRef.current || !initialRatingId) {
       setSubmitError(t('submitUnknownError'))
     }
     const isValid = ratingsRef.current!.handleSubmit();
@@ -80,7 +80,7 @@ function IndividualRatings() {
       return;
     }
     try {
-      await clapApi?.submitRatingDraft(ownedRatingId!);
+      await clapApi?.submitRatingDraft(initialRatingId!);
       window.location.reload();
     } catch (e) {
       console.error(e);
@@ -94,7 +94,7 @@ function IndividualRatings() {
     return redirect('/')
   } else if (!submission || !assessorId || !ratings || error) {
     return <ErrorComponent text={t('noRatings')} />
-  } else if (!ratings?.individualRatings.some(rating => rating.assessorId === assessorId) && submissionDetails?.status === ProjectState.ACCEPTED) {
+  } else if (!(ratings?.initialRating) && submissionDetails?.status === ProjectState.ACCEPTED_INDIVIDUAL) {
     return (
       <Container className="m-2">
         <Row>
@@ -116,8 +116,8 @@ function IndividualRatings() {
               {t('submissionDetails')}
             </Button>
           </Col>
-          {submissionDetails && submissionDetails?.status === ProjectState.ACCEPTED &&
-            ratings?.individualRatings.find(rating => rating.assessorId === assessorId)?.draft && (
+          {submissionDetails && submissionDetails?.status === ProjectState.ACCEPTED_INDIVIDUAL &&
+            ratings.initialRating?.draft && ratings.initialRating.assessorId === assessorId && (
             <Col xs={10}>
               <Row>
                 <Col xs={8}>
@@ -135,11 +135,11 @@ function IndividualRatings() {
           )}
         </Row>
         <Row>
-          <Ratings ref={ratingsRef} ratings={ratings} criteria={ratings.criteria} type={RatingType.INDIVIDUAL} assessors={submission.assessors} assessorId={assessorId} />
+          <Ratings ref={ratingsRef} ratings={ratings} criteria={ratings.criteria} type={RatingType.INITIAL} assessors={submission.assessors} assessorId={assessorId} />
         </Row>
       </Container>
     )
   }
 }
 
-export default IndividualRatings
+export default InitialRatings

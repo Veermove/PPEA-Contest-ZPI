@@ -4,10 +4,11 @@ import { useTranslation } from "@/app/i18n/client";
 import { useAuthContext } from "@/context/authContext";
 import { useClapAPI } from "@/context/clapApiContext";
 import { PartialRating, RatingType } from "@/services/clap/model/rating";
+import { CONFLICT } from "http-status";
 import { redirect } from "next/navigation";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
-import Error from "../error";
+import ErrorComponent from "../error";
 import Spinner from "../spinner";
 import EditableRating from "./editableRating";
 
@@ -62,10 +63,20 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
     }
   }, [currentRating])
 
-  function buildErrorMessage(error: any): string {
-    console.error(JSON.stringify(error))
-    const message = error.response?.data?.errors?.[0];
-    if (message && message.includes('length')) {
+  function buildErrorMessage(err: any): string {
+    console.error(err);
+
+    if (!(err instanceof Error)) {
+      return t('error');
+    }
+
+    const error = err as Error;
+
+    if (!error.message) {
+      return t('error')
+    } if (error.message.includes(`${CONFLICT}`)) {
+      return t('justificationWasEditedError')
+    } if (error.message.includes('length')) {
       return t('justificationLengthError');
     }
     return t('error');
@@ -87,7 +98,8 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
       const response = await clapAPI.upsertPartialRating({
         partialRatingId: internalCurrentRating.partialRatingId,
         justification,
-        points
+        points,
+        modified: internalCurrentRating?.modified,
       });
       setInternalCurrentRating(response)
       setIsEditing(false);
@@ -139,7 +151,7 @@ const SingleRating = forwardRef<SingleRatingForwardData, SingleRatingProps>(({
         {error && (
           <Row>
             <Col>
-              <Error text={error} />
+              <ErrorComponent text={error} />
             </Col>
           </Row>
         )}

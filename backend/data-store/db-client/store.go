@@ -39,10 +39,13 @@ var (
 		pb.RatingType_FINAL:      queries.ProjectRatingTypeFinal,
 	}
 	SubmissionStatesTypesMapping = map[queries.ProjectState]pb.ProjectState{
-		queries.ProjectStateDraft:     pb.ProjectState_DRAFT,
-		queries.ProjectStateSubmitted: pb.ProjectState_SUBMITTED,
-		queries.ProjectStateAccepted:  pb.ProjectState_ACCEPTED,
-		queries.ProjectStateRejected:  pb.ProjectState_REJECTED,
+		queries.ProjectStateDraft:     			pb.ProjectState_DRAFT,
+		queries.ProjectStateSubmitted: 			pb.ProjectState_SUBMITTED,
+		queries.ProjectStateAccepted:  			pb.ProjectState_ACCEPTED,
+		queries.ProjectStateAcceptedIndividual: pb.ProjectState_ACCEPTED_INDIVIDUAL,
+		queries.ProjectStateAcceptedInitial:    pb.ProjectState_ACCEPTED_INITIAL,
+		queries.ProjectStateAcceptedFinal:      pb.ProjectState_ACCEPTED_FINAL,
+		queries.ProjectStateRejected:  			pb.ProjectState_REJECTED,
 	}
 )
 

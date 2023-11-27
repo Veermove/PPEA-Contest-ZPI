@@ -59,12 +59,13 @@ export interface AssessorsRatings {
     partialRatings: PartialRating[];
 }
 
-export interface UpdateSubmissionBody {
+export interface UpsertPartialRatingBody {
     criterionId?: number;
     ratingId?: number;
     partialRatingId?: number;
     justification: string;
     points: number;
+    modified?: string;
 }
 
 export interface AddRatingBody {

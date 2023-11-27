@@ -8,5 +8,6 @@
     "points": "Points",
     "edit": "Edit",
     "justificationLengthError": "Too long justification",
-    "error": "An error occured. Please try again in few seconds."
+    "error": "An error occured. Please try again in few seconds.",
+    "justificationWasEditedError": "Another assessor has saved the rating in the meantime. Refresh the page to update the rating. Be aware, that the changes you haven't saved will be lost."
 }

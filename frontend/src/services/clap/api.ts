@@ -1,7 +1,7 @@
 import { buildAuthorizationHeader as buildDefaultHeaders } from "../util";
 import { clapConfig } from "./config";
 import { PartialRating, Rating, RatingsDTO } from "./model/rating";
-import { AddRatingBody as NewRatingBody, SubmissionDTO, SubmissionDetailsDTO, UpdateSubmissionBody } from "./model/submission";
+import { AddRatingBody as NewRatingBody, SubmissionDTO, SubmissionDetailsDTO, UpsertPartialRatingBody } from "./model/submission";
 
 export class ClapApi {
   private readonly defaultHeaders: HeadersInit;
@@ -13,11 +13,10 @@ export class ClapApi {
   }
 
   private static async  handleResponse(response: Response): Promise<any> {
-    const json = await response.json();
     if (!response.ok) {
-      throw new Error(json);
+      throw Error(`${response.status}: ${await response.text()}`)
     }
-    return json;
+    return await response.json();
   }
 
   async getSubmissions(): Promise<SubmissionDTO[]> {
@@ -63,11 +62,11 @@ export class ClapApi {
     return await ClapApi.handleResponse(response);
   }
 
-  async upsertPartialRating(updateSubmissionBody: UpdateSubmissionBody): Promise<PartialRating> {
+  async upsertPartialRating(upsertPartialRatingBody: UpsertPartialRatingBody): Promise<PartialRating> {
     const response = await fetch(`${this.baseUrl}/partialratings`, {
       method: "POST",
       headers: this.defaultHeaders,
-      body: JSON.stringify(updateSubmissionBody)
+      body: JSON.stringify(upsertPartialRatingBody)
     });
     return await ClapApi.handleResponse(response);
   }

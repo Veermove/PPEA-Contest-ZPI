@@ -23,17 +23,20 @@ alter sequence edition.contest_contest_id_seq                                   
 alter sequence edition.jury_member_contest_jury_member_contest_id_seq                  restart with 1;
 alter sequence edition.pem_criterion_pem_criterion_id_seq                              restart with 1;
 
-truncate table project.submission cascade;
+truncate table project.applicant_submission cascade;
 truncate table project.application_report cascade;
 truncate table project.assessor_submission cascade;
-truncate table project.applicant_submission cascade;
-truncate table project.rating cascade;
-truncate table project.partial_rating cascade;
+truncate table project.assessors_answer cascade;
 truncate table project.ipma_expert_submission cascade;
+truncate table project.jury_question cascade;
+truncate table project.partial_rating cascade;
+truncate table project.rating cascade;
+truncate table project.submission cascade;
 
 alter sequence project.applicant_submission_applicant_submission_id_seq     restart with 1;
 alter sequence project.application_report_application_report_id_seq         restart with 1;
 alter sequence project.assessor_submission_assessor_submission_id_seq       restart with 1;
+alter sequence project.assessors_answer_assessors_answer_id_seq             restart with 1;
 alter sequence project.ipma_expert_submission_ipma_expert_submission_id_seq restart with 1;
 alter sequence project.jury_question_jury_question_id_seq                   restart with 1;
 alter sequence project.partial_rating_partial_rating_id_seq                 restart with 1;
@@ -267,89 +270,95 @@ insert into project.applicant_submission (
     (9, 9);
 
 -- submissions 1-3 are from active contest
+insert into project.rating( "submission_id", "assessor_id", "is_draft", "type") values (2, 3, false, 'individual');
+insert into project.rating( "submission_id", "assessor_id", "is_draft", "type") values (2, 4, false, 'individual');
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (1, 2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (2, 2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+
+update project.submission set status = 'accepted_individual' where submission_id = 2;
 -- submission 4
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (4, 7, false,'individual');
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (4, 8, false,'individual');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (1,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (2,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (3,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (4,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_individual' where submission_id = 4;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (4, 8, false,'initial');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (3,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (5,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_initial' where submission_id = 4;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (4, 8, false,'final');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (4,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (6,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 -- submission 5
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (5, 10, false,'individual');
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (5, 9, false,'individual');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (5,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (6,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (7,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (8,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_individual' where submission_id = 5;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (5, 9, false,'initial');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (7,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (9,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_initial' where submission_id = 5;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (5, 10, false,'final');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (8,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (10,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 -- submission 6
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (6, 1, false,'individual');
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (6, 2, false,'individual');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (9,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (10,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (11,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (12,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_individual' where submission_id = 6;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (6, 2, false,'initial');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (11,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (13,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_initial' where submission_id = 6;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (6, 1, false,'final');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (12,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (14,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 -- submission 7
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (7, 3, false,'individual');
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (7, 4, false,'individual');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (13,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (14,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (15,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (16,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_individual' where submission_id = 7;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (7, 4, false,'initial');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (15,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (17,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_initial' where submission_id = 7;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (7, 3, false,'final');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (16,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (18,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 -- submission 8
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (8, 5, false,'individual');
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (8, 6, false,'individual');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (17,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (18,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (19,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (20,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_individual' where submission_id = 8;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (8, 6, false,'initial');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (19,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (21,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_initial' where submission_id = 8;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (8, 5, false,'final');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (20,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (22,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 -- submission 9
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (9, 5, false,'individual');
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (9, 6, false,'individual');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (21,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (22,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (23,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (24,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_individual' where submission_id = 9;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (9, 6, false,'initial');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (23,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (25,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 update project.submission set status = 'accepted_initial' where submission_id = 9;
 insert into project.rating ( "submission_id", "assessor_id", "is_draft", "type") values (9, 5, false,'final');
-insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (24,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
+insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (26,  2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 
 insert into project.ipma_expert_submission (
     "ipma_expert_id",
@@ -364,3 +373,55 @@ insert into project.ipma_expert_submission (
     (7, 7),
     (8, 8),
     (9, 9);
+
+
+
+insert into project.jury_question (
+    "submission_id",
+    "criterion_id",
+    "question",
+    "is_draft"
+) values
+    (1, 1, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (1, 4, 'Czy budżet został przekroczony?', true),
+    (2, 1, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (2, 4, 'Czy budżet został przekroczony?', true),
+    (3, 1, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (3, 4, 'Czy budżet został przekroczony?', true),
+    (4, 2, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (4, 5, 'Czy budżet został przekroczony?', true),
+    (5, 2, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (5, 5, 'Czy budżet został przekroczony?', true),
+    (6, 2, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (6, 5, 'Czy budżet został przekroczony?', true),
+    (7, 3, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (7, 6, 'Czy budżet został przekroczony?', true),
+    (8, 3, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (8, 6, 'Czy budżet został przekroczony?', true),
+    (9, 3, 'Czy projekt jest zgodny z celami konkursu?', false),
+    (9, 6, 'Czy budżet został przekroczony?', true);
+
+insert into project.assessors_answer (
+    "jury_question_id",
+    "assessor_id",
+    "answer",
+    "files"
+) values
+    (1, 1, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (2, 2, 'Nie', ''),
+    (3, 3, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (4, 4, 'Nie', ''),
+    (5, 5, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (6, 6, 'Nie', ''),
+    (7, 7, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (8, 8, 'Nie', ''),
+    (9, 9, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (10, 10, 'Nie', ''),
+    (11, 1, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (12, 2, 'Nie', ''),
+    (13, 3, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (14, 4, 'Nie', ''),
+    (15, 5, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (16, 6, 'Nie', ''),
+    (17, 5, 'Tak, brak niezgodności', 'file.pdf,file2.pdf'),
+    (18, 7, 'Nie', '');

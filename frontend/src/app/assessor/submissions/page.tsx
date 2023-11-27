@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from "@/app/i18n/client";
-import Error from "@/components/error";
+import ErrorComponent from "@/components/error";
 import Spinner from "@/components/spinner";
 import SubmissionList from "@/components/submission/list";
 import { useAuthContext } from "@/context/authContext";
@@ -43,7 +43,7 @@ function Submissions() {
   } else if (loading) {
     return <Spinner />
   } else if (error || !submissionList.length) {
-    return Error({ text: t('noSubmissions') })
+    return ErrorComponent({ text: t('noSubmissions') })
   }
   return (
     <>
