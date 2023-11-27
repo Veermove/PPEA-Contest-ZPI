@@ -48,8 +48,6 @@ class DataStoreServiceTest {
         // given
         FirebaseAgent.UserAuthData auth = new FirebaseAgent.UserAuthData(UserClaimsResponse.getDefaultInstance(), "false");
         String email = "orlando.palladino@email.com";
-        UserClaimsResponse userClaim = UserClaimsResponse.newBuilder().setFirstName("Imię").setLastName("Nazwisko")
-                .setPersonId(11).setAssessorId(4).build();
         UserRequest userRequest = UserRequest.newBuilder().setEmail(email).build();
 
         SettableFuture<UserClaimsResponse> exceptionFuture = SettableFuture.create();

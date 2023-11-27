@@ -21,6 +21,7 @@ public class PartialRatingService {
         log.info("Upserting (partial) rating {}", updatePartialRatingDto.getRatingId() == null ?
                 updatePartialRatingDto.getPartialRatingId() : updatePartialRatingDto.getRatingId());
 
+        updatePartialRatingDto.setModified(updatePartialRatingDto.getModified() == null ? "" : updatePartialRatingDto.getModified());
         var requestBuilder = DtoMapper.INSTANCE.dtoToPartialRatingRequest(updatePartialRatingDto).toBuilder();
         var request = requestBuilder.setAssessorId(authentication.getClaims().getAssessorId()).build();
 

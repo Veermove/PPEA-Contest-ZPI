@@ -4,7 +4,6 @@ import data_store.DataStoreGrpc;
 import data_store.PartialRating;
 import data_store.PartialRatingRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Repository;
 import zpi.ppea.clap.exceptions.NoAccessToResource;
@@ -15,7 +14,6 @@ import java.util.concurrent.ExecutionException;
 
 @Repository
 @RequiredArgsConstructor
-@Slf4j
 public class PartialRatingRepository {
 
     @GrpcClient("dataStore")
