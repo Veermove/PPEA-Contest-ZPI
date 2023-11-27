@@ -33,7 +33,6 @@ dependencies {
             "com.github.ben-manes.caffeine:caffeine:3.1.8",
             "org.springframework.boot:spring-boot-starter-webflux"
     )
-    testImplementation 'org.testng:testng:7.1.0'
     annotationProcessor(
             "org.projectlombok:lombok",
             "org.mapstruct:mapstruct-processor:1.5.5.Final"
@@ -45,7 +44,8 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-test",
             "org.testcontainers:junit-jupiter:1.19.2",
             "io.rest-assured:rest-assured",
-            "org.mock-server:mockserver-netty:5.15.0"
+            "org.mock-server:mockserver-netty:5.15.0",
+            "org.testng:testng:7.1.0"
     )
 }
 
