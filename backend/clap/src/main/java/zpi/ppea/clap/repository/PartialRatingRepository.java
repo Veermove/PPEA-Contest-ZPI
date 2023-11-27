@@ -1,18 +1,16 @@
 package zpi.ppea.clap.repository;
 
-import java.util.concurrent.ExecutionException;
-
-import org.springframework.stereotype.Repository;
-
 import data_store.DataStoreGrpc;
 import data_store.PartialRating;
+import data_store.PartialRatingRequest;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
-import zpi.ppea.clap.dtos.UpdatePartialRatingDto;
+import org.springframework.stereotype.Repository;
 import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.exceptions.RaceConditionException;
-import zpi.ppea.clap.mappers.DtoMapper;
 import zpi.ppea.clap.security.FirebaseAgent;
+
+import java.util.concurrent.ExecutionException;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,12 +19,9 @@ public class PartialRatingRepository {
     @GrpcClient("dataStore")
     DataStoreGrpc.DataStoreFutureStub dataStoreFutureStub;
 
-    public PartialRating upsertPartialRating(UpdatePartialRatingDto updatePartialRatingDto, FirebaseAgent.UserAuthData authentication) {
+    public PartialRating upsertPartialRating(PartialRatingRequest partialRatingRequest, FirebaseAgent.UserAuthData authentication) {
         try {
-            updatePartialRatingDto.setModified(updatePartialRatingDto.getModified() == null ? "" : updatePartialRatingDto.getModified());
-            var requestBuilder = DtoMapper.INSTANCE.dtoToPartialRatingRequest(updatePartialRatingDto).toBuilder();
-            var request = requestBuilder.setAssessorId(authentication.getClaims().getAssessorId()).build();
-            var response = dataStoreFutureStub.postPartialRating(request).get();
+            var response = dataStoreFutureStub.postPartialRating(partialRatingRequest).get();
             
             // We just detected race condition
             if (response.hasError())

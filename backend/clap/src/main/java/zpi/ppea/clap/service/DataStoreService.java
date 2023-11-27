@@ -27,6 +27,7 @@ public class DataStoreService {
             log.info("Getting user claims for user with email {}", email);
             return dataStoreFutureStub.getUserClaims(UserRequest.newBuilder().setEmail(email).build()).get();
         } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
             throw new NoAccessToResource(e, data.getRefresh());
         }
     }

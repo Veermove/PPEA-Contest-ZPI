@@ -1,0 +1,6 @@
+clap:
+  api:
+    base-url: http://localhost
+spring:
+  main:
+    allow-bean-definition-overriding: true
