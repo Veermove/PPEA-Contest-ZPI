@@ -1,9 +1,12 @@
 package zpi.ppea.clap.mails;
 
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Slf4j
 @Component
@@ -15,7 +18,12 @@ public class MailCronJob {
     @Scheduled(cron = "0/30 * * * * *") // Runs every 30 seconds
     public void checkEmails() {
         log.info("Sending emails");
-        emailService.sendSimpleMessage("some@email", "subject", "text");
+        String htmlFilePath = "templates/reminder_template.html";
+        try {
+            emailService.sendHtmlMessageFromFile("recipient@example.com", "Subject", htmlFilePath);
+        } catch (MessagingException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
