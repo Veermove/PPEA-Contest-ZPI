@@ -1,17 +1,16 @@
 package zpi.ppea.clap.repository;
 
-import java.util.concurrent.ExecutionException;
-
-import org.springframework.stereotype.Repository;
-
 import data_store.DataStoreGrpc;
 import data_store.PartialRating;
 import data_store.PartialRatingRequest;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.stereotype.Repository;
 import zpi.ppea.clap.exceptions.NoAccessToResource;
 import zpi.ppea.clap.exceptions.RaceConditionException;
 import zpi.ppea.clap.security.FirebaseAgent;
+
+import java.util.concurrent.ExecutionException;
 
 @Repository
 @RequiredArgsConstructor
