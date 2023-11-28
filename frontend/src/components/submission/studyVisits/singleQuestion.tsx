@@ -2,7 +2,7 @@ import Spinner from "@/components/spinner";
 import { Question } from "@/services/clap/model/studyVisits";
 import { getFileLink } from "@/services/firebase/attachments/getAttachment";
 import { useEffect, useState } from "react";
-import { Col, Row } from "react-bootstrap";
+import { Col, OverlayTrigger, Row, Tooltip } from "react-bootstrap";
 import { FaPaperclip } from "react-icons/fa";
 
 function SingleQuestion({ question, submissionId, className }: { question: Question, submissionId: number, className: string }) {
@@ -26,25 +26,35 @@ function SingleQuestion({ question, submissionId, className }: { question: Quest
   }
   return (
     <Row className={className}>
-      <Col xs={4}>
+      <Col xs={4} className="px-2">
         {content}
       </Col>
       <Col xs={6}>
         {answers.map((answer, idx) => {
-          return (<Row key={`answer-${idx}`} className="mt-2">{answer.answerText}
+          return (<Row key={`answer-${idx}`} className="mt-2 mx-1">{answer.answerText}
           </Row>)
         })}
       </Col>
       <Col xs={2}>
         {answers.map((answer, answerIndex) => {
           return (
-            <Row key={`ans-${answerIndex}`}>
-              {answer.files.map((_, fileIndex) => {
+            <Row key={`ans-${answerIndex}`} className="mx-1">
+              {answer.files.map((fileName, fileIndex) => {
                 return (
-                  <Col key={`answer-file-${fileIndex}`}>
-                    <a href={urls[answerIndex][fileIndex]} key={`${answerIndex}/${fileIndex}`}>
-                      <FaPaperclip size={20} className="text-purple ml-auto" />
-                    </a>
+                  <Col key={`answer-file-${fileIndex}`} className="px-1" xs={12 / answer.files.length}>
+                    <OverlayTrigger
+                      key={`${answerIndex}/${fileIndex}`}
+                      placement="top"
+                      overlay={
+                        <Tooltip id={`tooltip-${answerIndex}-${fileIndex}`}>
+                          {fileName}
+                        </Tooltip>
+                      }
+                    >
+                      <a href={urls[answerIndex][fileIndex]} key={`${answerIndex}/${fileIndex}`}>
+                        <FaPaperclip size={20} className="text-purple ml-auto" />
+                      </a>
+                    </OverlayTrigger>
                   </Col>
                 )
               })}
