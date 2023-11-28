@@ -40,24 +40,10 @@ export class ClapApi {
   }
 
   async getStudyVisit(submissionId: number): Promise<StudyVisit> {
-    // const response = await fetch(`${this.baseUrl}/submissions/${submissionId}/studyvisits`, {
-    //   headers: this.defaultHeaders
-    // });
-    // return await ClapApi.handleResponse(response);
-    return {
-      questions: [
-        {
-          content: 'Lorem ipsum dolor sit amet',
-          answers: [{
-            answerText: 'Lorem ipsum dolor sit amet',
-            files: [],
-          }, {
-            answerText: 'Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet.',
-            files: [],
-          }]
-        }
-      ]
-    }
+    const response = await fetch(`${this.baseUrl}/submissions/${submissionId}/visits`, {
+      headers: this.defaultHeaders
+    });
+    return await ClapApi.handleResponse(response);
   }
 
   async getSubmissionRatings(submissionId: number): Promise<RatingsDTO> {
