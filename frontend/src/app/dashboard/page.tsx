@@ -4,7 +4,7 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuthContext } from '@/context/authContext';
 import { redirect, useRouter } from 'next/navigation';
 import { Container } from 'react-bootstrap';
-import { FaCommentDots, FaRegCheckCircle, FaRegListAlt, FaRegTimesCircle, FaUserPlus } from 'react-icons/fa';
+import { FaCommentDots, FaMarker, FaRegCheckCircle, FaRegListAlt, FaUserPlus } from 'react-icons/fa';
 import { LuFolderEdit } from 'react-icons/lu';
 import DoubleTile from './doubleTile';
 
@@ -31,7 +31,7 @@ function Dashboard() {
         }}
         secondTileProps={{
           text: t('initialRatings'),
-          Icon: FaRegTimesCircle,
+          Icon: FaMarker,
           onClick: () => handleItemClick("assessor/ratings/initial")
         }}
       />
