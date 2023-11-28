@@ -4,5 +4,7 @@
     "submitUnknownError": "Unknown error when submitting rating. Please try again later.",
     "notAllRatingsFilled": "Not all ratings are filled. Please fill all ratings.",
     "submit": "Submit",
-    "addNewRating": "Add new rating"
+    "addNewRating": "Add new rating",
+    "studyVisit": "Study visit",
+    "ratings": "Ratings"
 }

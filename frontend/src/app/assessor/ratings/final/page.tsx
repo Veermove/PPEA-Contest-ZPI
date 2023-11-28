@@ -140,12 +140,24 @@ function FinalRatings() {
           )}
         </Row>
         {!!studyVisit && !!studyVisit.questions.length && (
+          <Row className="my-3">
+            <h3 className="text-purple">
+              {t('studyVisit')}
+            </h3>
+          </Row>
+        )}
+        {!!studyVisit && !!studyVisit.questions.length && (
           <Row className="my-3 mx-2">
             <SingleVisit
               questions={studyVisit?.questions}
               submissionId={submission.submissionId} />
           </Row>
         )}
+        <Row>
+          <h3 className="text-purple">
+            {t('ratings')}
+          </h3>
+        </Row>
         <Row>
           <Ratings ref={ratingsRef} ratings={ratings} criteria={ratings.criteria} type={RatingType.FINAL} assessors={submission.assessors} assessorId={assessorId} />
         </Row>
