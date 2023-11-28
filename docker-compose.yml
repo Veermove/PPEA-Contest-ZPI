@@ -53,6 +53,13 @@ services:
     ports:
       - '3000:3000'
 
+  # Fake email address
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web UI port
+
 volumes:
   db:
     driver: local

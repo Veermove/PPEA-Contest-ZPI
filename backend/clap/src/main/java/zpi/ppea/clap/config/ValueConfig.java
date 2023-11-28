@@ -50,4 +50,16 @@ public class ValueConfig {
     @Value("${firebaseAgent.bearer_prefix}")
     private String bearerPrefix;
 
+    @Value("${spring.mail.host}")
+    private String mailSenderHost;
+
+    @Value("${spring.mail.port}")
+    private Integer mailSenderPort;
+
+    @Value("${spring.mail.username}")
+    private String mailSenderUsername;
+
+    @Value("${spring.mail.password}")
+    private String mailSenderPassword;
+
 }
