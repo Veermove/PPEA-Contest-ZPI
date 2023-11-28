@@ -26,24 +26,30 @@ function SingleQuestion({ question, submissionId, className }: { question: Quest
   }
   return (
     <Row className={className}>
-      <Col>
+      <Col xs={4}>
         {content}
       </Col>
-      <Col>
+      <Col xs={6}>
         {answers.map((answer, idx) => {
           return (<Row key={`answer-${idx}`} className="mt-2">{answer.answerText}
           </Row>)
         })}
       </Col>
-      <Col>
+      <Col xs={2}>
         {answers.map((answer, answerIndex) => {
-          return answer.files.map((_, fileIndex) => {
-            return (
-              <a href={urls[answerIndex][fileIndex]} key={`${answerIndex}/${fileIndex}`}>
-                <FaPaperclip size={10} className="text-purple ml-auto" />
-              </a>
-            )
-          })
+          return (
+            <Row key={`ans-${answerIndex}`}>
+              {answer.files.map((_, fileIndex) => {
+                return (
+                  <Col key={`answer-file-${fileIndex}`}>
+                    <a href={urls[answerIndex][fileIndex]} key={`${answerIndex}/${fileIndex}`}>
+                      <FaPaperclip size={20} className="text-purple ml-auto" />
+                    </a>
+                  </Col>
+                )
+              })}
+            </Row>
+          )
         })}
       </Col>
     </Row>

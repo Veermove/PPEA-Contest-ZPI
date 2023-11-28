@@ -9,13 +9,13 @@ function SingleVisit({ questions, submissionId }: { questions: Question[], submi
   return (
     <Container>
       <Row className="font-bold border-1 border-lightgray">
-        <Col>
+        <Col xs={4}>
           {t('question')}
         </Col>
-        <Col>
+        <Col xs={6}>
           {t('answers')}
         </Col>
-        <Col>
+        <Col xs={2}>
           {t('attachments')}
         </Col></Row>
       {questions.map((question, idx) => {
