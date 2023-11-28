@@ -56,7 +56,7 @@ function Dashboard() {
         secondTileProps={{
           text: t('studyVisits'),
           Icon: FaCommentDots,
-          onClick: () => handleItemClick("/")
+          onClick: () => handleItemClick("/studyVisits")
         }}
       />
     </Container>

@@ -18,7 +18,7 @@ function SingleQuestion({ question, submissionId, className }: { question: Quest
       }))
       setUrls(urls)
     })()
-  });
+  }, [question, submissionId]);
 
   const { answers, content } = question;
   if (!urls) {
