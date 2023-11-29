@@ -4,3 +4,5 @@ clap:
 spring:
   main:
     allow-bean-definition-overriding: true
+  mail:
+    port: 1025

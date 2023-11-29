@@ -42,6 +42,7 @@ services:
     environment:
       FRONTEND.ADDRESS: http://frontend:3000
       GRPC.CLIENT.DATASTORE.ADDRESS: static://dstor:8080
+      SPRING.MAIL.HOST: mailhog
 
   # Correct if you need
   frontend:
