@@ -15,7 +15,7 @@ public class MailCronJob {
 
     private final EmailServiceImpl emailService;
 
-    @Scheduled(cron = "0/30 * * * * *") // Runs every 30 seconds
+    @Scheduled(cron = "${cron.job.mail}") // Runs every 30 seconds
     public void checkEmails() {
         log.info("Sending emails");
         String htmlFilePath = "templates/reminder_template.html";

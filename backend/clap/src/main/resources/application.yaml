@@ -51,3 +51,7 @@ caches:
       expiryInMinutes: 1440
     - name: Visits
       expiryInMinutes: 1440
+
+cron:
+  job:
+    mail: 0/30 * * * * *
