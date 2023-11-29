@@ -3,7 +3,6 @@ package dbclient
 import (
 	"context"
 	"database/sql"
-	"embed"
 	"errors"
 	"fmt"
 	"os"
@@ -11,6 +10,7 @@ import (
 	"time"
 
 	pb "zpi/pb"
+	rawsql "zpi/sql"
 	queries "zpi/sql/gen"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -58,9 +58,6 @@ type (
 	NewRatingsParams = queries.DoesAssessorHaveAccessToRatingParams
 	ValidationParams = queries.ValidatePartialRatingParams
 )
-
-//go:embed migrations
-var migrations embed.FS
 
 var RaceConditionDetectedErr = errors.New("RACECONDITION")
 
@@ -136,7 +133,7 @@ func RunMigrations(log *zap.Logger) error {
 		dir     source.Driver
 	)
 
-	if dir, err = iofs.New(migrations, "migrations"); err != nil {
+	if dir, err = iofs.New(rawsql.Migrations, "migrations"); err != nil {
 		return fmt.Errorf("running migration - new iofs: %w", err)
 	}
 
