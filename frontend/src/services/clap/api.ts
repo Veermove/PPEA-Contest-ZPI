@@ -1,6 +1,7 @@
 import { buildAuthorizationHeader as buildDefaultHeaders } from "../util";
 import { clapConfig } from "./config";
 import { PartialRating, Rating, RatingsDTO } from "./model/rating";
+import { StudyVisit } from "./model/studyVisits";
 import { AddRatingBody as NewRatingBody, SubmissionDTO, SubmissionDetailsDTO, UpsertPartialRatingBody } from "./model/submission";
 
 export class ClapApi {
@@ -12,7 +13,7 @@ export class ClapApi {
     this.defaultHeaders = buildDefaultHeaders(idToken);
   }
 
-  private static async  handleResponse(response: Response): Promise<any> {
+  private static async handleResponse(response: Response): Promise<any> {
     if (!response.ok) {
       throw Error(`${response.status}: ${await response.text()}`)
     }
@@ -33,6 +34,13 @@ export class ClapApi {
 
   async getSubmissionDetails(submissionId: number): Promise<SubmissionDetailsDTO> {
     const response = await fetch(`${this.baseUrl}/submissions/${submissionId}`, {
+      headers: this.defaultHeaders
+    });
+    return await ClapApi.handleResponse(response);
+  }
+
+  async getStudyVisit(submissionId: number): Promise<StudyVisit> {
+    const response = await fetch(`${this.baseUrl}/submissions/${submissionId}/visits`, {
       headers: this.defaultHeaders
     });
     return await ClapApi.handleResponse(response);
