@@ -7,7 +7,7 @@ create table edition.contest (
     "master_jury_id" int not null,
 
     "est_time_individual_assessment"  date,
-    "est_time_preliminary_assessment" date,
+    "est_time_initial_assessment"     date,
     "est_time_final_assessment"       date,
     "est_time_jury_questions"         date,
 
