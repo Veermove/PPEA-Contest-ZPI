@@ -29,6 +29,11 @@ public class EmailServiceImpl {
         helper.setSubject(subject);
 
         String htmlContent = readHtmlFile(htmlFilePath);
+
+        // Set values
+        htmlContent = htmlContent.replace("[AssessorName]", "Asesor");
+        htmlContent = htmlContent.replace("[AssessorSurname]", "Pierwszy");
+
         helper.setText(htmlContent, true);
 
         emailSender.send(message);
