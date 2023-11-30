@@ -3,24 +3,29 @@ package zpi.ppea.clap.mails;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
+import zpi.ppea.clap.repository.EmailRepository;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-@Component
+@Slf4j
+@Service
 @AllArgsConstructor
 public class EmailServiceImpl {
 
     private final JavaMailSender emailSender;
+    private final EmailRepository emailRepository;
 
-    public void sendHtmlMessageFromFile()
-            throws MessagingException, IOException {
+    public void sendHtmlMessageFromFile() throws MessagingException, IOException {
+        var emailsToSentList = emailRepository.getEmailsToSent();
+
         String htmlFilePath = "templates/reminder_template.html";
         String to = "recipient@example.com";
         String subject = "Subject";

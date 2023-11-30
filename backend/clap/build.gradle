@@ -32,7 +32,9 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-validation",
             "com.github.ben-manes.caffeine:caffeine:3.1.8",
             "org.springframework.boot:spring-boot-starter-webflux",
-            "org.springframework.boot:spring-boot-starter-mail"
+            "org.springframework.boot:spring-boot-starter-mail",
+            "org.springframework.retry:spring-retry",
+            "org.springframework:spring-aspects"
     )
     annotationProcessor(
             "org.projectlombok:lombok",
