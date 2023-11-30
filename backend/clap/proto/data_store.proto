@@ -1,5 +1,4 @@
 syntax = "proto3";
-import "google/protobuf/empty.proto";
 
 package data_store;
 
@@ -198,6 +197,8 @@ message EmailResponse {
     repeated EmailDetails emails = 1;
 }
 
+message EmailRequest {}
+
 service DataStore {
     rpc GetUserClaims           (UserRequest)                 returns (UserClaimsResponse)        {}
     rpc GetSubmissions          (SubmissionRequest)           returns (SubmissionsResponse)       {}
@@ -207,5 +208,7 @@ service DataStore {
     rpc PostNewSubmissionRating (NewSubmissionRatingRequest)  returns (Rating)                    {}
     rpc PostPartialRating       (PartialRatingRequest)        returns (PostPartialRatingResponse) {}
     rpc PostSubmitRating        (SubmitRatingDraft)           returns (Rating)                    {}
-    rpc GetEmailDetails         (google.protobuf.Empty)       returns (EmailResponse)             {}
+    rpc GetEmailDetails         (EmailRequest)                returns (EmailResponse)             {}
 }
+
+
