@@ -62,4 +62,7 @@ public class ValueConfig {
     @Value("${spring.mail.password}")
     private String mailSenderPassword;
 
+    @Value("${email.sender}")
+    private String emailSender;
+
 }
