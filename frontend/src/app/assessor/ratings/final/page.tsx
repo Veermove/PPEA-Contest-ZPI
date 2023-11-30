@@ -121,7 +121,7 @@ function FinalRatings() {
               {t('submissionDetails')}
             </Button>
           </Col>
-          {submissionDetails && submissionDetails?.status === ProjectState.ACCEPTED_FINAL &&
+          {submissionDetails && submissionDetails?.status === ProjectState.ACCEPTED_INITIAL &&
             ratings.finalRating?.draft && ratings.finalRating.assessorId === assessorId && (
             <Col xs={10}>
               <Row>
