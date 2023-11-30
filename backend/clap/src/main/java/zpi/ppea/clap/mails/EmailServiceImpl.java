@@ -19,8 +19,12 @@ public class EmailServiceImpl {
 
     private final JavaMailSender emailSender;
 
-    public void sendHtmlMessageFromFile(String to, String subject, String htmlFilePath)
+    public void sendHtmlMessageFromFile()
             throws MessagingException, IOException {
+        String htmlFilePath = "templates/reminder_template.html";
+        String to = "recipient@example.com";
+        String subject = "Subject";
+
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 

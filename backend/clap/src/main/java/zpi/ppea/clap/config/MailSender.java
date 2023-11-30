@@ -1,4 +1,4 @@
-package zpi.ppea.clap.mails;
+package zpi.ppea.clap.config;
 
 
 import lombok.AllArgsConstructor;
@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import zpi.ppea.clap.config.ValueConfig;
 
 import java.util.Properties;
 

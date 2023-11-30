@@ -18,9 +18,8 @@ public class MailCronJob {
     @Scheduled(cron = "${cron.job.mail}")
     public void checkEmails() {
         log.info("Sending emails");
-        String htmlFilePath = "templates/reminder_template.html";
         try {
-            emailService.sendHtmlMessageFromFile("recipient@example.com", "Subject", htmlFilePath);
+            emailService.sendHtmlMessageFromFile();
         } catch (MessagingException | IOException e) {
             throw new RuntimeException(e);
         }
