@@ -124,7 +124,7 @@ func (s *DataStore) PostSubmitRating(ctx context.Context, in *ds.SubmitRatingDra
 	return s.Db.SubmitRating(ctx, in)
 }
 
-func (s *DataStore) GetStudyVisits(ctx context.Context, in *ds.StudyVisitRequest) (*ds.StudyVisitResponse, error) {
+func (s *DataStore) GetStudyVisit(ctx context.Context, in *ds.StudyVisitRequest) (*ds.StudyVisitResponse, error) {
 	if in.GetAssessorId() == 0 {
 		return nil, fmt.Errorf("assessor id is required")
 	}

@@ -1,8 +1,10 @@
 {
     "noRatings": "Brak przypisanych zgłoszeń w obecnej edycji",
-    "submissionDetails": "Detale zgłoszenia",
+    "submissionDetails": "Szczegóły zgłoszenia",
     "submitUnknownError": "Wystąpił błąd przy zatwierdzaniu. Proszę spróbować ponownie.",
     "notAllRatingsFilled": "Nie wszystkie kryteria mają ocenę. Proszę wypełnić wszystkie kryteria.",
     "submit": "Zatwierdź",
-    "addNewRating": "Dodaj nową ocenę"
+    "addNewRating": "Dodaj nową ocenę",
+    "studyVisit": "Wizyta studyjna",
+    "ratings": "Oceny"
 }

@@ -1,4 +1,5 @@
 syntax = "proto3";
+import "google/protobuf/empty.proto";
 
 package data_store;
 
@@ -182,6 +183,21 @@ message StudyVisitRequest {
     int32 submission_id = 2;
 }
 
+message EmailDetails {
+    string assessor_name        = 1;
+    string assessment_last_name = 2;
+    string assessor_email       = 3;
+    string submission_name      = 4;
+    bool is_created             = 5;
+    RatingType rating_type      = 6;
+    int32 edition_year          = 7;
+    string finish_date          = 8;
+}
+
+message EmailResponse {
+    repeated EmailDetails emails = 1;
+}
+
 service DataStore {
     rpc GetUserClaims           (UserRequest)                 returns (UserClaimsResponse)        {}
     rpc GetSubmissions          (SubmissionRequest)           returns (SubmissionsResponse)       {}
@@ -191,4 +207,5 @@ service DataStore {
     rpc PostNewSubmissionRating (NewSubmissionRatingRequest)  returns (Rating)                    {}
     rpc PostPartialRating       (PartialRatingRequest)        returns (PostPartialRatingResponse) {}
     rpc PostSubmitRating        (SubmitRatingDraft)           returns (Rating)                    {}
+    rpc GetEmailDetails         (google.protobuf.Empty)       returns (EmailResponse)             {}
 }
