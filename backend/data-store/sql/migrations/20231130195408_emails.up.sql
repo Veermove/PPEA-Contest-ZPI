@@ -27,7 +27,7 @@ create table emails.sent_for_one_rating (
 create or replace function emails.delete_tracker()
 returns trigger as $$
 begin
-    if old.is_draft is false then
+    if new.is_draft is true then
         return old;
     end if;
 
