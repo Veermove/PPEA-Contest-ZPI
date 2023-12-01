@@ -22,4 +22,29 @@ create table emails.sent_for_one_rating (
 
     constraint sent_for_one_rating_pk
         primary key (assessor_id, submission_id, rating_type)
-)
+);
+
+create or replace function emails.delete_tracker()
+returns trigger as $$
+begin
+    if old.is_draft is false then
+        return old;
+    end if;
+
+
+    delete from emails.sent_for_one_rating
+    where
+        assessor_id = old.assessor_id
+        and
+        submission_id = old.submission_id
+        and
+        rating_type = old.type;
+    return old;
+end;
+$$ language plpgsql;
+
+
+create trigger delete_emails_tracker_trigger
+    after update on project.rating
+    for each row
+    execute function emails.delete_tracker();
