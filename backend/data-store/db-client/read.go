@@ -69,11 +69,11 @@ func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId, assesso
 		Report: &pb.AppReport{
 			IsDraft:               details.IsDraft,
 			ReportSubmissionDate:  submissionDate,
-			ProjectGoals:          Denullify(details.ProjectGoals),
-			OrganisationStructure: Denullify(details.OrganisationStructure),
-			DivisionOfWork:        Denullify(details.DivisionOfWork),
-			ProjectSchedule:       Denullify(details.ProjectSchedule),
-			Attachments:           Denullify(details.Attatchments),
+			ProjectGoals:          DenullifyStr(details.ProjectGoals),
+			OrganisationStructure: DenullifyStr(details.OrganisationStructure),
+			DivisionOfWork:        DenullifyStr(details.DivisionOfWork),
+			ProjectSchedule:       DenullifyStr(details.ProjectSchedule),
+			Attachments:           DenullifyStr(details.Attatchments),
 		},
 	}, nil
 }
@@ -259,7 +259,7 @@ func (st *Store) GetSubmissionRatings(ctx context.Context, submissionId, assesso
 					Description: c.Description,
 					Area:        c.Area,
 					Criteria:    c.Criteria,
-					Subcriteria: Denullify(c.Subcriteria),
+					Subcriteria: DenullifyStr(c.Subcriteria),
 				})
 			}
 
@@ -328,7 +328,7 @@ func (st *Store) GetStudyVisits(ctx context.Context, assessorId, submissionId in
 				urls = append(urls, strings.Split(strings.Trim(a.Files.String, " \r\t\n"), ",")...)
 			}
 			answers = append(answers, &pb.Answer{
-				AnswerText: Denullify(a.Answer),
+				AnswerText: DenullifyStr(a.Answer),
 				Files:      urls,
 			})
 		}

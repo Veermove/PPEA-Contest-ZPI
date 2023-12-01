@@ -23,6 +23,9 @@ import (
 )
 
 const (
+	// EmailWarningPeriod is the time before the deadline when we should send a reminder email
+	EmailWarningPeriod = time.Hour * 24 * 5
+
 	MaxPgConn = 10
 	MinPgConn = 3
 )
@@ -39,13 +42,13 @@ var (
 		pb.RatingType_FINAL:      queries.ProjectRatingTypeFinal,
 	}
 	SubmissionStatesTypesMapping = map[queries.ProjectState]pb.ProjectState{
-		queries.ProjectStateDraft:     			pb.ProjectState_DRAFT,
-		queries.ProjectStateSubmitted: 			pb.ProjectState_SUBMITTED,
-		queries.ProjectStateAccepted:  			pb.ProjectState_ACCEPTED,
+		queries.ProjectStateDraft:              pb.ProjectState_DRAFT,
+		queries.ProjectStateSubmitted:          pb.ProjectState_SUBMITTED,
+		queries.ProjectStateAccepted:           pb.ProjectState_ACCEPTED,
 		queries.ProjectStateAcceptedIndividual: pb.ProjectState_ACCEPTED_INDIVIDUAL,
 		queries.ProjectStateAcceptedInitial:    pb.ProjectState_ACCEPTED_INITIAL,
 		queries.ProjectStateAcceptedFinal:      pb.ProjectState_ACCEPTED_FINAL,
-		queries.ProjectStateRejected:  			pb.ProjectState_REJECTED,
+		queries.ProjectStateRejected:           pb.ProjectState_REJECTED,
 	}
 )
 
@@ -183,7 +186,7 @@ func DenullifyInt32(s sql.NullInt32) int32 {
 	return s.Int32
 }
 
-func Denullify(s sql.NullString) string {
+func DenullifyStr(s sql.NullString) string {
 	if !s.Valid {
 		return ""
 	}

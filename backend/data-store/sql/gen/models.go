@@ -144,6 +144,13 @@ type EditionPemCriterion struct {
 	Subcriteria    sql.NullString
 }
 
+type EmailsSentForOneRating struct {
+	AssessorID   int32
+	SubmissionID int32
+	RatingType   ProjectRatingType
+	EmailsSent   int32
+}
+
 type PersonApplicant struct {
 	ApplicantID int32
 	PersonID    int32

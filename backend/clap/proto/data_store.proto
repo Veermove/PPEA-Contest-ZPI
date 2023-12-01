@@ -183,14 +183,14 @@ message StudyVisitRequest {
 }
 
 message EmailDetails {
-    string assessor_name        = 1;
-    string assessment_last_name = 2;
+    string assessor_first_name  = 1;
+    string assessor_last_name   = 2;
     string assessor_email       = 3;
     string submission_name      = 4;
-    bool is_created             = 5;
+    bool is_rating_created      = 5;
     RatingType rating_type      = 6;
     int32 edition_year          = 7;
-    string finish_date          = 8;
+    string rating_submit_date   = 8;
 }
 
 message EmailResponse {
