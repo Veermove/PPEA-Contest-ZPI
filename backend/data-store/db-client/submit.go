@@ -16,7 +16,11 @@ func (st *Store) SubmitRating(ctx context.Context, in *pb.SubmitRatingDraft) (*p
 		return nil, fmt.Errorf("User does not have access to resource")
 	}
 
-	allPartialRatingsSubmitted, err := queries.New(st.Pool).CheckAllPartialRatingsSubmitted(ctx, in.GetRatingId())
+	return st.SubmitRatingPlain(ctx, in.GetRatingId())
+}
+
+func (st *Store) SubmitRatingPlain(ctx context.Context, ratingId int32) (*pb.Rating, error) {
+	allPartialRatingsSubmitted, err := queries.New(st.Pool).CheckAllPartialRatingsSubmitted(ctx, ratingId)
 	if err != nil {
 		return nil, fmt.Errorf("checking if all p-ratings are submitted")
 	}
@@ -37,7 +41,7 @@ func (st *Store) SubmitRating(ctx context.Context, in *pb.SubmitRatingDraft) (*p
 	// submit the rating
 	ret, err := queries.New(tx).SubmitRating(ctx, queries.SubmitRatingParams{
 		IsDraft:  false,
-		RatingID: in.GetRatingId(),
+		RatingID: ratingId,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("submitting rating: %w", err)

@@ -129,6 +129,8 @@ func Open(ctx context.Context, log *zap.Logger, init_dict bool) (*Store, error) 
 		}
 	}
 
+	go store.WatchForAutoSubmit(ctx)
+
 	return store, nil
 }
 
