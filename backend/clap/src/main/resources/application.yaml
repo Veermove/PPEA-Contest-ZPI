@@ -54,7 +54,7 @@ caches:
 
 cron:
   job:
-    mail: 0/30 * * * * *
+    mail: 0 0 * * *
 
 email:
   sender: ppea-competition

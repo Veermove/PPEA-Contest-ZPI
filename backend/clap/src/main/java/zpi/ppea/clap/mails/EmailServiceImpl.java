@@ -16,9 +16,9 @@ import zpi.ppea.clap.repository.EmailRepository;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Service
@@ -35,22 +35,24 @@ public class EmailServiceImpl {
             return;
 
         var emailsList = emailResponse.getEmailsList();
-        Date currentDate = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX");
+
         for (var email : emailsList) {
-            try {
-                // Normal reminder
-                if (dateFormat.parse(email.getRatingSubmitDate()).before(currentDate)) {
-                    prepareAndSendEmail("templates/reminder_template.html",
-                            "PPEA przypomnienie o wystawieniu oceny", email);
-                }
-                // Urgent reminder
-                else {
-                    prepareAndSendEmail("templates/urgent_template.html",
-                            "PPEA ponaglenie do wystawienia oceny", email);
-                }
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
+            LocalDateTime ratingDateTime = LocalDateTime.parse(email.getRatingSubmitDate(), formatter);
+
+            // Check if ratingDate is between 5 and 1 day before currentDate
+            LocalDateTime startDate = LocalDateTime.now().minusDays(5);
+            LocalDateTime endDate = LocalDateTime.now().minusDays(1);
+
+            // Normal reminder
+            if (ratingDateTime.isAfter(startDate) && ratingDateTime.isBefore(endDate)) {
+                prepareAndSendEmail("templates/reminder_template.html",
+                        "PPEA przypomnienie o wystawieniu oceny", email);
+            }
+            // Urgent reminder
+            else if (ratingDateTime.isAfter(endDate)) {
+                prepareAndSendEmail("templates/urgent_template.html",
+                        "PPEA ponaglenie do wystawienia oceny", email);
             }
         }
     }
