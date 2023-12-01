@@ -17,8 +17,6 @@ import zpi.ppea.clap.repository.EmailRepository;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Service
@@ -35,22 +33,14 @@ public class EmailServiceImpl {
             return;
 
         var emailsList = emailResponse.getEmailsList();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX");
-
         for (var email : emailsList) {
-            LocalDateTime ratingDateTime = LocalDateTime.parse(email.getRatingSubmitDate(), formatter);
-
-            // Check if ratingDate is between 5 and 1 day before currentDate
-            LocalDateTime startDate = LocalDateTime.now().minusDays(5);
-            LocalDateTime endDate = LocalDateTime.now().minusDays(1);
-
             // Normal reminder
-            if (ratingDateTime.isAfter(startDate) && ratingDateTime.isBefore(endDate)) {
+            if (email.getIsFirstWarning()) {
                 prepareAndSendEmail("templates/reminder_template.html",
                         "PPEA przypomnienie o wystawieniu oceny", email);
             }
             // Urgent reminder
-            else if (ratingDateTime.isAfter(endDate)) {
+            else {
                 prepareAndSendEmail("templates/urgent_template.html",
                         "PPEA ponaglenie do wystawienia oceny", email);
             }

@@ -1,7 +1,7 @@
 package zpi.ppea.clap.repository;
 
-import com.google.protobuf.Empty;
 import data_store.DataStoreGrpc;
+import data_store.EmailRequest;
 import data_store.EmailResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class EmailRepository {
     public EmailResponse getEmailsToSent() throws NoAccessToResource {
         try {
             log.info("Trying to retrieve emails data.");
-            return dataStoreFutureStub.getEmailDetails(Empty.newBuilder().build()).get();
+            return dataStoreFutureStub.getEmailDetails(EmailRequest.newBuilder().build()).get();
         } catch (InterruptedException | ExecutionException e) {
             throw new NoAccessToResource(e, "false");
         }
