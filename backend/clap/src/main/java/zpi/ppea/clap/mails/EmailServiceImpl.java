@@ -40,7 +40,7 @@ public class EmailServiceImpl {
         for (var email : emailsList) {
             try {
                 // Normal reminder
-                if (dateFormat.parse(email.getFinishDate()).before(currentDate)) {
+                if (dateFormat.parse(email.getRatingSubmitDate()).before(currentDate)) {
                     prepareAndSendEmail("templates/reminder_template.html",
                             "PPEA przypomnienie o wystawieniu oceny", email);
                 }
@@ -70,10 +70,18 @@ public class EmailServiceImpl {
             helper.setSubject(subject);
 
             String htmlContent = readHtmlFile(htmlFilePath);
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("HH:mm dd.MM.yyyy");
             // Set values
-            htmlContent = htmlContent.replace("[AssessorName]", email.getAssessorName());
-            htmlContent = htmlContent.replace("[AssessorLastname]", email.getAssessmentLastName());
-
+            htmlContent = htmlContent.replace("[AssessorName]", email.getAssessorFirstName());
+            htmlContent = htmlContent.replace("[AssessorLastname]", email.getAssessorLastName());
+            htmlContent = htmlContent.replace("[SubmissionName]", email.getSubmissionName());
+            htmlContent = htmlContent.replace("[RatingType]", email.getRatingType().name());
+            htmlContent = htmlContent.replace("[EditionYear]", Integer.toString(email.getEditionYear()));
+            htmlContent = htmlContent.replace("[FinishDate]", outputDateFormat.format(email.getRatingSubmitDate()));
+            htmlContent = htmlContent.replace("[IsCreatedPl]", email.getIsRatingCreated() ?
+                    "Prosimy zatwierdź ocenę" : "Prosimy utwórz i zatwierdź ocenę");
+            htmlContent = htmlContent.replace("[IsCreatedEng]", outputDateFormat.format(email.getIsRatingCreated() ?
+                    "Please submit rating" : "Please create and submit rating"));
             helper.setText(htmlContent, true);
             emailSender.send(message);
 
