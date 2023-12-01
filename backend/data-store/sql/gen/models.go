@@ -110,22 +110,22 @@ type EditionAwardsRepresentativeContest struct {
 }
 
 type EditionContest struct {
-	ContestID                    int32
-	Year                         int32
-	MasterJuryID                 int32
-	EstTimeIndividualAssessment  sql.NullTime
-	EstTimePreliminaryAssessment sql.NullTime
-	EstTimeFinalAssessment       sql.NullTime
-	EstTimeJuryQuestions         sql.NullTime
-	MinProjectDurationDays       int32
-	MinParticipantTeamSize       int32
-	MinSubcontractors            int32
-	MaxProjectCompletionMonths   int32
-	UrlCodeOfConduct             sql.NullString
-	UrlSchedule                  sql.NullString
-	UrlFlyer                     sql.NullString
-	UrlFinalists                 sql.NullString
-	UrlResults                   sql.NullString
+	ContestID                   int32
+	Year                        int32
+	MasterJuryID                int32
+	EstTimeIndividualAssessment sql.NullTime
+	EstTimeInitialAssessment    sql.NullTime
+	EstTimeFinalAssessment      sql.NullTime
+	EstTimeJuryQuestions        sql.NullTime
+	MinProjectDurationDays      int32
+	MinParticipantTeamSize      int32
+	MinSubcontractors           int32
+	MaxProjectCompletionMonths  int32
+	UrlCodeOfConduct            sql.NullString
+	UrlSchedule                 sql.NullString
+	UrlFlyer                    sql.NullString
+	UrlFinalists                sql.NullString
+	UrlResults                  sql.NullString
 }
 
 type EditionJuryMemberContest struct {
@@ -142,6 +142,13 @@ type EditionPemCriterion struct {
 	Area           string
 	Criteria       string
 	Subcriteria    sql.NullString
+}
+
+type EmailsSentForOneRating struct {
+	AssessorID   int32
+	SubmissionID int32
+	RatingType   ProjectRatingType
+	EmailsSent   int32
 }
 
 type PersonApplicant struct {
@@ -234,11 +241,12 @@ type ProjectPartialRating struct {
 }
 
 type ProjectRating struct {
-	RatingID     int32
-	SubmissionID int32
-	AssessorID   int32
-	IsDraft      bool
-	Type         ProjectRatingType
+	RatingID                int32
+	SubmissionID            int32
+	AssessorID              int32
+	IsDraft                 bool
+	Type                    ProjectRatingType
+	CustomEstAssessmentTime sql.NullTime
 }
 
 type ProjectSubmission struct {

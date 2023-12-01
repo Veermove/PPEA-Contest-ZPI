@@ -105,11 +105,12 @@ create index applicant_submission_submission_id_idx
 
 -- ocena_PEM
 create table project.rating (
-    "rating_id"     int                 generated always as identity primary key,
-    "submission_id" int                 not null,
-    "assessor_id"   int                 not null,
-    "is_draft"      boolean             not null,
-    "type"          project.rating_type not null,
+    "rating_id"                          int                 generated always as identity primary key,
+    "submission_id"                      int                 not null,
+    "assessor_id"                        int                 not null,
+    "is_draft"                           boolean             not null,
+    "type"                               project.rating_type not null,
+    "custom_est_assessment_time"         date, -- assessor can ask for more time in which case it'd've been set here
 
     constraint rating_submission_fk
         foreign key (submission_id) references project.submission(submission_id),

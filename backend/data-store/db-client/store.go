@@ -3,7 +3,6 @@ package dbclient
 import (
 	"context"
 	"database/sql"
-	"embed"
 	"errors"
 	"fmt"
 	"os"
@@ -11,6 +10,7 @@ import (
 	"time"
 
 	pb "zpi/pb"
+	rawsql "zpi/sql"
 	queries "zpi/sql/gen"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -23,6 +23,12 @@ import (
 )
 
 const (
+	// EmailWarningPeriod is the time before the deadline when we should send a reminder email
+	EmailWarningPeriod = time.Hour * 24 * 5
+
+	// mailWarningPeriodFinal is the time before the deadline when we should send a reminder email
+	EmailWarningFinalPeriod = time.Hour * 24
+
 	MaxPgConn = 10
 	MinPgConn = 3
 )
@@ -39,13 +45,13 @@ var (
 		pb.RatingType_FINAL:      queries.ProjectRatingTypeFinal,
 	}
 	SubmissionStatesTypesMapping = map[queries.ProjectState]pb.ProjectState{
-		queries.ProjectStateDraft:     			pb.ProjectState_DRAFT,
-		queries.ProjectStateSubmitted: 			pb.ProjectState_SUBMITTED,
-		queries.ProjectStateAccepted:  			pb.ProjectState_ACCEPTED,
+		queries.ProjectStateDraft:              pb.ProjectState_DRAFT,
+		queries.ProjectStateSubmitted:          pb.ProjectState_SUBMITTED,
+		queries.ProjectStateAccepted:           pb.ProjectState_ACCEPTED,
 		queries.ProjectStateAcceptedIndividual: pb.ProjectState_ACCEPTED_INDIVIDUAL,
 		queries.ProjectStateAcceptedInitial:    pb.ProjectState_ACCEPTED_INITIAL,
 		queries.ProjectStateAcceptedFinal:      pb.ProjectState_ACCEPTED_FINAL,
-		queries.ProjectStateRejected:  			pb.ProjectState_REJECTED,
+		queries.ProjectStateRejected:           pb.ProjectState_REJECTED,
 	}
 )
 
@@ -58,9 +64,6 @@ type (
 	NewRatingsParams = queries.DoesAssessorHaveAccessToRatingParams
 	ValidationParams = queries.ValidatePartialRatingParams
 )
-
-//go:embed migrations
-var migrations embed.FS
 
 var RaceConditionDetectedErr = errors.New("RACECONDITION")
 
@@ -126,6 +129,8 @@ func Open(ctx context.Context, log *zap.Logger, init_dict bool) (*Store, error) 
 		}
 	}
 
+	go store.WatchForAutoSubmit(ctx)
+
 	return store, nil
 }
 
@@ -136,7 +141,7 @@ func RunMigrations(log *zap.Logger) error {
 		dir     source.Driver
 	)
 
-	if dir, err = iofs.New(migrations, "migrations"); err != nil {
+	if dir, err = iofs.New(rawsql.Migrations, "migrations"); err != nil {
 		return fmt.Errorf("running migration - new iofs: %w", err)
 	}
 
@@ -186,7 +191,7 @@ func DenullifyInt32(s sql.NullInt32) int32 {
 	return s.Int32
 }
 
-func Denullify(s sql.NullString) string {
+func DenullifyStr(s sql.NullString) string {
 	if !s.Valid {
 		return ""
 	}

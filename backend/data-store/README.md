@@ -8,19 +8,19 @@ $ go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@l
 Display version of last applied migration to databse:
 ```bash
 $ migrate \
-    -path ./db-client/migrations/ \
+    -path ./sql/migrations/ \
     -database postgres://${PG_STORE_USER}:${PG_STORE_PASSWORD}@${PG_STORE_HOST}:${PG_STORE_PORT}/${PG_STORE_DATABASE}?sslmode=disable
     version
 
 $ migrate \
-    -path ./db-client/migrations/ \
+    -path ./sql/migrations/ \
     -database postgres://postgres_user_env:postgres_password_env@localhost:5431/datastore?sslmode=disable version
 ```
 
 Apply all "up" migrations:
 ```bash
 $ migrate \
-    -path ./db-client/migrations/ \
+    -path ./sql/migrations/ \
     -database ...
     up
 ```
@@ -28,7 +28,7 @@ $ migrate \
 Apply all "down" migrations:
 ```bash
 $ migrate \
-    -path ./db-client/migrations/ \
+    -path ./sql/migrations/ \
     -database ...
     down
 ```

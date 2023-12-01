@@ -211,3 +211,5 @@ service DataStore {
     rpc PostSubmitRating        (SubmitRatingDraft)           returns (Rating)                    {}
     rpc GetEmailDetails         (EmailRequest)                returns (EmailResponse)             {}
 }
+
+
