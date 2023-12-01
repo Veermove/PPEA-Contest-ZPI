@@ -139,7 +139,7 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 
 		// Sending first mail
 		if tracker.EmailsSent == 0 && inWarningPeriod {
-			emailDetails.IsFirstWarningSent = true
+			emailDetails.IsFirstWarning = true
 
 			if err := dbConn.IncrementEmailTracker(ctx, queries.IncrementEmailTrackerParams{
 				AssessorID:   email.AssessorID,
@@ -156,7 +156,7 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 
 		// Sending second mail
 		if tracker.EmailsSent == 1 && inFinalWarningPeriod {
-			emailDetails.IsFirstWarningSent = false
+			emailDetails.IsFirstWarning = false
 
 			if err := dbConn.IncrementEmailTracker(ctx, queries.IncrementEmailTrackerParams{
 				AssessorID:   email.AssessorID,
