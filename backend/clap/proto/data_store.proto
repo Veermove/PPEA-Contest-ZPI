@@ -191,6 +191,7 @@ message EmailDetails {
     RatingType rating_type      = 6;
     int32 edition_year          = 7;
     string rating_submit_date   = 8;
+    bool isFirstWarningSent     = 9;
 }
 
 message EmailResponse {

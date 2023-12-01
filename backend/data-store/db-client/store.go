@@ -26,6 +26,9 @@ const (
 	// EmailWarningPeriod is the time before the deadline when we should send a reminder email
 	EmailWarningPeriod = time.Hour * 24 * 5
 
+	// mailWarningPeriodFinal is the time before the deadline when we should send a reminder email
+	EmailWarningFinalPeriod = time.Hour * 24
+
 	MaxPgConn = 10
 	MinPgConn = 3
 )

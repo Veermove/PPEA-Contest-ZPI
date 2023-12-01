@@ -26,13 +26,14 @@ type (
 		LastName       string
 		Email          string
 
-		XSetBeforeDate time.Time
+		RatingType    ds.RatingType
+		RatingSqlType queries.ProjectRatingType
 	}
 )
 
 func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) {
 	var (
-		ctx, cancel       = context.WithTimeout(ct, 1*time.Minute)
+		ctx, cancel       = context.WithTimeout(ct, 30*time.Minute)
 		wg                = sync.WaitGroup{}
 		individualRatings = []*EmailRow{}
 		finalRatings      = []*EmailRow{}
@@ -43,38 +44,39 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 
 	go func() {
 		defer wg.Done()
-		emails, err := st.getEmailsWithBackoff(ctx, 3, st.getEmailsForFinalRatings)
+		emails, err := getWithBackoff(ctx, st.Log, 3, st.getEmailsForFinalRatings)
 		if err != nil {
 			st.Log.Error("error getting emails", zap.Error(err))
 			return
 		}
-		finalRatings = emails
+		finalRatings = *emails
 	}()
 
 	go func() {
 		defer wg.Done()
-		emails, err := st.getEmailsWithBackoff(ctx, 3, st.getEmailsForIndividualRatings)
+		emails, err := getWithBackoff(ctx, st.Log, 3, st.getEmailsForIndividualRatings)
 		if err != nil {
 			st.Log.Error("error getting emails", zap.Error(err))
 			return
 		}
-		individualRatings = emails
+		individualRatings = *emails
 	}()
 
 	go func() {
 		defer wg.Done()
-		emails, err := st.getEmailsWithBackoff(ctx, 3, st.getEmailsForInitialRatings)
+		emails, err := getWithBackoff(ctx, st.Log, 3, st.getEmailsForInitialRatings)
 		if err != nil {
 			st.Log.Error("error getting emails", zap.Error(err))
 			return
 		}
-		individualRatings = emails
+		individualRatings = *emails
 	}()
 
 	wg.Wait()
 
 	merged := append(append(individualRatings, finalRatings...), initialRatings...)
-	emialDetails := make([]*ds.EmailDetails, 0, len(merged))
+	emailsToSend := make([]*ds.EmailDetails, 0, len(merged))
+	dbConn := queries.New(st.Pool)
 
 	for _, email := range merged {
 
@@ -83,20 +85,96 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 			continue
 		}
 
-		email.XSetBeforeDate = email.SetBeforeDate.Time
+		var ( // Are we ...
 
-		// suppose today       = 13.05
-		// email.setBeforeDate = 15.05
-		// then: setBeforeDate - EmailWarningPeriod (5 days) = 10.05
-		// is 10.05 before 13.05? yes, so we should send email
+			pastWarnings = time.Now().After(email.SetBeforeDate.Time)
 
-		if !email.XSetBeforeDate.Add(-EmailWarningPeriod).Before(time.Now()) {
+			// Let's say:
+			// today               = 13.05
+			// deadline date       = 15.05
+			// then:
+			// warningPeriodStart = deadline - EmailWarningPeriod (5 days) = 10.05
+			// is warningPeriodStart (10.05) after now (13.05)?
+			//    - yes, so we are in EmailWarningPeriod
+			//    - no,  so we are not in EmailWarningPeriod
+			inWarningPeriod      = email.SetBeforeDate.Time.Add(-EmailWarningPeriod).After(time.Now())
+			inFinalWarningPeriod = email.SetBeforeDate.Time.Add(-EmailWarningFinalPeriod).After(time.Now())
+		)
+
+		if pastWarnings || !inWarningPeriod {
 			continue
 		}
 
-		// check how many emails we sent?
+		// From this point we know that we are in EmailWarningPeriod.
+		// Get email tracker
+		trackerp, err := getWithBackoff(ctx, st.Log, 3, func(ctx context.Context) (queries.EmailsSentForOneRating, error) {
+			return dbConn.GetEmailTracker(ctx, queries.GetEmailTrackerParams{
+				AssessorID:   email.AssessorID,
+				SubmissionID: email.SubmissionID,
+				RatingType:   email.RatingSqlType,
+			})
+		})
+
+		if err != nil {
+			st.Log.Error("error getting email tracker", zap.Error(err))
+			continue
+		}
+
+		if trackerp == nil { // Unreachable if I'm sane
+			st.Log.Error("no email tracker found", zap.Any("email", email))
+			continue
+		}
+
+		tracker := *trackerp
+		emailDetails := &ds.EmailDetails{
+			AssessorFirstName: email.FirstName,
+			AssessorLastName:  email.LastName,
+			AssessorEmail:     email.Email,
+			SubmissionName:    email.SubmissionName,
+			IsRatingCreated:   email.IsCreated,
+			RatingType:        email.RatingType,
+			EditionYear:       email.Year,
+			RatingSubmitDate:  email.SetBeforeDate.Time.UTC().Format(time.RFC3339),
+		}
+
+		// Sending first mail
+		if tracker.EmailsSent == 0 && inWarningPeriod {
+			emailDetails.IsFirstWarningSent = true
+
+			if err := dbConn.IncrementEmailTracker(ctx, queries.IncrementEmailTrackerParams{
+				AssessorID:   email.AssessorID,
+				SubmissionID: email.SubmissionID,
+				RatingType:   email.RatingSqlType,
+			}); err != nil {
+				st.Log.Error("error incrementing email tracker", zap.Error(err))
+				continue
+			}
+
+			emailsToSend = append(emailsToSend, emailDetails)
+			continue
+		}
+
+		// Sending second mail
+		if tracker.EmailsSent == 1 && inFinalWarningPeriod {
+			emailDetails.IsFirstWarningSent = false
+
+			if err := dbConn.IncrementEmailTracker(ctx, queries.IncrementEmailTrackerParams{
+				AssessorID:   email.AssessorID,
+				SubmissionID: email.SubmissionID,
+				RatingType:   email.RatingSqlType,
+			}); err != nil {
+				st.Log.Error("error incrementing email tracker", zap.Error(err))
+				continue
+			}
+
+			emailsToSend = append(emailsToSend, emailDetails)
+			continue
+		}
 	}
 
+	return &ds.EmailResponse{
+		Emails: emailsToSend,
+	}, nil
 }
 
 func (st *Store) getEmailsForIndividualRatings(ctx context.Context) ([]*EmailRow, error) {
@@ -116,6 +194,8 @@ func (st *Store) getEmailsForIndividualRatings(ctx context.Context) ([]*EmailRow
 			FirstName:      r.FirstName,
 			LastName:       r.LastName,
 			Email:          r.Email,
+			RatingType:     ds.RatingType_INDIVIDUAL,
+			RatingSqlType:  queries.ProjectRatingTypeIndividual,
 		}
 	}), nil
 }
@@ -137,6 +217,8 @@ func (st *Store) getEmailsForFinalRatings(ctx context.Context) ([]*EmailRow, err
 			FirstName:      r.FirstName,
 			LastName:       r.LastName,
 			Email:          r.Email,
+			RatingType:     ds.RatingType_FINAL,
+			RatingSqlType:  queries.ProjectRatingTypeFinal,
 		}
 	}), nil
 }
@@ -158,31 +240,26 @@ func (st *Store) getEmailsForInitialRatings(ctx context.Context) ([]*EmailRow, e
 			FirstName:      r.FirstName,
 			LastName:       r.LastName,
 			Email:          r.Email,
+			RatingType:     ds.RatingType_INITIAL,
+			RatingSqlType:  queries.ProjectRatingTypeInitial,
 		}
 	}), nil
 }
 
-func DenullifyTime(s sql.NullTime) time.Time {
-	if s.Valid {
-		return s.Time
-	}
-	// yeah, returning zero time is a good idea
-	return time.Time{} // but to be honest, i dunno when it could be null
-}
-
-func (st *Store) getEmailsWithBackoff(
+func getWithBackoff[T any](
 	ctx context.Context,
+	logger *zap.Logger,
 	backoff int,
-	getter func(context.Context) ([]*EmailRow, error),
-) ([]*EmailRow, error) {
+	getter func(context.Context) (T, error),
+) (*T, error) {
 
 	for i := 0; i < backoff; i++ {
 		emails, err := getter(ctx)
 		if err != nil {
-			st.Log.Error("error getting emails", zap.Int("interatio", i), zap.Error(err))
+			logger.Error("error getting emails", zap.Int("interatio", i), zap.Error(err))
 			continue
 		}
-		return emails, nil
+		return &emails, nil
 	}
 	return nil, errors.New("error getting emails")
 }
