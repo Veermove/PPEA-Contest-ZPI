@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// WatchForAutoSubmit watches forver (until context cancellation) for ratings that should be autosubmitted
 func (st *Store) WatchForAutoSubmit(ctx context.Context) {
 	ticker := time.NewTicker(5 * time.Minute)
 	log := st.Log.Named("autosubmiter")
@@ -26,6 +27,7 @@ func (st *Store) WatchForAutoSubmit(ctx context.Context) {
 	}
 }
 
+// AutoSubmit tries to autosubmit all ratings that are over the deadline
 func (st *Store) AutoSubmit(ctx context.Context, log *zap.Logger) error {
 	ctx, cancel := context.WithTimeout(ctx, 60*time.Second)
 	defer cancel()

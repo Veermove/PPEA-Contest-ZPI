@@ -7,6 +7,8 @@ import (
 	queries "zpi/sql/gen"
 )
 
+// SubmitRating checks assessor access, checks if all partial ratings are submitted,
+// submits rating and sets next status.
 func (st *Store) SubmitRating(ctx context.Context, in *pb.SubmitRatingDraft) (*pb.Rating, error) {
 	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccessToRating(ctx, NewRatingsParams{AssessorID: in.GetAssessorId(), RatingID: in.GetRatingId()})
 	if err != nil {
@@ -19,6 +21,7 @@ func (st *Store) SubmitRating(ctx context.Context, in *pb.SubmitRatingDraft) (*p
 	return st.SubmitRatingPlain(ctx, in.GetRatingId())
 }
 
+// SubmitRatingPlain checks if all partial ratings are submitted, submits rating and sets next status.
 func (st *Store) SubmitRatingPlain(ctx context.Context, ratingId int32) (*pb.Rating, error) {
 	allPartialRatingsSubmitted, err := queries.New(st.Pool).CheckAllPartialRatingsSubmitted(ctx, ratingId)
 	if err != nil {

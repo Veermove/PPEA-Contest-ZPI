@@ -15,6 +15,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// GetUserClaims returns all ids as other roles that the user has
 func (st *Store) GetUserClaims(ctx context.Context, email string) (*pb.UserClaimsResponse, error) {
 	usr, err := queries.New(st.Pool).GetUserClaims(ctx, email)
 	if err == pgx.ErrNoRows {
@@ -36,6 +37,7 @@ func (st *Store) GetUserClaims(ctx context.Context, email string) (*pb.UserClaim
 
 }
 
+// GetSubmissionsDetails returns detailed information about submission with given id if the user has access to it.
 func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId, assessorId int32) (*pb.DetailsSubmissionResponse, error) {
 	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccess(ctx, AccessParams{AssessorID: assessorId, SubmissionID: submissionId})
 	if err != nil {
@@ -78,6 +80,7 @@ func (st *Store) GetSubmissionDetails(ctx context.Context, submissionId, assesso
 	}, nil
 }
 
+// GetSubmissionsByAssessor returns all submissions for the given assessor
 func (st *Store) GetSubmissionsByAssessor(ctx context.Context, assessorId int32) (*pb.SubmissionsResponse, error) {
 	returnVal := &pb.SubmissionsResponse{Submissions: []*pb.Submission{}}
 
