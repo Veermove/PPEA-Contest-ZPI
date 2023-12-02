@@ -286,5 +286,3 @@ func getWithBackoff[T any](
 	}
 	return nil, errors.New("error getting emails")
 }
-
-// grpcurl -d '' -proto backend/clap/proto/data_store.proto -plaintext localhost:8080 data_store.DataStore/GetEmailDetails
