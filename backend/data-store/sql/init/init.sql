@@ -105,7 +105,7 @@ insert into person.assessor (ipma_expert_id) values (1), (2), (3), (4), (5), (6)
 
 insert into edition.contest ("year", "master_jury_id", "est_time_individual_assessment", "est_time_initial_assessment", "est_time_final_assessment", "est_time_jury_questions", "min_project_duration_days", "min_participant_team_size", "min_subcontractors", "max_project_completion_months", "url_code_of_conduct", "url_schedule", "url_flyer", "url_finalists", "url_results")
 values
-    (2023, 1, '2023-11-01', '2023-11-15', '2023-11-30', '2023-12-15', 30, 2, 3, 6, 'http://example.com/code_of_conduct', 'http://example.com/schedule', 'http://example.com/flyer', 'http://example.com/finalists', 'http://example.com/results'),
+    (2023, 1, '2023-12-03', '2023-11-15', '2023-11-30', '2023-12-15', 30, 2, 3, 6, 'http://example.com/code_of_conduct', 'http://example.com/schedule', 'http://example.com/flyer', 'http://example.com/finalists', 'http://example.com/results'),
     (2022, 2, '2022-10-01', '2022-10-15', '2022-10-30', '2022-11-15', 45, 3, 4, 7, 'http://example.com/code_of_conduct_2022', 'http://example.com/schedule_2022', 'http://example.com/flyer_2022', 'http://example.com/finalists_2022', 'http://example.com/results_2022'),
     (2021, 3, '2021-09-01', '2021-09-15', '2021-09-30', '2021-10-15', 60, 4, 5, 8, 'http://example.com/code_of_conduct_2021', 'http://example.com/schedule_2021', 'http://example.com/flyer_2021', 'http://example.com/finalists_2021', 'http://example.com/results_2021');
 
@@ -270,7 +270,7 @@ insert into project.applicant_submission (
     (9, 9);
 
 -- submissions 1-3 are from active contest
-insert into project.rating( "submission_id", "assessor_id", "is_draft", "type") values (2, 3, false, 'individual');
+insert into project.rating( "submission_id", "assessor_id", "is_draft", "type") values (2, 3, true, 'individual');
 insert into project.rating( "submission_id", "assessor_id", "is_draft", "type") values (2, 4, false, 'individual');
 insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (1, 2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
 insert into project.partial_rating ( "rating_id", "criterion_id", "points", "justification", "modified_by_id" ) values (2, 2,  5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl. Sed vitae nisl euismod, aliquam nunc vitae, aliquam nisl.', 2);
