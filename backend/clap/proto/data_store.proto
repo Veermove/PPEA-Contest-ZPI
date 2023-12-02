@@ -200,6 +200,20 @@ message EmailResponse {
 
 message EmailRequest {}
 
+message Confirmation  {
+    int32 assessor_id = 1;
+    int32 submission_id = 2;
+    RatingType rating_type = 3;
+}
+
+message ConfirmationRequest {
+    repeated Confirmation confirmations = 1;
+}
+
+message ConfirmationResponse {
+    bool error = 1;
+}
+
 service DataStore {
     rpc GetUserClaims           (UserRequest)                 returns (UserClaimsResponse)        {}
     rpc GetSubmissions          (SubmissionRequest)           returns (SubmissionsResponse)       {}
@@ -210,6 +224,7 @@ service DataStore {
     rpc PostPartialRating       (PartialRatingRequest)        returns (PostPartialRatingResponse) {}
     rpc PostSubmitRating        (SubmitRatingDraft)           returns (Rating)                    {}
     rpc GetEmailDetails         (EmailRequest)                returns (EmailResponse)             {}
+    rpc ConfirmEmailsSent       (ConfirmationRequest)         returns (ConfirmationResponse)      {}
 }
 
 
