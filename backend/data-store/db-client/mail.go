@@ -94,11 +94,11 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 			// deadline date       = 15.05
 			// then:
 			// warningPeriodStart = deadline - EmailWarningPeriod (5 days) = 10.05
-			// is warningPeriodStart (10.05) after now (13.05)?
+			// is warningPeriodStart (10.05) before now (13.05)?
 			//    - yes, so we are in EmailWarningPeriod
 			//    - no,  so we are not in EmailWarningPeriod
-			inWarningPeriod      = email.SetBeforeDate.Time.Add(-EmailWarningPeriod).After(time.Now())
-			inFinalWarningPeriod = email.SetBeforeDate.Time.Add(-EmailWarningFinalPeriod).After(time.Now())
+			inWarningPeriod      = email.SetBeforeDate.Time.Add(-EmailWarningPeriod).Before(time.Now())
+			inFinalWarningPeriod = email.SetBeforeDate.Time.Add(-EmailWarningFinalPeriod).Before(time.Now())
 		)
 
 		if pastWarnings || !inWarningPeriod {
