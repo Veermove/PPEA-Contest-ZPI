@@ -6,7 +6,6 @@ import data_store.EmailDetails;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -22,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Service
 @AllArgsConstructor
 public class EmailServiceImpl {
@@ -42,12 +40,12 @@ public class EmailServiceImpl {
             // Normal reminder
             if (email.getIsFirstWarning()) {
                 confirmations = prepareAndSendEmail("templates/reminder_template.html",
-                        "PPEA przypomnienie o wystawieniu oceny", email);
+                        "PPEA przypomnienie o wystawieniu oceny ||| PPEA rating reminder", email);
             }
             // Urgent reminder
             else {
                 confirmations = prepareAndSendEmail("templates/urgent_template.html",
-                        "PPEA ponaglenie do wystawienia oceny", email);
+                        "PPEA ponaglenie do wystawienia oceny ||| PPEA urgent rating reminder", email);
             }
         }
         var wereConfirmationsSent = sendConfirmations(confirmations);

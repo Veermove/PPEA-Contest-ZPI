@@ -15,9 +15,9 @@ public class EmailController {
     private final EmailServiceImpl emailService;
 
     @GetMapping
-    public ResponseEntity<Void> upsertPartialRating() {
+    public ResponseEntity<Void> sendEmailManually() {
         emailService.sendHtmlMessageFromFile();
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
 }
