@@ -106,12 +106,12 @@ func (st *Store) UpsertPartialRatings(ctx context.Context, in *pb.PartialRatingR
 		err      error
 		ratingId = in.GetRatingId()
 	)
+
 	// For updates we don't have actual ratingId at hand, so...
 	// for checking access we have to get it from partial rating
 	if in.GetPartialRatingId() != 0 {
 
 		if ratingId, err = queries.New(st.Pool).GetRatingIdForPartialRating(ctx, in.GetPartialRatingId()); err != nil {
-
 			// allowing for errors == pgx.ErrNoRows to go this route
 			return nil, fmt.Errorf("getting rating id for partial rating: %w", err)
 		}
@@ -128,7 +128,32 @@ func (st *Store) UpsertPartialRatings(ctx context.Context, in *pb.PartialRatingR
 	// If we don't have partial rating id create new partial rating
 	if in.GetPartialRatingId() == 0 {
 
-		ret, err := queries.New(st.Pool).CreatePartialRating(ctx, queries.CreatePartialRatingParams{
+		tx, err := st.Pool.Begin(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("starting transaction for partial ratings: %w", err)
+		}
+		// if we commit transaction before the end this becomes a no-op
+		defer tx.Rollback(ctx)
+		dbConn := queries.New(tx)
+
+		// Check if partial rating exists, because it could have been created by another assessor meanwhile
+		exists, err := dbConn.DoesPartialRatingExist(ctx, queries.DoesPartialRatingExistParams{
+			RatingID:    in.GetRatingId(),
+			CriterionID: in.GetCriterionId(),
+		})
+
+		if err != nil {
+			return nil, fmt.Errorf("checking if partial rating exists: %w", err)
+		}
+
+		// If it exists, we return RaceCondition error
+		if exists {
+			st.Log.Info("race condition detected. partial rating already exists")
+			// no need to commit transaction here, because we did not change anything
+			return nil, RaceConditionDetectedErr
+		}
+
+		ret, err := dbConn.CreatePartialRating(ctx, queries.CreatePartialRatingParams{
 			RatingID:      in.GetRatingId(),
 			CriterionID:   in.GetCriterionId(),
 			Points:        in.GetPoints(),
@@ -138,6 +163,10 @@ func (st *Store) UpsertPartialRatings(ctx context.Context, in *pb.PartialRatingR
 
 		if err != nil {
 			return nil, fmt.Errorf("creating partial rating: %w", err)
+		}
+
+		if err := tx.Commit(ctx); err != nil {
+			return nil, fmt.Errorf("committing transaction for partial ratings: %w", err)
 		}
 
 		return &pb.PartialRating{

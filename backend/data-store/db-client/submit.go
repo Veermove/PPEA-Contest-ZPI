@@ -7,6 +7,8 @@ import (
 	queries "zpi/sql/gen"
 )
 
+// SubmitRating checks assessor access, checks if all partial ratings are submitted,
+// submits rating and sets next status.
 func (st *Store) SubmitRating(ctx context.Context, in *pb.SubmitRatingDraft) (*pb.Rating, error) {
 	hasAccess, err := queries.New(st.Pool).DoesAssessorHaveAccessToRating(ctx, NewRatingsParams{AssessorID: in.GetAssessorId(), RatingID: in.GetRatingId()})
 	if err != nil {
@@ -16,7 +18,12 @@ func (st *Store) SubmitRating(ctx context.Context, in *pb.SubmitRatingDraft) (*p
 		return nil, fmt.Errorf("User does not have access to resource")
 	}
 
-	allPartialRatingsSubmitted, err := queries.New(st.Pool).CheckAllPartialRatingsSubmitted(ctx, in.GetRatingId())
+	return st.SubmitRatingPlain(ctx, in.GetRatingId())
+}
+
+// SubmitRatingPlain checks if all partial ratings are submitted, submits rating and sets next status.
+func (st *Store) SubmitRatingPlain(ctx context.Context, ratingId int32) (*pb.Rating, error) {
+	allPartialRatingsSubmitted, err := queries.New(st.Pool).CheckAllPartialRatingsSubmitted(ctx, ratingId)
 	if err != nil {
 		return nil, fmt.Errorf("checking if all p-ratings are submitted")
 	}
@@ -37,7 +44,7 @@ func (st *Store) SubmitRating(ctx context.Context, in *pb.SubmitRatingDraft) (*p
 	// submit the rating
 	ret, err := queries.New(tx).SubmitRating(ctx, queries.SubmitRatingParams{
 		IsDraft:  false,
-		RatingID: in.GetRatingId(),
+		RatingID: ratingId,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("submitting rating: %w", err)

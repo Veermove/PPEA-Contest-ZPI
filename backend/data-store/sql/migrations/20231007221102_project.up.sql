@@ -105,11 +105,12 @@ create index applicant_submission_submission_id_idx
 
 -- ocena_PEM
 create table project.rating (
-    "rating_id"     int                 generated always as identity primary key,
-    "submission_id" int                 not null,
-    "assessor_id"   int                 not null,
-    "is_draft"      boolean             not null,
-    "type"          project.rating_type not null,
+    "rating_id"                          int                 generated always as identity primary key,
+    "submission_id"                      int                 not null,
+    "assessor_id"                        int                 not null,
+    "is_draft"                           boolean             not null,
+    "type"                               project.rating_type not null,
+    "custom_est_assessment_time"         date, -- assessor can ask for more time in which case it'd've been set here
 
     constraint rating_submission_fk
         foreign key (submission_id) references project.submission(submission_id),
@@ -137,7 +138,9 @@ create table project.partial_rating (
         foreign key (rating_id) references project.rating(rating_id),
 
     constraint pem_cirterion_partial_rating_fk
-        foreign key (criterion_id) references edition.pem_criterion(pem_criterion_id)
+        foreign key (criterion_id) references edition.pem_criterion(pem_criterion_id),
+
+    constraint unique_partial_rating unique (rating_id, criterion_id)
 );
 
 --pytanie_jury

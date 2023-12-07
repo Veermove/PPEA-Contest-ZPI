@@ -134,3 +134,15 @@ func (s *DataStore) GetStudyVisit(ctx context.Context, in *ds.StudyVisitRequest)
 
 	return s.Db.GetStudyVisits(ctx, in.GetAssessorId(), in.GetSubmissionId())
 }
+
+func (s *DataStore) GetEmailDetails(ctx context.Context, _ *ds.EmailRequest) (*ds.EmailResponse, error) {
+	return s.Db.GetEmailDetails(ctx)
+}
+
+func (s *DataStore) ConfirmEmailsSent(ctx context.Context, in *ds.ConfirmationRequest) (*ds.ConfirmationResponse, error) {
+	if err := s.Db.ConfirmEmailsSent(ctx, in.GetConfirmations()); err != nil {
+		return nil, err
+	}
+
+	return &ds.ConfirmationResponse{}, nil
+}
