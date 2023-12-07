@@ -31,6 +31,58 @@ type (
 	}
 )
 
+func (st *Store) ConfirmEmailsSent(ctx context.Context, confirmations []*ds.Confirmation) error {
+
+	// start transaction
+	tx, err := st.Pool.Begin(ctx)
+
+	// if we commit transaction before the end this becomes a no-op
+	defer tx.Rollback(ctx)
+
+	if err != nil {
+		return fmt.Errorf("starting transaction: %w", err)
+	}
+
+	dbConn := queries.New(tx)
+
+	for _, req := range confirmations {
+
+		log := st.Log.With(
+			zap.Int32("assessor_id", req.GetAssessorId()),
+			zap.Int32("submission_id", req.GetSubmissionId()),
+			zap.String("rating_type", req.GetRatingType().String()))
+
+		exists, err := dbConn.CheckEmailTrackerExist(ctx, queries.CheckEmailTrackerExistParams{
+			AssessorID:   req.GetAssessorId(),
+			SubmissionID: req.GetSubmissionId(),
+			RatingType:   RatingTypesMappingRev[req.GetRatingType()],
+		})
+
+		if err != nil {
+			log.Info("exiting email confirmation. Error checking email tracker", zap.Error(err))
+			return fmt.Errorf("checking email tracker: %w", err)
+		}
+		if !exists {
+			log.Info("exiting email confirmation. Email tracker does not exist")
+			return fmt.Errorf("email tracker does not exist")
+		}
+
+		if err := dbConn.IncrementEmailTracker(ctx, queries.IncrementEmailTrackerParams{
+			AssessorID:   req.GetAssessorId(),
+			SubmissionID: req.GetSubmissionId(),
+			RatingType:   RatingTypesMappingRev[req.GetRatingType()],
+		}); err != nil {
+
+			log.Error("error incrementing email tracker", zap.Error(err))
+			return fmt.Errorf("incrementing email tracker: %w", err)
+		}
+	}
+
+	st.Log.Info("committing transaction with email confirmations")
+
+	return tx.Commit(ctx)
+}
+
 func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) {
 	var (
 		ctx, cancel = context.WithTimeout(ct, 30*time.Minute)
@@ -143,16 +195,6 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 		if tracker.EmailsSent == 0 && inWarningPeriod {
 			log.Info("sending first warning")
 			emailDetails.IsFirstWarning = true
-
-			if err := dbConn.IncrementEmailTracker(ctx, queries.IncrementEmailTrackerParams{
-				AssessorID:   email.AssessorID,
-				SubmissionID: email.SubmissionID,
-				RatingType:   email.RatingSqlType,
-			}); err != nil {
-				log.Error("error incrementing email tracker", zap.Error(err))
-				continue
-			}
-
 			emailsToSend = append(emailsToSend, emailDetails)
 			continue
 		}
@@ -161,16 +203,6 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 		if tracker.EmailsSent == 1 && inFinalWarningPeriod {
 			log.Info("sending second warning")
 			emailDetails.IsFirstWarning = false
-
-			if err := dbConn.IncrementEmailTracker(ctx, queries.IncrementEmailTrackerParams{
-				AssessorID:   email.AssessorID,
-				SubmissionID: email.SubmissionID,
-				RatingType:   email.RatingSqlType,
-			}); err != nil {
-				log.Error("error incrementing email tracker", zap.Error(err))
-				continue
-			}
-
 			emailsToSend = append(emailsToSend, emailDetails)
 			continue
 		}
