@@ -17,6 +17,7 @@ func (st *Store) WatchForAutoSubmit(ctx context.Context) {
 	for {
 		select {
 		case <-ctx.Done():
+			log.Info("context cancelled, exiting autosubmiter")
 			return
 		case <-ticker.C:
 			log.Info("checking for autosubmit")
@@ -47,6 +48,8 @@ func (st *Store) AutoSubmit(ctx context.Context, log *zap.Logger) error {
 
 			errs = append(errs, err)
 		}
+
+		log.Info("autosubmitted successfully", zap.Int32("rating_id", ratingId))
 	}
 
 	if len(errs) > 0 {

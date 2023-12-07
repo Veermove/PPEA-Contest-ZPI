@@ -31,52 +31,99 @@ type (
 	}
 )
 
+func (st *Store) ConfirmEmailsSent(ctx context.Context, confirmations []*ds.Confirmation) error {
+
+	// start transaction
+	tx, err := st.Pool.Begin(ctx)
+
+	// if we commit transaction before the end this becomes a no-op
+	defer tx.Rollback(ctx)
+
+	if err != nil {
+		return fmt.Errorf("starting transaction: %w", err)
+	}
+
+	dbConn := queries.New(tx)
+
+	for _, req := range confirmations {
+
+		log := st.Log.With(
+			zap.Int32("assessor_id", req.GetAssessorId()),
+			zap.Int32("submission_id", req.GetSubmissionId()),
+			zap.String("rating_type", req.GetRatingType().String()))
+
+		exists, err := dbConn.CheckEmailTrackerExist(ctx, queries.CheckEmailTrackerExistParams{
+			AssessorID:   req.GetAssessorId(),
+			SubmissionID: req.GetSubmissionId(),
+			RatingType:   RatingTypesMappingRev[req.GetRatingType()],
+		})
+
+		if err != nil {
+			log.Info("exiting email confirmation. Error checking email tracker", zap.Error(err))
+			return fmt.Errorf("checking email tracker: %w", err)
+		}
+		if !exists {
+			log.Info("exiting email confirmation. Email tracker does not exist")
+			return fmt.Errorf("email tracker does not exist")
+		}
+
+		if err := dbConn.IncrementEmailTracker(ctx, queries.IncrementEmailTrackerParams{
+			AssessorID:   req.GetAssessorId(),
+			SubmissionID: req.GetSubmissionId(),
+			RatingType:   RatingTypesMappingRev[req.GetRatingType()],
+		}); err != nil {
+
+			log.Error("error incrementing email tracker", zap.Error(err))
+			return fmt.Errorf("incrementing email tracker: %w", err)
+		}
+	}
+
+	st.Log.Info("committing transaction with email confirmations")
+
+	return tx.Commit(ctx)
+}
+
 func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) {
 	var (
-		ctx, cancel       = context.WithTimeout(ct, 30*time.Minute)
-		wg                = sync.WaitGroup{}
-		individualRatings = []*EmailRow{}
-		finalRatings      = []*EmailRow{}
-		initialRatings    = []*EmailRow{}
+		ctx, cancel = context.WithTimeout(ct, 30*time.Minute)
+		wgSink      = &sync.WaitGroup{}
+		wgChan      = &sync.WaitGroup{}
+
+		combinedRatingsDetails = make(chan *EmailRow)
+		merged                 = []*EmailRow{}
 	)
 	defer cancel()
-	wg.Add(3)
 
+	st.Log.Info("preparing to get emails details")
+
+	wgSink.Add(1)
 	go func() {
-		defer wg.Done()
-		emails, err := getWithBackoff(ctx, st.Log, 3, st.getEmailsForFinalRatings)
-		if err != nil {
-			st.Log.Error("error getting emails", zap.Error(err))
-			return
+		defer wgSink.Done()
+
+		for email := range combinedRatingsDetails {
+
+			select { // This is to prevent hanging goroutine
+			case <-ctx.Done(): // when context get cancelled
+				return
+			default:
+			}
+			merged = append(merged, email)
 		}
-		finalRatings = *emails
 	}()
 
-	go func() {
-		defer wg.Done()
-		emails, err := getWithBackoff(ctx, st.Log, 3, st.getEmailsForIndividualRatings)
-		if err != nil {
-			st.Log.Error("error getting emails", zap.Error(err))
-			return
-		}
-		individualRatings = *emails
-	}()
+	wgChan.Add(3)
+	go st.getEmails(ctx, wgChan, combinedRatingsDetails, st.getEmailsForIndividualRatings)
+	go st.getEmails(ctx, wgChan, combinedRatingsDetails, st.getEmailsForFinalRatings)
+	go st.getEmails(ctx, wgChan, combinedRatingsDetails, st.getEmailsForInitialRatings)
 
-	go func() {
-		defer wg.Done()
-		emails, err := getWithBackoff(ctx, st.Log, 3, st.getEmailsForInitialRatings)
-		if err != nil {
-			st.Log.Error("error getting emails", zap.Error(err))
-			return
-		}
-		individualRatings = *emails
-	}()
+	wgChan.Wait()
+	close(combinedRatingsDetails)
+	wgSink.Wait()
 
-	wg.Wait()
-
-	merged := append(append(individualRatings, finalRatings...), initialRatings...)
 	emailsToSend := make([]*ds.EmailDetails, 0, len(merged))
 	dbConn := queries.New(st.Pool)
+
+	st.Log.Info("got emails details", zap.Int("emails", len(merged)))
 
 	for _, email := range merged {
 
@@ -94,14 +141,21 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 			// deadline date       = 15.05
 			// then:
 			// warningPeriodStart = deadline - EmailWarningPeriod (5 days) = 10.05
-			// is warningPeriodStart (10.05) after now (13.05)?
+			// is warningPeriodStart (10.05) before now (13.05)?
 			//    - yes, so we are in EmailWarningPeriod
 			//    - no,  so we are not in EmailWarningPeriod
-			inWarningPeriod      = email.SetBeforeDate.Time.Add(-EmailWarningPeriod).After(time.Now())
-			inFinalWarningPeriod = email.SetBeforeDate.Time.Add(-EmailWarningFinalPeriod).After(time.Now())
+			inWarningPeriod      = email.SetBeforeDate.Time.Add(-EmailWarningPeriod).Before(time.Now())
+			inFinalWarningPeriod = email.SetBeforeDate.Time.Add(-EmailWarningFinalPeriod).Before(time.Now())
+
+			log = st.Log.With(
+				zap.String("email", email.Email),
+				zap.String("rating_type", email.RatingType.String()),
+				zap.String("rating_submit_date", email.SetBeforeDate.Time.UTC().Format(time.RFC3339)),
+				zap.String("submission_name", email.SubmissionName))
 		)
 
 		if pastWarnings || !inWarningPeriod {
+			log.Debug("skipping email", zap.Bool("past_warnings", pastWarnings), zap.Bool("in_warning_period", inWarningPeriod))
 			continue
 		}
 
@@ -116,12 +170,12 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 		})
 
 		if err != nil {
-			st.Log.Error("error getting email tracker", zap.Error(err))
+			log.Error("error getting email tracker", zap.Error(err))
 			continue
 		}
 
 		if trackerp == nil { // Unreachable if I'm sane
-			st.Log.Error("no email tracker found", zap.Any("email", email))
+			log.Error("no email tracker found", zap.Any("email", email))
 			continue
 		}
 
@@ -139,42 +193,43 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 
 		// Sending first mail
 		if tracker.EmailsSent == 0 && inWarningPeriod {
+			log.Info("sending first warning")
 			emailDetails.IsFirstWarning = true
-
-			if err := dbConn.IncrementEmailTracker(ctx, queries.IncrementEmailTrackerParams{
-				AssessorID:   email.AssessorID,
-				SubmissionID: email.SubmissionID,
-				RatingType:   email.RatingSqlType,
-			}); err != nil {
-				st.Log.Error("error incrementing email tracker", zap.Error(err))
-				continue
-			}
-
 			emailsToSend = append(emailsToSend, emailDetails)
 			continue
 		}
 
 		// Sending second mail
 		if tracker.EmailsSent == 1 && inFinalWarningPeriod {
+			log.Info("sending second warning")
 			emailDetails.IsFirstWarning = false
-
-			if err := dbConn.IncrementEmailTracker(ctx, queries.IncrementEmailTrackerParams{
-				AssessorID:   email.AssessorID,
-				SubmissionID: email.SubmissionID,
-				RatingType:   email.RatingSqlType,
-			}); err != nil {
-				st.Log.Error("error incrementing email tracker", zap.Error(err))
-				continue
-			}
-
 			emailsToSend = append(emailsToSend, emailDetails)
 			continue
 		}
+
+		log.Info("skipping email", zap.Int32("emails_sent", tracker.EmailsSent))
 	}
 
 	return &ds.EmailResponse{
 		Emails: emailsToSend,
 	}, nil
+}
+
+func (st *Store) getEmails(ctx context.Context,
+	wg *sync.WaitGroup,
+	combinedRatingsDetails chan<- *EmailRow,
+	getter func(context.Context) ([]*EmailRow, error),
+) {
+	defer wg.Done()
+
+	emails, err := getWithBackoff(ctx, st.Log, 3, getter)
+	if err != nil {
+		st.Log.Error("error getting emails", zap.Error(err))
+		return
+	}
+	for _, email := range *emails {
+		combinedRatingsDetails <- email
+	}
 }
 
 func (st *Store) getEmailsForIndividualRatings(ctx context.Context) ([]*EmailRow, error) {

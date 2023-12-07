@@ -14,10 +14,10 @@ create table emails.sent_for_one_rating (
 
     "emails_sent" int not null default 0,
 
-    constraint assessor_submission_assessor_fk
+    constraint sent_for_one_rating_assessor_fk
         foreign key (assessor_id) references person.assessor(assessor_id),
 
-    constraint assessor_submission_submission_fk
+    constraint sent_for_one_rating_submission_fk
         foreign key (submission_id) references project.submission(submission_id),
 
     constraint sent_for_one_rating_pk

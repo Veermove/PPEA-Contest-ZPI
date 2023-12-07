@@ -138,7 +138,9 @@ create table project.partial_rating (
         foreign key (rating_id) references project.rating(rating_id),
 
     constraint pem_cirterion_partial_rating_fk
-        foreign key (criterion_id) references edition.pem_criterion(pem_criterion_id)
+        foreign key (criterion_id) references edition.pem_criterion(pem_criterion_id),
+
+    constraint unique_partial_rating unique (rating_id, criterion_id)
 );
 
 --pytanie_jury
