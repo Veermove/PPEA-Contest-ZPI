@@ -1,5 +1,7 @@
 package zpi.ppea.clap.mails;
 
+import data_store.Confirmation;
+import data_store.ConfirmationRequest;
 import data_store.EmailDetails;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -17,6 +19,8 @@ import zpi.ppea.clap.repository.EmailRepository;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -33,18 +37,22 @@ public class EmailServiceImpl {
             return;
 
         var emailsList = emailResponse.getEmailsList();
+        List<Confirmation> confirmations = new ArrayList<>();
         for (var email : emailsList) {
             // Normal reminder
             if (email.getIsFirstWarning()) {
-                prepareAndSendEmail("templates/reminder_template.html",
+                confirmations = prepareAndSendEmail("templates/reminder_template.html",
                         "PPEA przypomnienie o wystawieniu oceny", email);
             }
             // Urgent reminder
             else {
-                prepareAndSendEmail("templates/urgent_template.html",
+                confirmations = prepareAndSendEmail("templates/urgent_template.html",
                         "PPEA ponaglenie do wystawienia oceny", email);
             }
         }
+        var wereConfirmationsSent = sendConfirmations(confirmations);
+        if (!wereConfirmationsSent)
+            throw new RuntimeException("Couldn't sent emails");
     }
 
     private String readHtmlFile(String filePath) throws IOException {
@@ -53,8 +61,9 @@ public class EmailServiceImpl {
         return new String(contentBytes, StandardCharsets.UTF_8);
     }
 
-    private void prepareAndSendEmail(String htmlFilePath, String subject, EmailDetails email) {
+    private ArrayList<Confirmation> prepareAndSendEmail(String htmlFilePath, String subject, EmailDetails email) {
         MimeMessage message = emailSender.createMimeMessage();
+        var confirmations = new ArrayList<Confirmation>();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(valueConfig.getEmailSender());
@@ -75,11 +84,22 @@ public class EmailServiceImpl {
             htmlContent = htmlContent.replace("[IsCreatedEng]", outputDateFormat.format(email.getIsRatingCreated() ?
                     "Please submit rating" : "Please create and submit rating"));
             helper.setText(htmlContent, true);
+
+            // Send email and add to confirmation list
             emailSender.send(message);
+            confirmations.add(Confirmation.newBuilder().setAssessorId(email.getAssessorId())
+                    .setRatingType(email.getRatingType()).setSubmissionId(email.getSubmissionId()).build());
 
         } catch (MessagingException | IOException e) {
             throw new RuntimeException(e);
         }
+        return confirmations;
+    }
+
+    private boolean sendConfirmations(List<Confirmation> confirmations) {
+        var confirmationRequest = ConfirmationRequest.newBuilder();
+        confirmations.forEach(confirmationRequest::addConfirmations);
+        return !emailRepository.sendConfirmation(confirmationRequest.build()).getError();
     }
 
 }
