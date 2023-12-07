@@ -12,6 +12,11 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken%40system.gserviceaccount.com
+  mail:
+    host: 127.0.0.1
+    port: 1025
+    username:
+    password:
 
 frontend:
   address: http://localhost:3000
@@ -46,3 +51,10 @@ caches:
       expiryInMinutes: 1440
     - name: Visits
       expiryInMinutes: 1440
+
+cron:
+  job:
+    mail: 0 0 * * *
+
+email:
+  sender: ppea-competition

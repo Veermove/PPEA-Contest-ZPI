@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                                .requestMatchers("/admin/email").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(server -> server.jwt(Customizer.withDefaults()))
