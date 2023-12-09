@@ -1,9 +1,6 @@
 package zpi.ppea.clap.mails;
 
-import data_store.Confirmation;
-import data_store.ConfirmationRequest;
-import data_store.ConfirmationResponse;
-import data_store.EmailDetails;
+import data_store.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
@@ -78,7 +75,8 @@ public class EmailServiceImpl {
             htmlContent = htmlContent.replace("[AssessorName]", email.getAssessorFirstName());
             htmlContent = htmlContent.replace("[AssessorLastname]", email.getAssessorLastName());
             htmlContent = htmlContent.replace("[SubmissionName]", email.getSubmissionName());
-            htmlContent = htmlContent.replace("[RatingType]", email.getRatingType().name());
+            htmlContent = htmlContent.replace("[RatingTypePL]", translateRatingType(email.getRatingType(), "PL"));
+            htmlContent = htmlContent.replace("[RatingTypeEng]", translateRatingType(email.getRatingType(), "ENG"));
             htmlContent = htmlContent.replace("[EditionYear]", Integer.toString(email.getEditionYear()));
             htmlContent = htmlContent.replace("[FinishDate]", email.getRatingSubmitDate());
             htmlContent = htmlContent.replace("[IsCreatedPl]", email.getIsRatingCreated() ?
@@ -102,6 +100,24 @@ public class EmailServiceImpl {
         confirmationRequest.addAllConfirmations(confirmations);
         ConfirmationResponse confirmationResponse = emailRepository.sendConfirmation(confirmationRequest.build());
         return !confirmationResponse.getError();
+    }
+
+    private String translateRatingType(RatingType ratingType, String language) {
+        return switch (language) {
+            case "PL" -> switch (ratingType) {
+                case INDIVIDUAL -> "indywidualnej";
+                case INITIAL -> "wstępnej";
+                case FINAL -> "końcowej";
+                case UNRECOGNIZED -> throw new RuntimeException("Unknown ratingType: " + ratingType.name());
+            };
+            case "ENG" -> switch (ratingType) {
+                case INDIVIDUAL -> "individual";
+                case INITIAL -> "initial";
+                case FINAL -> "final";
+                case UNRECOGNIZED -> throw new RuntimeException("Unknown ratingType: " + ratingType.name());
+            };
+            default -> throw new RuntimeException("Unknown language: " + language);
+        };
     }
 
 }
