@@ -32,8 +32,6 @@ create table project.application_report (
     "attatchments" text
 );
 
-create index application_report_submission_id_idx
-    on project.application_report(submission_id);
 
 -- zgloszenie_projektu
 create table project.submission (
@@ -51,12 +49,20 @@ create table project.submission (
     "video"            text,
     "logo"             text,
 
+    "custom_time_individual_assessment"  date, -- assessor can ask for more time in which case it'd've been set here
+    "custom_time_initial_assessment"     date,
+    "custom_time_final_assessment"       date,
+    "custom_time_jury_questions"         date,
+
     "initiator_declaration" text,
     "applicant_declaration" text,
 
     constraint submission_contest_fk
         foreign key (contest_id) references edition.contest(contest_id)
 );
+
+create index project_submission_status_idx
+    on project.submission ("status");
 
 alter table only project.application_report
     add constraint application_report_submission_fk
@@ -77,11 +83,8 @@ create table project.assessor_submission (
         foreign key (submission_id) references project.submission(submission_id)
 );
 
-create index assessor_submission_assessor_id_idx
-    on project.assessor_submission(assessor_id);
-
-create index assessor_submission_submission_id_idx
-    on project.assessor_submission(submission_id);
+create index project_assessor_submission_is_leading_idx
+    on project.assessor_submission ("is_leading");
 
 
 -- aplikant_zgloszenie_projektu
@@ -97,12 +100,6 @@ create table project.applicant_submission (
         foreign key (submission_id) references project.submission(submission_id)
 );
 
-create index applicant_submission_applicant_id_idx
-    on project.applicant_submission(applicant_id);
-
-create index applicant_submission_submission_id_idx
-    on project.applicant_submission(submission_id);
-
 -- ocena_PEM
 create table project.rating (
     "rating_id"                          int                 generated always as identity primary key,
@@ -110,7 +107,6 @@ create table project.rating (
     "assessor_id"                        int                 not null,
     "is_draft"                           boolean             not null,
     "type"                               project.rating_type not null,
-    "custom_est_assessment_time"         date, -- assessor can ask for more time in which case it'd've been set here
 
     constraint rating_submission_fk
         foreign key (submission_id) references project.submission(submission_id),
@@ -119,8 +115,11 @@ create table project.rating (
         foreign key (assessor_id) references person.assessor(assessor_id)
 );
 
-create index rating_submission_id_idx
-    on project.rating(submission_id);
+create index project_rating_is_draft_idx
+    on project.rating("is_draft");
+
+create index project_rating_type_idx
+    on project.rating("type");
 
 -- ocena_czastkowa_PEM
 create table project.partial_rating (
@@ -186,9 +185,3 @@ create table project.ipma_expert_submission (
     constraint ipma_expert_submission_submission_fk
         foreign key (submission_id) references project.submission(submission_id)
 );
-
-create index ipma_expert_submission_ipma_expert_id_idx
-    on project.ipma_expert_submission(ipma_expert_id);
-
-create index ipma_expert_submission_submission_id_idx
-    on project.ipma_expert_submission(submission_id);

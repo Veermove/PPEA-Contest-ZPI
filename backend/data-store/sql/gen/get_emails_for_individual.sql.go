@@ -7,7 +7,7 @@ package queries
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
 const getIndividualRatingsEmails = `-- name: GetIndividualRatingsEmails :many
@@ -17,7 +17,10 @@ asors_for_submis as (
         assessor_submission.assessor_id        as assessor_id,
         submission.submission_id               as submission_id,
         submission.name                        as submission_name,
-        contest.est_time_individual_assessment as set_before_date,
+        coalesce(
+            contest.est_time_individual_assessment,
+            submission.custom_time_individual_assessment
+        )                                      as set_before_date,
         contest.year                           as year
     from
         project.assessor_submission   as assessor_submission
@@ -32,11 +35,8 @@ asors_for_submis_wo_rating as (
         asors_for_submis.submission_id,
         asors_for_submis.submission_name,
         asors_for_submis.year,
-        rating.rating_id is not null as is_created,
-        coalesce(
-            rating.custom_est_assessment_time,
-            asors_for_submis.set_before_date
-        ) as set_before_date
+        asors_for_submis.set_before_date,
+        rating.rating_id is not null as is_created
     from
         asors_for_submis left join project.rating as rating using (assessor_id, submission_id)
     where
@@ -73,7 +73,7 @@ type GetIndividualRatingsEmailsRow struct {
 	SubmissionID   int32
 	SubmissionName string
 	Year           int32
-	SetBeforeDate  sql.NullTime
+	SetBeforeDate  time.Time
 	IsCreated      bool
 	FirstName      string
 	LastName       string
