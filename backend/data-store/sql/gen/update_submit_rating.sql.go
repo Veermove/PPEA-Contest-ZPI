@@ -13,7 +13,7 @@ const submitRating = `-- name: SubmitRating :one
 update project.rating set
     "is_draft" = $1
 where rating_id = $2
-returning rating_id, submission_id, assessor_id, is_draft, type, custom_est_assessment_time
+returning rating_id, submission_id, assessor_id, is_draft, type
 `
 
 type SubmitRatingParams struct {
@@ -30,7 +30,6 @@ func (q *Queries) SubmitRating(ctx context.Context, arg SubmitRatingParams) (Pro
 		&i.AssessorID,
 		&i.IsDraft,
 		&i.Type,
-		&i.CustomEstAssessmentTime,
 	)
 	return i, err
 }
