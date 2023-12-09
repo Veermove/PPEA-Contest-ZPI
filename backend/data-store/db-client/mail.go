@@ -126,7 +126,7 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 
 	for _, email := range merged {
 
-		if !email.SetBeforeDate.IsZero() { // Unreachable if I'm sane
+		if email.SetBeforeDate.IsZero() { // Unreachable if I'm sane
 			st.Log.Error("email has no set before date", zap.Any("email", email))
 			continue
 		}
