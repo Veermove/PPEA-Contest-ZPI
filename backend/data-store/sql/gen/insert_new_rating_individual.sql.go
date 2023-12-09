@@ -20,7 +20,7 @@ insert into project.rating (
     $2,
     $3,
     $4
-) returning rating_id, submission_id, assessor_id, is_draft, type, custom_est_assessment_time
+) returning rating_id, submission_id, assessor_id, is_draft, type
 `
 
 type CreateProjectRatingIndividualParams struct {
@@ -44,7 +44,6 @@ func (q *Queries) CreateProjectRatingIndividual(ctx context.Context, arg CreateP
 		&i.AssessorID,
 		&i.IsDraft,
 		&i.Type,
-		&i.CustomEstAssessmentTime,
 	)
 	return i, err
 }

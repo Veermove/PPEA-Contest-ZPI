@@ -2,7 +2,6 @@ package dbclient
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 	"sync"
@@ -20,7 +19,7 @@ type (
 		SubmissionID   int32
 		SubmissionName string
 		Year           int32
-		SetBeforeDate  sql.NullTime
+		SetBeforeDate  time.Time
 		IsCreated      bool
 		FirstName      string
 		LastName       string
@@ -123,18 +122,18 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 	emailsToSend := make([]*ds.EmailDetails, 0, len(merged))
 	dbConn := queries.New(st.Pool)
 
-	st.Log.Info("got emails details", zap.Int("emails", len(merged)))
+	st.Log.Info("got emails details", zap.Int("emails", len(merged)), zap.Time("now", time.Now().UTC()))
 
 	for _, email := range merged {
 
-		if !email.SetBeforeDate.Valid { // Unreachable if I'm sane
+		if email.SetBeforeDate.IsZero() { // Unreachable if I'm sane
 			st.Log.Error("email has no set before date", zap.Any("email", email))
 			continue
 		}
 
 		var ( // Are we ...
 
-			pastWarnings = time.Now().After(email.SetBeforeDate.Time)
+			pastWarnings = time.Now().UTC().After(email.SetBeforeDate)
 
 			// Let's say:
 			// today               = 13.05
@@ -144,13 +143,13 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 			// is warningPeriodStart (10.05) before now (13.05)?
 			//    - yes, so we are in EmailWarningPeriod
 			//    - no,  so we are not in EmailWarningPeriod
-			inWarningPeriod      = email.SetBeforeDate.Time.Add(-EmailWarningPeriod).Before(time.Now())
-			inFinalWarningPeriod = email.SetBeforeDate.Time.Add(-EmailWarningFinalPeriod).Before(time.Now())
+			inWarningPeriod      = email.SetBeforeDate.UTC().Add(-EmailWarningPeriod).Before(time.Now().UTC())
+			inFinalWarningPeriod = email.SetBeforeDate.UTC().Add(-EmailWarningFinalPeriod).Before(time.Now().UTC())
 
 			log = st.Log.With(
 				zap.String("email", email.Email),
 				zap.String("rating_type", email.RatingType.String()),
-				zap.String("rating_submit_date", email.SetBeforeDate.Time.UTC().Format(time.RFC3339)),
+				zap.String("rating_submit_date", email.SetBeforeDate.UTC().Format(time.RFC3339)),
 				zap.String("submission_name", email.SubmissionName))
 		)
 
@@ -188,7 +187,9 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 			IsRatingCreated:   email.IsCreated,
 			RatingType:        email.RatingType,
 			EditionYear:       email.Year,
-			RatingSubmitDate:  email.SetBeforeDate.Time.UTC().Format(time.RFC3339),
+			RatingSubmitDate:  email.SetBeforeDate.UTC().Format(time.RFC3339),
+			AssessorId:        email.AssessorID,
+			SubmissionId:      email.SubmissionID,
 		}
 
 		// Sending first mail
