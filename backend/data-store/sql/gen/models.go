@@ -113,10 +113,10 @@ type EditionContest struct {
 	ContestID                   int32
 	Year                        int32
 	MasterJuryID                int32
-	EstTimeIndividualAssessment sql.NullTime
-	EstTimeInitialAssessment    sql.NullTime
-	EstTimeFinalAssessment      sql.NullTime
-	EstTimeJuryQuestions        sql.NullTime
+	EstTimeIndividualAssessment time.Time
+	EstTimeInitialAssessment    time.Time
+	EstTimeFinalAssessment      time.Time
+	EstTimeJuryQuestions        time.Time
 	MinProjectDurationDays      int32
 	MinParticipantTeamSize      int32
 	MinSubcontractors           int32
@@ -241,28 +241,31 @@ type ProjectPartialRating struct {
 }
 
 type ProjectRating struct {
-	RatingID                int32
-	SubmissionID            int32
-	AssessorID              int32
-	IsDraft                 bool
-	Type                    ProjectRatingType
-	CustomEstAssessmentTime sql.NullTime
+	RatingID     int32
+	SubmissionID int32
+	AssessorID   int32
+	IsDraft      bool
+	Type         ProjectRatingType
 }
 
 type ProjectSubmission struct {
-	SubmissionID         int32
-	ContestID            int32
-	Name                 string
-	DurationDays         int32
-	TeamSize             int32
-	FinishDate           time.Time
-	Status               ProjectState
-	Budget               pgtype.Numeric
-	Description          string
-	ReferenceLetter      sql.NullString
-	Photos               sql.NullString
-	Video                sql.NullString
-	Logo                 sql.NullString
-	InitiatorDeclaration sql.NullString
-	ApplicantDeclaration sql.NullString
+	SubmissionID                   int32
+	ContestID                      int32
+	Name                           string
+	DurationDays                   int32
+	TeamSize                       int32
+	FinishDate                     time.Time
+	Status                         ProjectState
+	Budget                         pgtype.Numeric
+	Description                    string
+	ReferenceLetter                sql.NullString
+	Photos                         sql.NullString
+	Video                          sql.NullString
+	Logo                           sql.NullString
+	CustomTimeIndividualAssessment sql.NullTime
+	CustomTimeInitialAssessment    sql.NullTime
+	CustomTimeFinalAssessment      sql.NullTime
+	CustomTimeJuryQuestions        sql.NullTime
+	InitiatorDeclaration           sql.NullString
+	ApplicantDeclaration           sql.NullString
 }

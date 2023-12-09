@@ -6,10 +6,10 @@ create table edition.contest (
     "year"           int not null,
     "master_jury_id" int not null,
 
-    "est_time_individual_assessment"  date,
-    "est_time_initial_assessment"     date,
-    "est_time_final_assessment"       date,
-    "est_time_jury_questions"         date,
+    "est_time_individual_assessment"  date not null,
+    "est_time_initial_assessment"     date not null,
+    "est_time_final_assessment"       date not null,
+    "est_time_jury_questions"         date not null,
 
     "min_project_duration_days"     int not null,
     "min_participant_team_size"     int not null,

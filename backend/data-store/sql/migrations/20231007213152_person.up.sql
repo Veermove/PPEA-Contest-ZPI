@@ -7,6 +7,9 @@ create table person.base (
     "email"      text not null unique
 );
 
+create index person_base_email_idx
+    on person.base ("email");
+
 -- przedstawiciel_biura_nagrody
 create table person.awards_representative (
     "awards_representative_id" int generated always as identity primary key,

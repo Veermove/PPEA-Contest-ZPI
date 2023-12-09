@@ -123,7 +123,7 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 	emailsToSend := make([]*ds.EmailDetails, 0, len(merged))
 	dbConn := queries.New(st.Pool)
 
-	st.Log.Info("got emails details", zap.Int("emails", len(merged)))
+	st.Log.Info("got emails details", zap.Int("emails", len(merged)), zap.Time("now", time.Now().UTC()))
 
 	for _, email := range merged {
 
@@ -134,7 +134,7 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 
 		var ( // Are we ...
 
-			pastWarnings = time.Now().After(email.SetBeforeDate.Time)
+			pastWarnings = time.Now().UTC().After(email.SetBeforeDate.Time)
 
 			// Let's say:
 			// today               = 13.05
@@ -144,8 +144,8 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 			// is warningPeriodStart (10.05) before now (13.05)?
 			//    - yes, so we are in EmailWarningPeriod
 			//    - no,  so we are not in EmailWarningPeriod
-			inWarningPeriod      = email.SetBeforeDate.Time.Add(-EmailWarningPeriod).Before(time.Now())
-			inFinalWarningPeriod = email.SetBeforeDate.Time.Add(-EmailWarningFinalPeriod).Before(time.Now())
+			inWarningPeriod      = email.SetBeforeDate.Time.UTC().Add(-EmailWarningPeriod).Before(time.Now().UTC())
+			inFinalWarningPeriod = email.SetBeforeDate.Time.UTC().Add(-EmailWarningFinalPeriod).Before(time.Now().UTC())
 
 			log = st.Log.With(
 				zap.String("email", email.Email),
@@ -189,6 +189,8 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 			RatingType:        email.RatingType,
 			EditionYear:       email.Year,
 			RatingSubmitDate:  email.SetBeforeDate.Time.UTC().Format(time.RFC3339),
+			AssessorId:        email.AssessorID,
+			SubmissionId:      email.SubmissionID,
 		}
 
 		// Sending first mail
