@@ -187,7 +187,7 @@ func (st *Store) GetEmailDetails(ct context.Context) (*ds.EmailResponse, error) 
 			IsRatingCreated:   email.IsCreated,
 			RatingType:        email.RatingType,
 			EditionYear:       email.Year,
-			RatingSubmitDate:  email.SetBeforeDate.UTC().Format(time.RFC3339),
+			RatingSubmitDate:  email.SetBeforeDate.UTC().Format(time.DateTime),
 			AssessorId:        email.AssessorID,
 			SubmissionId:      email.SubmissionID,
 		}
