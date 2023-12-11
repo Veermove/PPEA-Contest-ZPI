@@ -191,7 +191,7 @@ message EmailDetails {
     RatingType rating_type      = 6;
     int32 edition_year          = 7;
     string rating_submit_date   = 8;
-    bool isFirstWarning         = 9;
+    bool is_first_warning       = 9;
 
     int32 assessor_id   = 10;
     int32 submission_id = 11;
