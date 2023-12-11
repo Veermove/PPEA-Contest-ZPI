@@ -49,7 +49,9 @@ public class EmailServiceImpl {
                 confirmation = prepareAndSendEmail("templates/urgent_template.html",
                         "PPEA ponaglenie do wystawienia oceny ||| PPEA urgent rating reminder", email);
             }
-            confirmations.add(confirmation);
+            // Add email to confirmation only when it's not null
+            if (confirmation != null)
+                confirmations.add(confirmation);
         }
         var wereConfirmationsSent = sendConfirmations(confirmations);
         if (!wereConfirmationsSent)
@@ -91,7 +93,8 @@ public class EmailServiceImpl {
                     .setRatingType(email.getRatingType()).setSubmissionId(email.getSubmissionId()).build();
 
         } catch (MessagingException | IOException e) {
-            throw new RuntimeException(e);
+            log.error("Problem while sending to: {}", email.getAssessorEmail());
+            return null;
         }
     }
 
